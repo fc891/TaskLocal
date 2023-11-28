@@ -3,10 +3,11 @@ import 'package:tasklocal/Database/mongoconnection.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  MongoConnection.connect();
+  MongoConnection.connect(); //Connect to database
   runApp(const MyApp());
 }
 
+//Sample App
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
