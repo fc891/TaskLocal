@@ -9,7 +9,7 @@ class MongoConnection {
     var db = await Db.create(MONGO_CONNECTION_URL);
     await db.open();
     inspect(db);
-
+    
     var status = db.serverStatus();
     print(status);
 
