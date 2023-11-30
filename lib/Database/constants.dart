@@ -1,4 +1,5 @@
-const MONGO_CONNECTION_URL = "mongodb+srv://test_user:fkgSzO9Ox62v3zNI@tasklocal.y7njlqc.mongodb.net/"; // Database connection url for test_user
+// const MONGO_CONNECTION_URL = "mongodb+srv://test_user:fkgSzO9Ox62v3zNI@tasklocal.y7njlqc.mongodb.net/"; // Database connection url for test_user
+const MONGO_CONNECTION_URL = "mongodb+srv://test_user:fkgSzO9Ox62v3zNI@tasklocal.y7njlqc.mongodb.net/TaskLocalTest?retryWrites=true&w=majority";
 const MONGO_TEST_COLLECTION = "test"; //Database collection name
 
 //Test user details:
