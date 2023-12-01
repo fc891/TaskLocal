@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasklocal/Database/mongoconnection.dart';
+import 'package:tasklocal/insert.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MongoDbInsert(),
     );
   }
 }
