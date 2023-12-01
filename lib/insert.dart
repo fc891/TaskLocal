@@ -15,6 +15,7 @@ class MongoDbInsertState extends State<MongoDbInsert> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea (
         child: Column(
           children: [
@@ -47,11 +48,14 @@ class MongoDbInsertState extends State<MongoDbInsert> {
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: TextField(
                 controller: addressController,
+                minLines: 3,
+                maxLines: 5,
                 decoration: const InputDecoration(
                   labelText: "Address Name"
                 ),
               )
             ),
+            const SizedBox(height: 50),
             Row(
               children: [
                 // OutlinedButton(
