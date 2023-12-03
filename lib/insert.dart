@@ -4,13 +4,13 @@ import 'package:tasklocal/Database/mongoconnection.dart';
 import 'package:tasklocal/mongodbmodel.dart';
 
 class MongoDbInsert extends StatefulWidget {
-  const MongoDbInsert({Key?key}) : super(key:key);
+  MongoDbInsert({Key?key}) : super(key:key);
 
   @override
-  MongoDbInsertState createState() => MongoDbInsertState();
+  _MongoDbInsertState createState() => _MongoDbInsertState();
 }
 
-class MongoDbInsertState extends State<MongoDbInsert> {
+class _MongoDbInsertState extends State<MongoDbInsert> {
   var fnameController = TextEditingController();
   var lnameController = TextEditingController();
   var addressController = TextEditingController();
@@ -65,21 +65,6 @@ class MongoDbInsertState extends State<MongoDbInsert> {
               }, 
               child: const Text("Insert Data")
             )
-            // Row(
-            //   children: [
-            //     // OutlinedButton(
-            //     //   onPressed: () {
-            //     //   }, 
-            //     //   child: Text("")
-            //     // ),
-            //     ElevatedButton(
-            //       onPressed: () {
-            //         _insertData();
-            //       }, 
-            //       child: const Text("Insert Data")
-            //     )
-            //   ]
-            // )
           ],
         )
       )
