@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasklocal/Database/mongoconnection.dart';
+import 'package:tasklocal/display.dart';
 import 'package:tasklocal/insert.dart';
 
 void main() {
@@ -19,7 +20,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const MongoDbInsert(),
+      // inserting data
+      // home: const MongoDbInsert(),
+      // displaying data
+      home: MongoDbDisplay(),
     );
   }
 }
