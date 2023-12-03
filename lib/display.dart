@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:tasklocal/Database/mongoconnection.dart';
@@ -20,12 +20,13 @@ class _MongoDbDisplayState extends State<MongoDbDisplay> {
           future: MongoConnection.getData(),
           builder: (context , AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-            else {
+              return Center(
+                child: CircularProgressIndicator()
+              );
+            } else {
               if (snapshot.hasData) {
                 var totalData = snapshot.data.length;
-                print("Total Data: $totalData");
+                print("Total Data: ${totalData.toString()}");
                 return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (content, index) {
@@ -33,7 +34,9 @@ class _MongoDbDisplayState extends State<MongoDbDisplay> {
                   }
                 );
               } else {
-                return Center(child: Text("No Data Available"));
+                return Center(
+                  child: Text("No Data Available")
+                );
               }
             }
           }
@@ -43,6 +46,19 @@ class _MongoDbDisplayState extends State<MongoDbDisplay> {
   }
 
   Widget displayCard(Mongodbmodel data) {
-    return Card()
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("${data.id.$oid}"),
+            Text("${data.firstName}"),
+            Text("${data.lastName}"),
+            Text("${data.address}"),
+          ]
+        )
+      )
+    );
   }
 }
