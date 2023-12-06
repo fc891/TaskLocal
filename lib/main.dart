@@ -3,9 +3,9 @@ import 'package:tasklocal/Database/mongoconnection.dart';
 import 'package:tasklocal/display.dart';
 import 'package:tasklocal/insert.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  MongoConnection.connect(); //Connect to database
+  await MongoConnection.connect(); //Connect to database
   runApp(const MyApp());
 }
 
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // inserting data
-      // home: const MongoDbInsert(),
+      // home: MongoDbInsert(),
       // displaying data
       home: MongoDbDisplay(),
     );
