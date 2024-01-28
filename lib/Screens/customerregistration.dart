@@ -3,32 +3,40 @@ import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
 import 'package:tasklocal/Database/mongoconnection.dart';
 import 'package:tasklocal/mongodbmodel.dart';
 
-class MongoDbInsert extends StatefulWidget {
-  MongoDbInsert({Key? key}) : super(key: key);
+void main() => runApp(MaterialApp(
+      home: CustomerRegistration(),
+    ));
 
+class CustomerRegistration extends StatefulWidget {
   @override
-  _MongoDbInsertState createState() => _MongoDbInsertState();
+  _CustomerRegistrationState createState() => _CustomerRegistrationState();
 }
 
-class _MongoDbInsertState extends State<MongoDbInsert> {
+class _CustomerRegistrationState extends State<CustomerRegistration> {
   var fnameController = TextEditingController();
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
   var addressController = TextEditingController();
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.green[500],
+        appBar: AppBar(
+          title: Text('Customer Account Registration'),
+          centerTitle: true,
+          backgroundColor: Colors.green[800],
+          elevation: 0.0,
+        ),
         resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Column(
           children: [
             const Padding(
-              padding: EdgeInsets.only(top: 20),
-              child: Text(
-                "Insert Data",
-                style: TextStyle(fontSize: 20),
-              ),
+              padding: EdgeInsets.only(top: 30),
+              // child: Text(
+              //   "",
+              //   style: TextStyle(fontSize: 20),
+              // ),
             ),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -46,16 +54,12 @@ class _MongoDbInsertState extends State<MongoDbInsert> {
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: TextField(
                   controller: usernameController,
-                  // minLines: 3,
-                  // maxLines: 5,
                   decoration: const InputDecoration(labelText: "Username"),
                 )),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: TextField(
                   controller: addressController,
-                  // minLines: 3,
-                  // maxLines: 5,
                   decoration: const InputDecoration(labelText: "Email Address"),
                 )),
             const SizedBox(height: 50),
@@ -64,7 +68,7 @@ class _MongoDbInsertState extends State<MongoDbInsert> {
                   _insertData(fnameController.text, lnameController.text,
                       usernameController.text, addressController.text);
                 },
-                child: const Text("Insert Data"))
+                child: const Text("Register Account"))
           ],
         )));
   }

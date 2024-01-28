@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tasklocal/Database/mongoconnection.dart';
 import 'package:tasklocal/display.dart';
 import 'package:tasklocal/insert.dart';
+import 'package:tasklocal/Screens/customerregistration.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,9 +22,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // inserting data
-      // home: MongoDbInsert(),
+      //home: MongoDbInsert(),
       // displaying data
-      home: MongoDbDisplay(),
+      //home: MongoDbDisplay(),
+      // customer registration screen
+      home: CustomerRegistration(),
     );
   }
 }
