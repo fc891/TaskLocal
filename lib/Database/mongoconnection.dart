@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:tasklocal/mongodbmodel.dart';
+import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
 
 import 'constants.dart';
 import 'package:mongo_dart/mongo_dart.dart';
@@ -24,13 +25,26 @@ class MongoConnection {
       var result = await userCollection.insertOne(data.toJson());
       if (result.isSuccess) {
         return "Data Inserted";
-      }
-      else {
+      } else {
         return "Something went wrong while inserting data";
       }
     } catch (e) {
       print(e.toString());
       return e.toString();
-    }  
+    }
+  }
+
+  static Future<String> insertCustomerData(Mongodbmodelcustomer data) async {
+    try {
+      var result = await userCollection.insertOne(data.toJson());
+      if (result.isSuccess) {
+        return "Data Inserted";
+      } else {
+        return "Something went wrong while inserting data";
+      }
+    } catch (e) {
+      print(e.toString());
+      return e.toString();
+    }
   }
 }
