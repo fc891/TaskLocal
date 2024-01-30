@@ -4,6 +4,7 @@ import 'package:tasklocal/display.dart';
 import 'package:tasklocal/insert.dart';
 import 'package:tasklocal/Screens/customerregistration.dart';
 
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await MongoConnection.connect(); //Connect to database
