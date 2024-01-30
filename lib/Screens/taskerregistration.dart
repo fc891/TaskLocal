@@ -1,4 +1,4 @@
-//Customer Registration UI/Screen
+// Tasker Registration UI/Screen
 
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
@@ -6,16 +6,15 @@ import 'package:tasklocal/Database/mongoconnection.dart';
 import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
 
 void main() => runApp(MaterialApp(
-      home: CustomerRegistration(),
+      home: TaskerRegistration(),
     ));
 
-class CustomerRegistration extends StatefulWidget {
+class TaskerRegistration extends StatefulWidget {
   @override
-  _CustomerRegistrationState createState() => _CustomerRegistrationState();
+  _TaskerRegistrationState createState() => _TaskerRegistrationState();
 }
 
-//Screen code
-class _CustomerRegistrationState extends State<CustomerRegistration> {
+class _TaskerRegistrationState extends State<TaskerRegistration> {
   var fnameController = TextEditingController();
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
@@ -26,7 +25,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     return Scaffold(
         backgroundColor: Colors.green[500],
         appBar: AppBar(
-          title: Text('Customer Account Registration'),
+          title: Text('Tasker Account Registration'),
           centerTitle: true,
           backgroundColor: Colors.green[800],
           elevation: 0.0,
@@ -37,52 +36,42 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 30),
-              // child: Text(
-              //   "",
-              //   style: TextStyle(fontSize: 20),
-              // ),
             ),
-            //First name entry field
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: TextField(
                   controller: fnameController,
                   decoration: const InputDecoration(labelText: "First Name"),
                 )),
-            //Last name entry field
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: TextField(
                   controller: lnameController,
                   decoration: const InputDecoration(labelText: "Last Name"),
                 )),
-            //Username entry field
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: TextField(
                   controller: usernameController,
                   decoration: const InputDecoration(labelText: "Username"),
                 )),
-            //Email entry field
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: TextField(
                   controller: addressController,
                   decoration: const InputDecoration(labelText: "Email Address"),
                 )),
-            //Password entry field
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: TextField(
                   controller: passwordController,
                   decoration: const InputDecoration(labelText: "Password"),
                 )),
-            //Register account button
             const SizedBox(height: 50),
             ElevatedButton(
                 onPressed: () {
-                  _insertData(fnameController.text, lnameController.text,
-                      usernameController.text, addressController.text, 
+                  _insertTaskerData(fnameController.text, lnameController.text,
+                      usernameController.text, addressController.text,
                       passwordController.text);
                 },
                 child: const Text("Register Account"))
@@ -90,8 +79,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
         )));
   }
 
-  //Inserting data to database using data entered in text fields above
-  Future<void> _insertData(String fname, String lname, String username,
+  Future<void> _insertTaskerData(String fname, String lname, String username,
       String address, String password) async {
     var _id = mongo_dart.ObjectId();
     final data = Mongodbmodelcustomer(
@@ -107,7 +95,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     _clearAll();
   }
 
-  //Function to clear all text fields
   void _clearAll() {
     fnameController.text = '';
     lnameController.text = '';
