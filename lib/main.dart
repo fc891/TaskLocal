@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
       // displaying data
       //home: MongoDbDisplay(),
       // customer registration screen
-      //home: CustomerRegistration()
+      home: CustomerRegistration()
       // tasker registration screen
-      home: TaskerRegistration(),
+      //home: TaskerRegistration(),
     );
   }
 }
