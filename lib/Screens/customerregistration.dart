@@ -1,4 +1,4 @@
-//Customer Registration UI/Screen
+// ignore_for_file: prefer_const_constructor
 
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
@@ -36,53 +36,93 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
             child: Column(
           children: [
             const Padding(
-              padding: EdgeInsets.only(top: 30),
+              padding: EdgeInsets.only(top: 30, bottom: 20),
               // child: Text(
               //   "",
               //   style: TextStyle(fontSize: 20),
               // ),
             ),
-            //First name entry field
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
-                child: TextField(
-                  controller: fnameController,
-                  decoration: const InputDecoration(labelText: "First Name"),
-                )),
-            //Last name entry field
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
-                child: TextField(
-                  controller: lnameController,
-                  decoration: const InputDecoration(labelText: "Last Name"),
-                )),
+            //First and Last name entry field
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                child: SizedBox(
+                  width: 150,
+                  child: TextField(
+                    controller: fnameController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "First Name",
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                child: SizedBox(
+                  width: 150,
+                  child: TextField(
+                    controller: lnameController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Last Name",
+                    ),
+                  ),
+                ),
+              ),
+            ]),
             //Username entry field
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+              padding: EdgeInsets.symmetric(horizontal: 37, vertical: 10),
+              child: SizedBox(
+                width: 400,
                 child: TextField(
                   controller: usernameController,
-                  decoration: const InputDecoration(labelText: "Username"),
-                )),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Username",
+                  ),
+                ),
+              ),
+            ),
             //Email entry field
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+              padding: EdgeInsets.symmetric(horizontal: 37, vertical: 10),
+              child: SizedBox(
+                width: 400,
                 child: TextField(
                   controller: addressController,
-                  decoration: const InputDecoration(labelText: "Email Address"),
-                )),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Email Address",
+                  ),
+                ),
+              ),
+            ),
             //Password entry field
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+              padding: EdgeInsets.symmetric(horizontal: 37, vertical: 10),
+              child: SizedBox(
+                width: 400,
                 child: TextField(
+                  obscureText: true,
                   controller: passwordController,
-                  decoration: const InputDecoration(labelText: "Password"),
-                )),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Password",
+                  ),
+                ),
+              ),
+            ),
             //Register account button
             const SizedBox(height: 50),
             ElevatedButton(
                 onPressed: () {
-                  _insertData(fnameController.text, lnameController.text,
-                      usernameController.text, addressController.text, 
+                  _insertData(
+                      fnameController.text,
+                      lnameController.text,
+                      usernameController.text,
+                      addressController.text,
                       passwordController.text);
                 },
                 child: const Text("Register Account"))
