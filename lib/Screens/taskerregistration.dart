@@ -12,7 +12,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //     ));
 
 class TaskerRegistration extends StatefulWidget {
-  const TaskerRegistration({super.key});
+  final Function()? onTap;  
+  const TaskerRegistration({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<TaskerRegistration> createState() => _TaskerRegistrationState();

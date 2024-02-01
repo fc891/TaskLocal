@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class TaskerLogin extends StatefulWidget {
-  const TaskerLogin({super.key});
+  final Function()? onTap;
+  const TaskerLogin({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<TaskerLogin> createState() => _TaskerLogin();
 }
 
 class _TaskerLogin extends State<TaskerLogin> {
-  // text controllers
-  final userController = TextEditingController();
-
-  final passController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   // login method
   void signUserIn() async {
@@ -68,86 +67,33 @@ class _TaskerLogin extends State<TaskerLogin> {
     return Scaffold(
       backgroundColor: Colors.green[500],
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
+        child: Center(
+          child: SingleChildScrollView(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Image.asset('lib/images/tasklocaltransparent.png'),
+                const Padding(
+                  padding: EdgeInsets.only(top: 30),
                 ),
-                const SizedBox(height: 0),
-
-                // Name
-                Text(
-                  'TaskLocal',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                  ),
-                ),
-
-                const SizedBox(height: 25),
-
-                // email
-                UserPassInput(
-                  controller: userController,
-                  hintText: 'Email',
-                  obscureText: false,
-                ),
-
-                const SizedBox(height: 10),
-
-                // password 
-                UserPassInput(
-                  controller: passController,
-                  hintText: 'Password',
-                  obscureText: true,
-                ),
-
-                const SizedBox(height: 10),
-
-                // forgot password
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Forgot Password?',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 15),
-
-                // sign in button
-                LoginButton(
-                  onTap: logUserIn,
-                ),
-
-                const SizedBox(height: 30),
-
-                // register
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Don\'t Have an Account?',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'Sign up Here',
-                      style: TextStyle(
-                        color: Colors.yellow,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: TextField(
+                      controller: emailController,
+                      decoration: const InputDecoration(labelText: "Email Address"),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: TextField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(labelText: "ddd"),
+                      obscureText: true,
+                    )),
+                const SizedBox(height: 50),
+                ElevatedButton(
+                  onPressed: () {
+                    signUserIn();
+                  }, 
+                  child: const Text("Login"),
                 ),
               ],
             ),
