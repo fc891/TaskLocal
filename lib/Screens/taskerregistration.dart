@@ -1,13 +1,14 @@
 // Tasker Registration UI/Screen
 
 import 'package:flutter/material.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
-import 'package:tasklocal/Database/mongoconnection.dart';
-import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-void main() => runApp(MaterialApp(
-      home: TaskerRegistration(),
-    ));
+// import 'package:tasklocal/Database/mongoconnection.dart';
+// import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
+// import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
+// void main() => runApp(MaterialApp(
+//       home: TaskerRegistration(),
+//     ));
 
 class TaskerRegistration extends StatefulWidget {
   @override
@@ -15,11 +16,56 @@ class TaskerRegistration extends StatefulWidget {
 }
 
 class _TaskerRegistrationState extends State<TaskerRegistration> {
-  var fnameController = TextEditingController();
-  var lnameController = TextEditingController();
-  var usernameController = TextEditingController();
-  var addressController = TextEditingController();
-  var passwordController = TextEditingController();
+  final fnameController = TextEditingController();
+  final lnameController = TextEditingController();
+  final usernameController = TextEditingController();
+  final addressController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  // Richard's code for the signUserUp function
+  void signUserUp() async {
+    // Display loading circle
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+    );
+
+    // Creates the user
+    try {
+      if (passwordController.text == confirmPasswordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text, 
+          password: passwordController.text,
+        );
+        Navigator.pop(context);
+      } 
+      else {
+        Navigator.pop(context);
+        showErrorMessage("Passwords don't match!");
+      }
+    } on FirebaseAuthException catch (e) {  
+      Navigator.pop(context);
+      showErrorMessage(e.code);
+    }
+  }
+
+  // Display error message to user
+  void showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(child: Text(message)),
+        );
+      },
+    );
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,38 +114,41 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   decoration: const InputDecoration(labelText: "Password"),
                 )),
             const SizedBox(height: 50),
-            ElevatedButton(
-                onPressed: () {
-                  _insertTaskerData(fnameController.text, lnameController.text,
-                      usernameController.text, addressController.text,
-                      passwordController.text);
-                },
-                child: const Text("Register Account"))
+            // ElevatedButton(
+            //     onPressed: () {
+            //       _insertTaskerData(fnameController.text, lnameController.text,
+            //           usernameController.text, addressController.text,
+            //           passwordController.text);
+            //     },
+            //     child: const Text("Register Account"))
           ],
         )));
   }
 
-  Future<void> _insertTaskerData(String fname, String lname, String username,
-      String address, String password) async {
-    var _id = mongo_dart.ObjectId();
-    final data = Mongodbmodelcustomer(
-        id: _id,
-        firstName: fname,
-        lastName: lname,
-        username: username,
-        address: address,
-        password: password);
-    var result = await MongoConnection.insertCustomerData(data);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Inserted ID " + _id.$oid)));
-    _clearAll();
-  }
 
-  void _clearAll() {
-    fnameController.text = '';
-    lnameController.text = '';
-    usernameController.text = '';
-    addressController.text = '';
-    passwordController.text = '';
-  }
+
+  // No longer using MongoDB
+  // Future<void> _insertTaskerData(String fname, String lname, String username,
+  //     String address, String password) async {
+  //   var _id = mongo_dart.ObjectId();
+  //   final data = Mongodbmodelcustomer(
+  //       id: _id,
+  //       firstName: fname,
+  //       lastName: lname,
+  //       username: username,
+  //       address: address,
+  //       password: password);
+  //   var result = await MongoConnection.insertCustomerData(data);
+  //   ScaffoldMessenger.of(context)
+  //       .showSnackBar(SnackBar(content: Text("Inserted ID " + _id.$oid)));
+  //   _clearAll();
+  // }
+
+  // void _clearAll() {
+  //   fnameController.text = '';
+  //   lnameController.text = '';
+  //   usernameController.text = '';
+  //   addressController.text = '';
+  //   passwordController.text = '';
+  // }
 }
