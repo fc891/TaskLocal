@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // import 'package:tasklocal/Database/mongoconnection.dart';
 // import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
@@ -29,21 +30,31 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
   void signUserUp() async {
     // Display loading circle
     showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+    );
 
-    // Creates the user
     try {
+      // Creates the user
       if (passwordController.text == confirmPasswordController.text) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
         );
         Navigator.pop(context);
+        // Create a document in the Cloud Firestore
+        await FirebaseFirestore.instance.collection("Taskers").doc(userCredential.user!.email).set(
+          {
+            'first name' : fnameController.text,
+            'last name' : lnameController.text,
+            'username' : usernameController.text
+          }
+        );
+
       } else {
         Navigator.pop(context);
         showErrorMessage("Passwords don't match!");
