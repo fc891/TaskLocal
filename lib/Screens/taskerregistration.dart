@@ -11,15 +11,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 //     ));
 
 class TaskerRegistration extends StatefulWidget {
+  const TaskerRegistration({super.key});
+
   @override
-  _TaskerRegistrationState createState() => _TaskerRegistrationState();
+  State<TaskerRegistration> createState() => _TaskerRegistrationState();
 }
 
 class _TaskerRegistrationState extends State<TaskerRegistration> {
   final fnameController = TextEditingController();
   final lnameController = TextEditingController();
   final usernameController = TextEditingController();
-  final addressController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -28,28 +29,26 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
   void signUserUp() async {
     // Display loading circle
     showDialog(
-      context: context, 
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-    );
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
 
     // Creates the user
     try {
       if (passwordController.text == confirmPasswordController.text) {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text, 
+          email: emailController.text,
           password: passwordController.text,
         );
         Navigator.pop(context);
-      } 
-      else {
+      } else {
         Navigator.pop(context);
         showErrorMessage("Passwords don't match!");
       }
-    } on FirebaseAuthException catch (e) {  
+    } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       showErrorMessage(e.code);
     }
@@ -67,18 +66,19 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.green[500],
-        appBar: AppBar(
-          title: Text('Tasker Account Registration'),
-          centerTitle: true,
-          backgroundColor: Colors.green[800],
-          elevation: 0.0,
-        ),
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-            child: Column(
+      backgroundColor: Colors.green[500],
+      appBar: AppBar(
+        title: Text('Tasker Account Registration'),
+        centerTitle: true,
+        backgroundColor: Colors.green[800],
+        elevation: 0.0,
+      ),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Column(
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 30),
@@ -104,7 +104,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: TextField(
-                  controller: addressController,
+                  controller: emailController,
                   decoration: const InputDecoration(labelText: "Email Address"),
                 )),
             Padding(
@@ -112,8 +112,22 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 child: TextField(
                   controller: passwordController,
                   decoration: const InputDecoration(labelText: "Password"),
+                  obscureText: true,
+                )),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50),
+                child: TextField(
+                  controller: confirmPasswordController,
+                  decoration: const InputDecoration(labelText: "Confirm Password"),
+                  obscureText: true,
                 )),
             const SizedBox(height: 50),
+            ElevatedButton(
+              onPressed: () {
+                signUserUp();
+              }, 
+              child: const Text("Register Account"),
+            ),
             // ElevatedButton(
             //     onPressed: () {
             //       _insertTaskerData(fnameController.text, lnameController.text,
@@ -122,10 +136,10 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
             //     },
             //     child: const Text("Register Account"))
           ],
-        )));
+        ),
+      ),
+    );
   }
-
-
 
   // No longer using MongoDB
   // Future<void> _insertTaskerData(String fname, String lname, String username,
