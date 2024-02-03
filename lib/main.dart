@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'Screens/loginpage.dart';
 
+import 'package:tasklocal/Screens/tasker_home_page.dart';
+import 'package:tasklocal/Screens/tasker_registration.dart';
+
+import 'Screens/loginpage.dart';
 import 'package:tasklocal/Screens/taskerregistration.dart';
 import 'package:tasklocal/Screens/customerregistration.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,6 +30,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
+      // Change which screen is being displayed here
       home: TaskerRegistration(),
     );
   }
