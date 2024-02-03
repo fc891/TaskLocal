@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Change which screen is being displayed here
-      home: TaskerRegistration(),
+      home: TaskerHomePage(),
     );
   }
 }
