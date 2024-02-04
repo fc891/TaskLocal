@@ -1,4 +1,4 @@
-// Tasker Home Page UI/Screen
+// Customer Home Page UI/Screen
 
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ class TaskerHomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Tasker Homepage'),
+        title: Text('Customer Homepage'),
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
@@ -22,7 +22,7 @@ class TaskerHomePage extends StatelessWidget {
               children: [
                 const SizedBox(height: 20),
                 Text(
-                  'Sign up for a service',
+                  'Get something done today',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 32,
@@ -32,7 +32,7 @@ class TaskerHomePage extends StatelessWidget {
                 // Search Box
                 TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search for available tasks...',
+                    hintText: 'Search for available taskers...',
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
