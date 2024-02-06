@@ -11,6 +11,7 @@ class CustomerProfilePage extends StatefulWidget {
   State<CustomerProfilePage> createState() => _CustomerProfilePageState();
 }
 
+//Customer Profile Page Screen
 class _CustomerProfilePageState extends State<CustomerProfilePage> {
   String username = "Testlocal123";
   String date = 'dd-MM-yyyy';
