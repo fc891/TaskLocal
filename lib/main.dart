@@ -4,7 +4,7 @@ import 'package:tasklocal/screens/customer_home_page.dart';
 import 'package:tasklocal/screens/tasker_home_page.dart';
 import 'package:tasklocal/screens/tasker_registration.dart';
 
-import 'screens/login_page.dart';
+import 'screens/loginpage.dart';
 import 'package:tasklocal/screens/tasker_registration.dart';
 import 'package:tasklocal/screens/customerregistration.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Change which screen is being displayed here
-      home: TaskerRegistration(),
+      home: TaskerHomePage(),
     );
   }
 }
