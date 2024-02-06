@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasklocal/Screens/customerprofilepage.dart';
 
 import 'package:tasklocal/Screens/tasker_home_page.dart';
 import 'package:tasklocal/Screens/tasker_registration.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Change which screen is being displayed here
-      home: TaskerHomePage(),
+      home: CustomerProfilePage(),
     );
   }
 }
