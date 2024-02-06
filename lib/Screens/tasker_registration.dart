@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tasklocal/Screens/tasker_home_page.dart';
+import 'package:tasklocal/screens/tasker_home_page.dart';
 
 // import 'package:tasklocal/Database/mongoconnection.dart';
 // import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
@@ -26,6 +26,8 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   // Richard's code for the signUserUp function
   void signUserUp() async {
@@ -84,10 +86,11 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
     );
   }
 
+  // Eric's code for TASKER REG UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[500],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Tasker Account Registration'),
         centerTitle: true,
@@ -96,68 +99,118 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
       ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 30),
-            ),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   controller: fnameController,
-                  decoration: const InputDecoration(labelText: "First Name"),
-                )),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+                  decoration: InputDecoration(
+                    labelText: "First Name",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   controller: lnameController,
-                  decoration: const InputDecoration(labelText: "Last Name"),
-                )),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+                  decoration: InputDecoration(
+                    labelText: "Last Name",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   controller: usernameController,
-                  decoration: const InputDecoration(labelText: "Username"),
-                )),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+                  decoration: InputDecoration(
+                    labelText: "Username",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   controller: emailController,
-                  decoration: const InputDecoration(labelText: "Email Address"),
-                )),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+                  decoration: InputDecoration(
+                    labelText: "Email Address",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  obscureText: !_isPasswordVisible,
                   controller: passwordController,
-                  decoration: const InputDecoration(labelText: "Password"),
-                  obscureText: true,
-                )),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  obscureText: !_isConfirmPasswordVisible,
                   controller: confirmPasswordController,
-                  decoration: const InputDecoration(labelText: "Confirm Password"),
-                  obscureText: true,
-                )),
-            const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: () {
-                signUserUp();
-              }, 
-              child: const Text("Register Account"),
-            ),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       _insertTaskerData(fnameController.text, lnameController.text,
-            //           usernameController.text, addressController.text,
-            //           passwordController.text);
-            //     },
-            //     child: const Text("Register Account"))
-          ],
+                  decoration: InputDecoration(
+                    labelText: "Confirm Password",
+                    border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Center(
+                  child: ElevatedButton(
+                    onPressed: signUserUp,
+                    child: Text("Register Account"),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
   }
+}
 
   // No longer using MongoDB
   // Future<void> _insertTaskerData(String fname, String lname, String username,
@@ -183,4 +236,3 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
   //   addressController.text = '';
   //   passwordController.text = '';
   // }
-}

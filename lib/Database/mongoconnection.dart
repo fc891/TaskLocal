@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:tasklocal/mongodbmodel.dart';
-import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
+import 'package:tasklocal/database/mongodbmodelcustomer.dart';
 
 import 'constants.dart';
 import 'package:mongo_dart/mongo_dart.dart';

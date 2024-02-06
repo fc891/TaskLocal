@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-class TaskerHomePage extends StatelessWidget {
+class CustomerHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class TaskerHomePage extends StatelessWidget {
               children: [
                 const SizedBox(height: 20),
                 Text(
-                  'Get something done today',
+                  'Get something done!',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 32,
@@ -42,31 +42,30 @@ class TaskerHomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 // Job Categories
-                // Updated to display 3 categories per row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCategoryBox('Job Category 1', 'Furniture\nAssembly', Colors.blue),
-                    _buildCategoryBox('Job Category 2', 'Mounting\nServices', Colors.orange),
-                    _buildCategoryBox('Job Category 3', 'Yard Work\n', Colors.purple),
+                    _buildCategoryBox('Job Category 1', 'Furniture Assembly', 'lib/images/furniture_assembly.webp', Colors.blue),
+                    _buildCategoryBox('Job Category 2', 'Mounting Services', 'images/mounting_services.jpg', Colors.orange),
+                    _buildCategoryBox('Job Category 3', 'Yard Work\n', 'images/yard_work.jpg', Colors.purple),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCategoryBox('Job Category 4', 'Cleaning\nServices', Colors.red),
-                    _buildCategoryBox('Job Category 5', 'Handyman\nServices', Colors.pink),
-                    _buildCategoryBox('Job Category 6', 'Delivery\nServices', Colors.yellow),
+                    _buildCategoryBox('Job Category 4', 'Cleaning Services', 'images/cleaning_services.jpg', Colors.red),
+                    _buildCategoryBox('Job Category 5', 'Handyman Services', 'images/handyman_services.jpg', Colors.pink),
+                    _buildCategoryBox('Job Category 6', 'Delivery Services', 'images/delivery_services.jpg', Colors.yellow),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCategoryBox('Job Category 7', 'Event\nPlanning', Colors.teal),
-                    _buildCategoryBox('Job Category 8', 'Moving\nServices', Colors.deepOrange),
-                    _buildCategoryBox('Job Category 9', 'Computer\nServices', Colors.indigo),
+                    _buildCategoryBox('Job Category 7', 'Event Planning', 'images/event_planning.jpg', Colors.teal),
+                    _buildCategoryBox('Job Category 8', 'Moving Services', 'images/moving_services.jpg', Colors.deepOrange),
+                    _buildCategoryBox('Job Category 9', 'Computer Services', 'images/computer_services.jpg', Colors.indigo),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -82,27 +81,27 @@ class TaskerHomePage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCategoryBox('Trending Project 1', 'Photography\nProjects', Colors.green),
-                    _buildCategoryBox('Trending Project 2', 'Art\nInstallations', Colors.cyan),
-                    _buildCategoryBox('Trending Project 3', 'Tech\nInnovations', Colors.amber),
+                    _buildCategoryBox('Trending Project 1', 'Photography Projects', 'images/photography_projects.jpg', Colors.green),
+                    _buildCategoryBox('Trending Project 2', 'Art Installations', 'images/art_installations.jpg', Colors.cyan),
+                    _buildCategoryBox('Trending Project 3', 'Tech Innovations', 'images/tech_innovations.jpg', Colors.amber),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCategoryBox('Trending Project 4', 'Gardening\nProjects', Colors.deepPurple),
-                    _buildCategoryBox('Trending Project 5', 'Music\nProductions', Colors.lightBlue),
-                    _buildCategoryBox('Trending Project 6', 'Fitness\nTraining', Colors.lime),
+                    _buildCategoryBox('Trending Project 4', 'Gardening Projects', 'images/gardening_projects.jpg', Colors.deepPurple),
+                    _buildCategoryBox('Trending Project 5', 'Music Productions', 'images/music_productions.jpg', Colors.lightBlue),
+                    _buildCategoryBox('Trending Project 6', 'Fitness Training', 'images/fitness_training.jpg', Colors.lime),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCategoryBox('Job Category 10 with Long Name', 'Long Job Category 10', Colors.cyan),
-                    _buildCategoryBox('Job Category 11 with Very Long Name', 'Very Long Job Category 11', Colors.amber),
-                    _buildCategoryBox('Job Category 12', 'Job Category 12', Colors.brown),
+                    _buildCategoryBox('Job Category 10 with Long Name', 'Long Job Category 10', 'images/long_job_category_10.jpg', Colors.cyan),
+                    _buildCategoryBox('Job Category 11 with Very Long Name', 'Very Long Job Category 11', 'images/very_long_job_category_11.jpg', Colors.amber),
+                    _buildCategoryBox('Job Category 12', 'Job Category 12', 'images/job_category_12.jpg', Colors.brown),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -130,7 +129,7 @@ class TaskerHomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryBox(String category, String label, Color color) {
+  Widget _buildCategoryBox(String category, String label, String imagePath, Color color) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -142,21 +141,9 @@ class TaskerHomePage extends StatelessWidget {
             color: color,
             borderRadius: BorderRadius.circular(15.0),
           ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  category,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
           ),
         ),
         Container(
@@ -176,6 +163,6 @@ class TaskerHomePage extends StatelessWidget {
 
 void main() {
   runApp(MaterialApp(
-    home: TaskerHomePage(),
+    home: CustomerHomePage(),
   ));
 }
