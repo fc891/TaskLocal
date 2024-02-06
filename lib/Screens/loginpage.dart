@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
 
                 const SizedBox(height: 10),
 
-                // password 
+                // password
                 UserPassInput(
                   controller: passController,
                   hintText: 'Password',
@@ -89,11 +89,18 @@ class LoginPage extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     ),
                     const SizedBox(width: 4),
-                    const Text(
-                      'Sign up Here',
-                      style: TextStyle(
-                        color: Colors.yellow,
-                        fontWeight: FontWeight.bold,
+
+                    //Sign up button
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/customerregistration'); //Navigate to register selection page when made (select tasker or customer)
+                      },
+                      child: Text(
+                        'Sign up Here',
+                        style: TextStyle(
+                          color: Colors.yellow,
+                          fontWeight: FontWeight.bold,
+                        )
                       ),
                     ),
                   ],
