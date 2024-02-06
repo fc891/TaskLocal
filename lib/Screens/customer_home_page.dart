@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-class TaskerHomePage extends StatelessWidget {
+class CustomerHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,6 +176,6 @@ class TaskerHomePage extends StatelessWidget {
 
 void main() {
   runApp(MaterialApp(
-    home: TaskerHomePage(),
+    home: CustomerHomePage(),
   ));
 }
