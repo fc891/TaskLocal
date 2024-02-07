@@ -38,7 +38,6 @@ class _TaskerLogin extends State<TaskerLogin> {
       // pop the loading circle
       Navigator.pop(context);
       // wrong email
-      print(e.code);
       if (e.code == 'invalid-email') {
         // show error to user
         showErrorMessage('Incorrect Email');
@@ -85,15 +84,32 @@ class _TaskerLogin extends State<TaskerLogin> {
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextField(
                       controller: passwordController,
-                      decoration: const InputDecoration(labelText: "ddd"),
+                      decoration: const InputDecoration(labelText: "Password"),
                       obscureText: true,
                     )),
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     signUserIn();
                   }, 
                   child: const Text("Login"),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Don\'t have an account? ', style: TextStyle(color: Colors.white)),
+                    const SizedBox(height: 30),
+                    GestureDetector(
+                      onTap: widget.onTap,
+                      child: const Text(
+                        'Sign Up Here', 
+                        style: TextStyle(
+                          color: Colors.yellow, 
+                          fontWeight: FontWeight.bold
+                        )
+                      )
+                    ),
+                  ],
                 ),
               ],
             ),

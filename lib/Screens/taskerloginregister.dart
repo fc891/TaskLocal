@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'taskerlogin.dart';
-import 'taskerregistration.dart';
+import 'tasker_login.dart';
+import 'tasker_registration.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
   const LoginOrRegisterPage({super.key});
