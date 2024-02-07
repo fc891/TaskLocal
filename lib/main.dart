@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           //'/': (context) => LoadScreen(), //loading screen (WIP)
           '/home': (context) => LoginPage(),
           '/customerregistration': (context) => CustomerRegistration(),
-          '/taskerregistration': (context) => TaskerRegistration(),
+          '/taskerregistration': (context) => TaskerRegistration(onTap: () {  },),
           '/customerhomepage': (context) => CustomerHomePage(),
           '/taskerhomepage': (context) => TaskerHomePage(),
         });
