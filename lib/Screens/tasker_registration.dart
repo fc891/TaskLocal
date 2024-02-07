@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tasklocal/screens/tasker_home_page.dart';
+import 'package:tasklocal/Screens/tasker_home_page.dart';
 
 // import 'package:tasklocal/Database/mongoconnection.dart';
 // import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
@@ -13,7 +13,8 @@ import 'package:tasklocal/screens/tasker_home_page.dart';
 //     ));
 
 class TaskerRegistration extends StatefulWidget {
-  const TaskerRegistration({super.key});
+  final Function()? onTap;  
+  const TaskerRegistration({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<TaskerRegistration> createState() => _TaskerRegistrationState();
@@ -42,7 +43,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
     );
 
     try {
-      // Creates the user
+      // Creates the tasker user and directs them to TaskerHomePage
       if (passwordController.text == confirmPasswordController.text) {
         UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
@@ -58,11 +59,11 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
           }
         );
 
-        // Redirects to TaskerHomePage if registration is successful
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => TaskerHomePage()),
-        );
+        // // Redirects to TaskerHomePage if registration is successful
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => TaskerHomePage()),
+        // );
 
       } else {
         Navigator.pop(context);
@@ -204,6 +205,24 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 ),
               ),
               SizedBox(height: 20),
+              
+              // Richard's code where it allows users to go back to login page
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Already have an account? '),
+                    GestureDetector(
+                      onTap: widget.onTap,
+                      child: const Text(
+                        'Login Now', 
+                        style: TextStyle(
+                          color: Colors.blue, 
+                          fontWeight: FontWeight.bold
+                        )
+                      )
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

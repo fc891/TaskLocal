@@ -4,6 +4,7 @@ import 'package:tasklocal/Screens/customer_home_page.dart';
 import 'Screens/loginpage.dart';
 
 import 'package:tasklocal/Screens/customerregistration.dart';
+
 import 'package:tasklocal/Screens/customerprofilepage.dart';
 import 'package:tasklocal/Screens/customerprofilepage.dart';
 
