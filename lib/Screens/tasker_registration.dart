@@ -43,7 +43,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
     );
 
     try {
-      // Creates the user
+      // Creates the tasker user and directs them to TaskerHomePage
       if (passwordController.text == confirmPasswordController.text) {
         UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
@@ -205,6 +205,8 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 ),
               ),
               SizedBox(height: 20),
+              
+              // Richard's code where it allows users to go back to login page
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:tasklocal/Database/mongoconnection.dart';
+import 'package:tasklocal/database/mongoconnection.dart';
 import 'package:tasklocal/mongodbmodel.dart';
 
 class MongoDbDisplay extends StatefulWidget {

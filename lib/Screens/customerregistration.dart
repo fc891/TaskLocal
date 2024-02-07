@@ -1,30 +1,87 @@
 // ignore_for_file: prefer_const_constructor
 
 import 'package:flutter/material.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
-import 'package:tasklocal/Database/mongoconnection.dart';
-import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() => runApp(MaterialApp(
-      home: CustomerRegistration(),
-    ));
+// void main() => runApp(MaterialApp(
+//       home: CustomerRegistration(),
+//     ));
 
 class CustomerRegistration extends StatefulWidget {
+  const CustomerRegistration({super.key});
   @override
-  _CustomerRegistrationState createState() => _CustomerRegistrationState();
+  State<CustomerRegistration> createState() => _CustomerRegistrationState();
 }
 
-//Screen code
+//Customer registration screen
 class _CustomerRegistrationState extends State<CustomerRegistration> {
   var fnameController = TextEditingController();
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
-  var addressController = TextEditingController();
+  var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  var confirmPasswordController = TextEditingController();
 
+  // Richard's code for the signUserUp function
+  void signUserUp() async {
+    // Display loading circle
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+    try {
+      // Creates the user
+      if (passwordController.text == confirmPasswordController.text) {
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        Navigator.pop(context);
+        // Create a document in the Cloud Firestore
+        await FirebaseFirestore.instance
+            .collection("Customers")
+            .doc(userCredential.user!.email)
+            .set({
+          'first name': fnameController.text,
+          'last name': lnameController.text,
+          'username': usernameController.text,
+        });
+        _clearAll(); //Clear text fields
+      } else {
+        Navigator.pop(context);
+        showErrorMessage("Passwords don't match!");
+      }
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      showErrorMessage(e.code);
+    }
+  }
+
+  // Display error message to user
+  void showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(child: Text(message)),
+        );
+      },
+    );
+  }
+
+  //Bill's Customer registration screen/UI code
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+        //Background color of UI
         backgroundColor: Colors.green[500],
+        //UI Appbar (bar at top of screen)
         appBar: AppBar(
           title: Text('Customer Account Registration'),
           centerTitle: true,
@@ -91,7 +148,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               child: SizedBox(
                 width: 400,
                 child: TextField(
-                  controller: addressController,
+                  controller: emailController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Email Address",
@@ -114,37 +171,44 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 ),
               ),
             ),
+            //CONFIRM Password entry field
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 37, vertical: 10),
+              child: SizedBox(
+                width: 400,
+                child: TextField(
+                  obscureText: true,
+                  controller: confirmPasswordController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Confirm Password",
+                  ),
+                ),
+              ),
+            ),
             //Register account button
             const SizedBox(height: 50),
             ElevatedButton(
-                onPressed: () {
-                  _insertData(
-                      fnameController.text,
-                      lnameController.text,
-                      usernameController.text,
-                      addressController.text,
-                      passwordController.text);
-                },
-                child: const Text("Register Account"))
+              onPressed: () {
+                signUserUp();
+              },
+              child: const Text("Register Account"),
+            ),
+            // const SizedBox(height: 50),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       _insertData(
+            //           fnameController.text,
+            //           lnameController.text,
+            //           usernameController.text,
+            //           emailController.text,
+            //           passwordController.text);
+            //     },
+            //     child: const Text("Register Account"))
           ],
-        )));
-  }
-
-  //Inserting data to database using data entered in text fields above
-  Future<void> _insertData(String fname, String lname, String username,
-      String address, String password) async {
-    var _id = mongo_dart.ObjectId();
-    final data = Mongodbmodelcustomer(
-        id: _id,
-        firstName: fname,
-        lastName: lname,
-        username: username,
-        address: address,
-        password: password);
-    var result = await MongoConnection.insertCustomerData(data);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Inserted ID " + _id.$oid)));
-    _clearAll();
+        )
+      )
+    );
   }
 
   //Function to clear all text fields
@@ -152,7 +216,25 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     fnameController.text = '';
     lnameController.text = '';
     usernameController.text = '';
-    addressController.text = '';
+    emailController.text = '';
     passwordController.text = '';
+    confirmPasswordController.text = '';
   }
 }
+
+//   //Inserting data to database using data entered in text fields above
+//   Future<void> _insertData(String fname, String lname, String username,
+//       String address, String password) async {
+//     var _id = mongo_dart.ObjectId();
+//     final data = Mongodbmodelcustomer(
+//         id: _id,
+//         firstName: fname,
+//         lastName: lname,
+//         username: username,
+//         address: address,
+//         password: password);
+//     var result = await MongoConnection.insertCustomerData(data);
+//     ScaffoldMessenger.of(context)
+//         .showSnackBar(SnackBar(content: Text("Inserted ID " + _id.$oid)));
+//     _clearAll();
+//   }
