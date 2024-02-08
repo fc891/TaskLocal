@@ -20,7 +20,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   //Get user's name using some sort of id (username?)
   void getUserName(String id) async {
     var userId = id;
-    username = "TaskLocalCustomer";
+    username = "TaskLocal1";
     final snapshot =
         await FirebaseFirestore.instance.doc('customers/$userId').get();
     if (snapshot.exists) {
@@ -113,7 +113,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               ),
               Expanded(
                   child: SizedBox(
-                      height: 100.0,
+                      height: 50.0,
                       child: ListView.builder(
                           itemCount: 20,
                           itemBuilder: (context, index) {
@@ -123,10 +123,6 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                               title: Text("test"),
                             ));
                           }))),
-              Divider(
-                height: 20.0,
-                color: Colors.green[500],
-              ),
             ])));
   }
 }
