@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tasklocal/screens/home_pages/customer_home.dart';
+import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 
-import 'screens/authorization/loginpage.dart';
+import 'Screens/authorization/loginpage.dart';
 
-import 'package:tasklocal/screens/authorization/customerregistration.dart';
+import 'package:tasklocal/Screens/authorization/customerregistration.dart';
 
-import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
-import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
+import 'package:tasklocal/customerprofilepage.dart';
+import 'package:tasklocal/customerprofilepage.dart';
 
-import 'package:tasklocal/screens/home_pages/tasker_home.dart';
-import 'package:tasklocal/screens/authorization/tasker_registration.dart';
+import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
+import 'package:tasklocal/Screens/authorization/tasker_registration.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';

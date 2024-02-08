@@ -1,8 +1,8 @@
 // Customer Home Page UI/Screen
 
 import 'package:flutter/material.dart';
-import 'package:tasklocal/screens/customer_requests/address_input.dart';
-import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
+import 'package:tasklocal/Screens/customer_requests/address_input.dart';
+import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
 
 class CustomerHomePage extends StatelessWidget {
   @override

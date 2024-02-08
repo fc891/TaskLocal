@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tasklocal/screens/home_pages/tasker_home.dart';
+import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 import 'taskerloginregister.dart';
 
 class AuthPage extends StatelessWidget {
