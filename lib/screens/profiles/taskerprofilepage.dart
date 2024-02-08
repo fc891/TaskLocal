@@ -5,22 +5,23 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class CustomerProfilePage extends StatefulWidget {
-  const CustomerProfilePage({super.key});
+class TaskerProfilePage extends StatefulWidget {
+  const TaskerProfilePage({super.key});
   @override
-  State<CustomerProfilePage> createState() => _CustomerProfilePageState();
+  State<TaskerProfilePage> createState() => _TaskerProfilePageState();
 }
 
 //Customer Profile Page Screen
-class _CustomerProfilePageState extends State<CustomerProfilePage> {
-  String username = "TaskLocalCustomer";
+class _TaskerProfilePageState extends State<TaskerProfilePage> {
+  String username = "Testlocal123";
   String date = 'dd-MM-yyyy';
-  int requestscompleted = 0;
+  int taskscompleted = 0;
+  double rating = 5.0;
   //WIP
   //Get user's name using some sort of id (username?)
   void getUserName(String id) async {
     var userId = id;
-    username = "TaskLocal1";
+    username = "TaskLocalTasker";
     final snapshot =
         await FirebaseFirestore.instance.doc('customers/$userId').get();
     if (snapshot.exists) {
@@ -34,14 +35,14 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   //Get user's join date using id
   void getJoinDate(String id) async {
     DateFormat joindateformat = DateFormat('dd-MM-yyyy');
-    DateTime joindate = DateTime(2024, 2, 6);
+    DateTime joindate = DateTime(2024, 2, 8);
     date = joindateformat.format(joindate);
   }
 
   //WIP
   //Get user's number of requested tasks completed using id
-  void getRequestsCompleted(String id) async {
-    requestscompleted = 1;
+  void getTaskssCompleted(String id) async {
+    taskscompleted = 10;
   }
 
   //Run all getters above to initialize variables
@@ -50,10 +51,10 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 
     getUserName(testid);
     getJoinDate(testid);
-    getRequestsCompleted(testid);
+    getTaskssCompleted(testid);
   }
 
-  //Bill's Customer profile page screen/UI code
+  //Bill's Tasker profile page screen/UI code
   @override
   Widget build(BuildContext context) {
     runGetters(); //Run all getter functions
@@ -90,7 +91,13 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                       letterSpacing: 1.0,
                       fontSize: 16.0,
                     )),
-                Text('Requested Tasks Completed: $requestscompleted',
+                Text('Tasks Completed: $taskscompleted',
+                    style: TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 1.0,
+                      fontSize: 16.0,
+                    )),
+                Text('User Rating: $rating',
                     style: TextStyle(
                       color: Colors.white,
                       letterSpacing: 1.0,
@@ -101,11 +108,71 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                 height: 20.0,
                 color: Colors.grey[1500],
               ),
-              Text('Request History',
+              Text('Task Categories',
                   style: TextStyle(
                       color: Colors.white,
                       letterSpacing: 1.3,
-                      fontSize: 26.0,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold)),
+              Divider(
+                height: 20.0,
+                color: Colors.grey[1500],
+              ),
+              //Task Categories Display
+              SizedBox(
+                  height: 80.0,
+                  width: 1000.0,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return Card(
+                            child: SizedBox(
+                                width: 80.0,
+                                child: ListTile(
+                                  onTap: () {},
+                                  title: Text("test$index"),
+                                )));
+                      })),
+              Divider(
+                height: 20.0,
+                color: Colors.grey[1500],
+              ),
+              Text('Uploaded Photos and Videos',
+                  style: TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 1.3,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold)),
+              Divider(
+                height: 20.0,
+                color: Colors.grey[1500],
+              ),
+              //Uploaded Photos and Videos Display
+              SizedBox(
+                  height: 80.0,
+                  width: 1000.0,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return Card(
+                            child: SizedBox(
+                                width: 80.0,
+                                child: ListTile(
+                                  onTap: () {},
+                                  title: Text("test$index"),
+                                )));
+                      })),
+              Divider(
+                height: 20.0,
+                color: Colors.grey[1500],
+              ),
+              Text('Task History',
+                  style: TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 1.3,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold)),
               Divider(
                 height: 20.0,
@@ -113,14 +180,14 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               ),
               Expanded(
                   child: SizedBox(
-                      height: 50.0,
+                      height: 100.0,
                       child: ListView.builder(
                           itemCount: 20,
                           itemBuilder: (context, index) {
                             return Card(
                                 child: ListTile(
                               onTap: () {},
-                              title: Text("test"),
+                              title: Text("test$index"),
                             ));
                           }))),
               Divider(
