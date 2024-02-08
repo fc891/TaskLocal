@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tasklocal/screens/home/customer_home_page.dart';
+import 'package:tasklocal/screens/home_pages/customer_home.dart';
 
 import 'screens/authorization/loginpage.dart';
 
@@ -8,7 +8,7 @@ import 'package:tasklocal/screens/authorization/customerregistration.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
 
-import 'package:tasklocal/screens/home/tasker_home_page.dart';
+import 'package:tasklocal/screens/home_pages/tasker_home.dart';
 import 'package:tasklocal/screens/authorization/tasker_registration.dart';
 
 import 'package:firebase_core/firebase_core.dart';
