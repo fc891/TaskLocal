@@ -5,8 +5,8 @@ import 'Screens/authorization/loginpage.dart';
 
 import 'package:tasklocal/Screens/authorization/customerregistration.dart';
 
-import 'package:tasklocal/customerprofilepage.dart';
-import 'package:tasklocal/customerprofilepage.dart';
+import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
+import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
 
 import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 import 'package:tasklocal/Screens/authorization/tasker_registration.dart';
