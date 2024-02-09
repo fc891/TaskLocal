@@ -1,13 +1,34 @@
 // Tasker Home Page UI/Screen
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 
-class TaskerHomePage extends StatelessWidget {
+class TaskerHomePage extends StatefulWidget {
+  const TaskerHomePage({super.key});
+
+  @override
+  State<TaskerHomePage> createState() => _TaskerHomePageState();
+}
+
+class _TaskerHomePageState extends State<TaskerHomePage> {
+  int _selectedIndex = 0; // Define a variable to keep track of the selected index
+
+  void logUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: logUserOut, 
+            icon: Icon(Icons.logout)
+          )
+        ],
         title: Text('Tasker Homepage'),
         centerTitle: true,
         backgroundColor: Colors.green[800],
@@ -126,6 +147,28 @@ class TaskerHomePage extends StatelessWidget {
             label: 'Profile',
           ),
         ],
+        //
+        onTap: (int index) {
+          setState(() {
+          _selectedIndex = index; // Update selected index
+          });
+          switch (index) {
+            case 0:
+              // Redirect to Calendar
+              break;
+            case 1:
+              // Redirect to Messages
+              break;
+            case 2:
+              // Redirect to Profile
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TaskerProfilePage()),
+              );
+              break;
+          }
+        },
+        //
       ),
     );
   }
