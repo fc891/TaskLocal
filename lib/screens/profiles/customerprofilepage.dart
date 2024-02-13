@@ -7,13 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/profiles/customertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
+//Bill's Customer Profile Page Screen
 class CustomerProfilePage extends StatefulWidget {
   const CustomerProfilePage({super.key});
   @override
   State<CustomerProfilePage> createState() => _CustomerProfilePageState();
 }
 
-//Customer Profile Page Screen
+//Bill's Customer Profile Page Screen
 class _CustomerProfilePageState extends State<CustomerProfilePage> {
   String username = "TaskLocalCustomer";
   String date = 'dd-MM-yyyy';

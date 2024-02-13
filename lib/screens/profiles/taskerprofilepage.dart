@@ -5,13 +5,14 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+//Bill's Tasker Profile Page Screen
 class TaskerProfilePage extends StatefulWidget {
   const TaskerProfilePage({super.key});
   @override
   State<TaskerProfilePage> createState() => _TaskerProfilePageState();
 }
 
-//Customer Profile Page Screen
+//Bill's Tasker Profile Page Screen
 class _TaskerProfilePageState extends State<TaskerProfilePage> {
   String username = "Testlocal123";
   String date = 'dd-MM-yyyy';
