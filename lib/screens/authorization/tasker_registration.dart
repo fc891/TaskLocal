@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tasklocal/Screens/tasker_home_page.dart';
+import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 
 // import 'package:tasklocal/Database/mongoconnection.dart';
 // import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
@@ -91,9 +91,9 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text('Tasker Account Registration'),
+        title: Text('Tasker Account Registration', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
@@ -160,7 +160,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.grey,
+                        color: Colors.grey[300],
                       ),
                       onPressed: () {
                         setState(() {
@@ -183,7 +183,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.grey,
+                        color: Colors.grey[300],
                       ),
                       onPressed: () {
                         setState(() {
@@ -210,13 +210,13 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already have an account? '),
+                    const Text('Already have an account? ', style: TextStyle(color: Colors.white)),
                     GestureDetector(
                       onTap: widget.onTap,
                       child: const Text(
                         'Login Now', 
                         style: TextStyle(
-                          color: Colors.blue, 
+                          color: Colors.yellow, 
                           fontWeight: FontWeight.bold
                         )
                       )
