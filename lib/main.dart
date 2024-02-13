@@ -10,6 +10,8 @@ import 'Screens/authorization/loginpage.dart';
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:tasklocal/Screens/authorization/customerregistration.dart';
 import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
+import 'package:tasklocal/Screens/profiles/customertaskinfopage.dart';
+import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
 //TASKER IMPORTS
 import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
@@ -30,6 +32,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TaskInfo defaultinfo = TaskInfo("Default", 0);
     return MaterialApp(
         title: 'TaskLocal',
         debugShowCheckedModeBanner: false,
@@ -39,7 +42,7 @@ class MyApp extends StatelessWidget {
         ),
         // Initial page that is shown when program is loaded up
         // >FOR TESTING: change initialRoute to an option from routing options below
-        initialRoute: '/customerhomepage',
+        initialRoute: '/customerprofilepage',
         // Routing between pages
         routes: {
           //'/': (context) => LoadScreen(), //loading screen (WIP)
@@ -52,6 +55,8 @@ class MyApp extends StatelessWidget {
           '/taskerhomepage': (context) => TaskerHomePage(),
           '/customerprofilepage': (context) => CustomerProfilePage(),
           '/taskerprofilepage': (context) => TaskerProfilePage(),
+          '/customertaskinfopage': (context) => CustomerTaskInfoPage(taskinfo:defaultinfo),
+
         });
   }
 }
