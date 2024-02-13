@@ -1,7 +1,8 @@
-// Tasker Home Page UI/Screen
+// Tasker Home Page
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/screens/home_pages/taskcategory.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 
 class TaskerHomePage extends StatefulWidget {
@@ -12,7 +13,14 @@ class TaskerHomePage extends StatefulWidget {
 }
 
 class _TaskerHomePageState extends State<TaskerHomePage> {
-  int _selectedIndex = 0; // Define a variable to keep track of the selected index
+  // Created a variable to track the selected button in the bottom navigation
+  int _selectedIndex = 0;
+
+  List jobCategory = [
+    TaskCategory(name: "Furniture Assembly", imagePath: ""),
+    TaskCategory(name: "Mounting Services", imagePath: ""),
+
+  ];
 
   void logUserOut() {
     FirebaseAuth.instance.signOut();
@@ -23,16 +31,16 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
+        title: Text('Welcome, Tasker!', style: TextStyle(color: Colors.white)),
+        // centerTitle: true,
+        backgroundColor: Colors.green[800],
+        elevation: 0.0,
         actions: [
           IconButton(
             onPressed: logUserOut, 
             icon: Icon(Icons.logout, color: Colors.grey[300],)
           )
         ],
-        title: Text('', style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-        backgroundColor: Colors.green[800],
-        elevation: 0.0,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -41,11 +49,26 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Welcome, Tasker',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                // Text(
+                //   'Welcome, Tasker!',
+                //   style: TextStyle(
+                //     color: Colors.white,
+                //     fontSize: 20,
+                //   ),
+                // ),
+                SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(color: Colors.green[800], borderRadius: BorderRadius.circular(20)),
+                  padding: EdgeInsets.all(25),
+                  child: Row(
+                    children: const [
+                      Column(
+                        children: [
+                          Text("You have a scheduled appointment!"),
+                          Text("You have a scheduled appointment!")
+                        ],
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -54,31 +77,48 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 // Search bar to search for tasks
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Search for available tasks...',
                     filled: true,
                     fillColor: Colors.grey[250],
-                    border: OutlineInputBorder(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black), 
+                      borderRadius: BorderRadius.circular(10)
+                    )
                   ),
                 ),
                 const SizedBox(height: 20),
+                Text(
+                  'Task Catagories',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Expanded(child: ListView.builder(itemBuilder: (context, index) => TaskCategoryBox(),)),
+
                 // Job Categories
                 // Updated to display 3 categories per row
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     _buildCategoryBox('Job Category 1', 'Furniture Assembly', 'images/furniture_assembly.jpg', Colors.blue),
-                //     _buildCategoryBox('Job Category 2', 'Mounting Services', 'images/mounting_services.jpg', Colors.orange),
-                //     _buildCategoryBox('Job Category 3', 'Yard Work\n', 'images/yard_work.jpg', Colors.purple),
-                //   ],
-                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildCategoryBox('Job Category 1', 'Furniture Assembly', 'images/furniture_assembly.jpg', Colors.blue),
+                    _buildCategoryBox('Job Category 2', 'Mounting Services', 'images/mounting_services.jpg', Colors.orange),
+                    _buildCategoryBox('Job Category 3', 'Yard Work\n', 'images/yard_work.jpg', Colors.purple),
+                  ],
+                ),
                 // const SizedBox(height: 10),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -200,10 +240,10 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
             color: color,
             borderRadius: BorderRadius.circular(15.0),
           ),
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-          ),
+          // child: Image.asset(
+          //   imagePath,
+          //   fit: BoxFit.cover,
+          // ),
         ),
         Container(
           width: 100,
