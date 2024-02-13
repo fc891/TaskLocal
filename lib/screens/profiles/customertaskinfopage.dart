@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
+//Bill's Task Info Screen
 class CustomerTaskInfoPage extends StatelessWidget {
   const CustomerTaskInfoPage({super.key, required this.taskinfo});
   final TaskInfo taskinfo;
