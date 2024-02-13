@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tasklocal/Screens/loginpagetasker.dart';
+//import 'package:tasklocal/Screens/loginpagetasker.dart';
 import 'package:tasklocal/Screens/loginpagecustomer.dart';
-import 'package:tasklocal/components/login_customer_button.dart';
-import 'package:tasklocal/components/login_tasker_button.dart';
+import 'package:tasklocal/components/customer_selection_button.dart';
+import 'package:tasklocal/Screens/register_selection.dart';
+//import 'package:tasklocal/components/tasker_selection_button.dart';
 
-class FrontPage extends StatelessWidget {
-  FrontPage({Key? key});
-
-  final userController = TextEditingController();
-  final passController = TextEditingController();
-
-  // login method
-  void logUserIn() {}
+class OnboardingPage extends StatelessWidget {
+  OnboardingPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,37 +35,55 @@ class FrontPage extends StatelessWidget {
 
                 const SizedBox(height: 25),
 
-                // login tasker
-                TaskerLoginButton(
-                  onTap: logUserIn,
+                // Login as Tasker button
+                SelectionButtonCustomer( // change to tasker
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPageCustomer()), // change to tasker
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 10),
 
-                // login customer
-                CustomerLoginButton(
-                  onTap: logUserIn,
+                // Login as Customer button
+                SelectionButtonCustomer(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPageCustomer()),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 160),
 
                 // register
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Don\'t Have an Account?',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'Sign up Here',
-                      style: TextStyle(
-                        color: Colors.yellow,
-                        fontWeight: FontWeight.bold,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterSelection()),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Don\'t Have an Account?',
+                        style: TextStyle(color: Colors.white),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Sign up Here',
+                        style: TextStyle(
+                          color: Colors.yellow,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

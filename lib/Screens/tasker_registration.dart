@@ -14,7 +14,7 @@ import 'package:tasklocal/Screens/tasker_home_page.dart';
 
 class TaskerRegistration extends StatefulWidget {
   final Function()? onTap;  
-  const TaskerRegistration({Key? key, required this.onTap}) : super(key: key);
+  const TaskerRegistration({Key? key, this.onTap}) : super(key: key);
 
   @override
   State<TaskerRegistration> createState() => _TaskerRegistrationState();
