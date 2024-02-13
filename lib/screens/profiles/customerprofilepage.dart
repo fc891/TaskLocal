@@ -4,6 +4,8 @@ import 'dart:ffi';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/screens/profiles/customertaskinfopage.dart';
+import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
 class CustomerProfilePage extends StatefulWidget {
   const CustomerProfilePage({super.key});
@@ -54,7 +56,6 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   }
 
   //Bill's Customer profile page screen/UI code
-  @override
   Widget build(BuildContext context) {
     runGetters(); //Run all getter functions
     return Scaffold(
@@ -119,7 +120,14 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                           itemBuilder: (context, index) {
                             return Card(
                                 child: ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                TaskInfo info = TaskInfo("Test", index);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CustomerTaskInfoPage(taskinfo: info)));
+                              },
                               title: Text("test"),
                             ));
                           }))),
