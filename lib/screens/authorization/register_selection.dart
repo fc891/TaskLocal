@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tasklocal/Screens/customerregistration.dart';
-import 'package:tasklocal/Screens/loginpagecustomer.dart';
-import 'package:tasklocal/Screens/tasker_registration.dart';
+import 'package:tasklocal/Screens/authorization/customerregistration.dart';
+import 'package:tasklocal/Screens/login_pages/loginpagecustomer.dart';
+import 'package:tasklocal/Screens/authorization/tasker_registration.dart';
 import 'package:tasklocal/components/customer_register_button.dart';
-import 'package:tasklocal/components/customer_selection_button.dart';
 import 'package:tasklocal/components/tasker_register_button.dart';
 
 class RegisterSelection extends StatelessWidget {

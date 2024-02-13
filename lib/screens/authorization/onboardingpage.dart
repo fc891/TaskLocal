@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 //import 'package:tasklocal/Screens/loginpagetasker.dart';
-import 'package:tasklocal/Screens/loginpagecustomer.dart';
+import 'package:tasklocal/Screens/login_pages/loginpagecustomer.dart';
 import 'package:tasklocal/components/customer_selection_button.dart';
-import 'package:tasklocal/Screens/register_selection.dart';
+import 'package:tasklocal/Screens/authorization/register_selection.dart';
 //import 'package:tasklocal/components/tasker_selection_button.dart';
 
 class OnboardingPage extends StatelessWidget {

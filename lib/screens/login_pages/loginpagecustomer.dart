@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tasklocal/Screens/passwordresetpage.dart';
+import 'package:tasklocal/Screens/authorization/passwordresetpage.dart';
 import 'package:tasklocal/components/login_button_customer.dart';
 import 'package:tasklocal/components/user_pass_input.dart';
-import 'package:tasklocal/Screens/customer_home_page.dart';
+import 'package:tasklocal/screens/home_pages/customer_home.dart';
 
 class LoginPageCustomer extends StatefulWidget {
   LoginPageCustomer({Key? key}) : super(key: key);
