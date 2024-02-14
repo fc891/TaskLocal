@@ -1,8 +1,10 @@
 // Customer Address Input UI/Screen
+// Contributors: Eric C.
 
 import 'package:flutter/material.dart';
 import 'package:tasklocal/Screens/customer_requests/tasker_selection.dart';
 
+// Eric's code for AddressInputPage class
 class AddressInputPage extends StatefulWidget {
   const AddressInputPage({Key? key}) : super(key: key);
 
