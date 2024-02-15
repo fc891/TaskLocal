@@ -1,4 +1,5 @@
 // Tasker Registration UI/Screen
+// Contributors: Eric C., Richard N.
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,7 @@ import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 //       home: TaskerRegistration(),
 //     ));
 
+// Eric's code for TaskerRegistration class
 class TaskerRegistration extends StatefulWidget {
   final Function()? onTap;  
   const TaskerRegistration({super.key, this.onTap});

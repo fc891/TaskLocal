@@ -1,4 +1,5 @@
 // Tasker Home Page UI/Screen
+// Contributors: Eric C., Richard N.
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class TaskerHomePage extends StatefulWidget {
 }
 
 class _TaskerHomePageState extends State<TaskerHomePage> {
-  int _selectedIndex = 0; // Define a variable to keep track of the selected index
+  int _selectedIndex = 0;
 
   void logUserOut() {
     FirebaseAuth.instance.signOut();
