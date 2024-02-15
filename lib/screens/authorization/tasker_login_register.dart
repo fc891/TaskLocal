@@ -4,7 +4,8 @@ import 'tasker_login.dart';
 import 'tasker_registration.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
-  const LoginOrRegisterPage({super.key});
+  final bool showLoginPage;
+  const LoginOrRegisterPage({super.key, required this.showLoginPage});
 
   @override
   State<LoginOrRegisterPage> createState() => _LoginOrRegisterPageState();
@@ -12,18 +13,25 @@ class LoginOrRegisterPage extends StatefulWidget {
 
 class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   // initially show login page
-  bool showLoginPage = true;
+  late bool _showLoginPage;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize _showLoginPage with the value from the widget
+    _showLoginPage = widget.showLoginPage;
+  }
 
   // toggle between login and register page
   void togglePages() {
     setState(() {
-      showLoginPage = !showLoginPage;
+      _showLoginPage = !_showLoginPage;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (showLoginPage) {
+    if (_showLoginPage) {
       return TaskerLogin(onTap: togglePages,);
     } else {
       return TaskerRegistration(onTap: togglePages,);
