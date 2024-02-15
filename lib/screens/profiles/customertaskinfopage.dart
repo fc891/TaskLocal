@@ -10,7 +10,7 @@ class CustomerTaskInfoPage extends StatelessWidget {
   const CustomerTaskInfoPage({super.key, required this.taskinfo});
   final TaskInfo taskinfo;
 
-//Customer task info screen
+//Bill's Customer task info screen
   @override
   Widget build(BuildContext context) {
     String taskcategory = taskinfo.taskCategory;

@@ -67,6 +67,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
             centerTitle: true,
             backgroundColor: Colors.green[800],
             elevation: 0.0),
+        //Profile page picture
         body: Padding(
             padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
             child: Column(children: <Widget>[
@@ -85,6 +86,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold)),
               ),
+              //Display tasker info on profile page (join date, # tasks completed, user rating)
               Column(children: <Widget>[
                 Text('Join Date: $date',
                     style: TextStyle(
@@ -105,10 +107,12 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       fontSize: 16.0,
                     )),
               ]),
+              //Divider (line)
               Divider(
                 height: 20.0,
                 color: Colors.grey[1500],
               ),
+              //List task categories of tasker
               Text('Task Categories',
                   style: TextStyle(
                       color: Colors.white,
@@ -139,6 +143,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 height: 20.0,
                 color: Colors.grey[1500],
               ),
+              //List uploaded photos and videos by tasker
               Text('Uploaded Photos and Videos',
                   style: TextStyle(
                       color: Colors.white,
@@ -169,6 +174,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 height: 20.0,
                 color: Colors.grey[1500],
               ),
+              //List history of tasks that tasker has completed
               Text('Task History',
                   style: TextStyle(
                       color: Colors.white,
@@ -179,6 +185,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 height: 20.0,
                 color: Colors.grey[1500],
               ),
+              //Task history display
               Expanded(
                   child: SizedBox(
                       height: 100.0,
