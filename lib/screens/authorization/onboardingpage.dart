@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tasklocal/Screens/login_pages/loginpagecustomer.dart';
 import 'package:tasklocal/components/customer_selection_button.dart';
 import 'package:tasklocal/Screens/authorization/register_selection.dart';
+import 'package:tasklocal/components/tasker_selection_button.dart';
+import 'package:tasklocal/screens/authorization/tasker_auth.dart';
 //import 'package:tasklocal/components/tasker_selection_button.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -36,11 +38,11 @@ class OnboardingPage extends StatelessWidget {
                 const SizedBox(height: 25),
 
                 // Login as Tasker button
-                SelectionButtonCustomer( // change to tasker
+                SelectionButtonTasker( // change to tasker
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPageCustomer()), // change to tasker
+                      MaterialPageRoute(builder: (context) => TaskerAuthPage(showLoginPage: true)), // change to tasker
                     );
                   },
                 ),
@@ -69,13 +71,13 @@ class OnboardingPage extends StatelessWidget {
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Text(
                         'Don\'t Have an Account?',
                         style: TextStyle(color: Colors.white),
                       ),
-                      const SizedBox(width: 4),
-                      const Text(
+                      SizedBox(width: 4),
+                      Text(
                         'Sign up Here',
                         style: TextStyle(
                           color: Colors.yellow,
