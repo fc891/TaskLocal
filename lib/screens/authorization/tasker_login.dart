@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// Richard's code
 class TaskerLogin extends StatefulWidget {
   final Function()? onTap;
   const TaskerLogin({Key? key, required this.onTap}) : super(key: key);
@@ -67,6 +68,16 @@ class _TaskerLogin extends State<TaskerLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green[500],
+      appBar: AppBar(
+        backgroundColor: Colors.green[800],
+        // Add a back button to the AppBar
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to previous page
+          },
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

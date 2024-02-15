@@ -33,6 +33,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: SingleChildScrollView(

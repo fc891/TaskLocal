@@ -14,7 +14,7 @@ import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 
 class TaskerRegistration extends StatefulWidget {
   final Function()? onTap;  
-  const TaskerRegistration({Key? key, this.onTap}) : super(key: key);
+  const TaskerRegistration({super.key, this.onTap});
 
   @override
   State<TaskerRegistration> createState() => _TaskerRegistrationState();
@@ -58,13 +58,6 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
             'username' : usernameController.text
           }
         );
-
-        // // Redirects to TaskerHomePage if registration is successful
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => TaskerHomePage()),
-        // );
-
       } else {
         Navigator.pop(context);
         showErrorMessage("Passwords don't match!");
@@ -97,6 +90,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
+        // automaticallyImplyLeading: false,
       ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
