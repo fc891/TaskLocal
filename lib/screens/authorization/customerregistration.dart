@@ -20,6 +20,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   // Richard's code for the signUserUp function
   void signUserUp() async {
@@ -160,12 +162,23 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               child: SizedBox(
                 width: 400,
                 child: TextField(
-                  obscureText: true,
+                  obscureText: _isPasswordVisible,
                   controller: passwordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Password",
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey[300],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
                   ),
+                ),
                 ),
               ),
             ),
@@ -175,12 +188,23 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               child: SizedBox(
                 width: 400,
                 child: TextField(
-                  obscureText: true,
+                  obscureText: _isConfirmPasswordVisible,
                   controller: confirmPasswordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Confirm Password",
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey[300],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                        });
+                      },
                   ),
+                ),
                 ),
               ),
             ),
