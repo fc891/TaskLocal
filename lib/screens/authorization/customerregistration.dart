@@ -162,7 +162,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               child: SizedBox(
                 width: 400,
                 child: TextField(
-                  obscureText: true,
+                  obscureText: _isPasswordVisible,
                   controller: passwordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -188,7 +188,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               child: SizedBox(
                 width: 400,
                 child: TextField(
-                  obscureText: true,
+                  obscureText: _isConfirmPasswordVisible,
                   controller: confirmPasswordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
