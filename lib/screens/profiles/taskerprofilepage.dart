@@ -1,9 +1,14 @@
 // ignore_for_file: prefer_const_constructor
 
+//Contributors: Bill
+
 import 'dart:ffi';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 //Bill's Tasker Profile Page Screen
 class TaskerProfilePage extends StatefulWidget {
@@ -15,42 +20,45 @@ class TaskerProfilePage extends StatefulWidget {
 //Bill's Tasker Profile Page Screen
 class _TaskerProfilePageState extends State<TaskerProfilePage> {
   String username = "Testlocal123";
+  String firstname = "First";
+  String lastname = "Last";
   String date = 'dd-MM-yyyy';
   int taskscompleted = 0;
   double rating = 5.0;
+
   //WIP
-  //Get user's name using some sort of id (username?)
-  void getUserName(String id) async {
-    var userId = id;
-    username = "TaskLocalTasker";
-    final snapshot =
-        await FirebaseFirestore.instance.doc('customers/$userId').get();
-    if (snapshot.exists) {
-      print(snapshot);
-    } else {
-      print('No data available.');
-    }
+  //Bill's get user's info using testid (username right now)
+  void getUserInfo(String testid) async {
+    var collection = FirebaseFirestore.instance.collection('Taskers');
+    var docSnapshot = await collection.doc(testid).get();
+    Map<String, dynamic> data = docSnapshot.data()!;
+    setState(() {
+      username = data['username'];
+      firstname = data['first name'];
+      lastname = data['last name'];
+    });
   }
 
   //WIP
-  //Get user's join date using id
+  //Bill's get user's join date using id
   void getJoinDate(String id) async {
-    DateFormat joindateformat = DateFormat('dd-MM-yyyy');
-    DateTime joindate = DateTime(2024, 2, 8);
+    DateFormat joindateformat = DateFormat('MM-dd-yyyy');
+    DateTime joindate = DateTime(2024, 2, 12);
     date = joindateformat.format(joindate);
   }
 
   //WIP
-  //Get user's number of requested tasks completed using id
+  //Bill's get user's number of requested tasks completed using id
   void getTaskssCompleted(String id) async {
     taskscompleted = 10;
   }
 
-  //Run all getters above to initialize variables
+  //Bill's function to run all getters above to initialize variables
   void runGetters() {
-    String testid = "123";
+    var current = FirebaseAuth.instance.currentUser!; //Use to get the info of the currently logged in user
+    String testid = current.email!; //Get email of current user
 
-    getUserName(testid);
+    getUserInfo(testid);
     getJoinDate(testid);
     getTaskssCompleted(testid);
   }
@@ -79,7 +87,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               ),
               Center(
                 //Username text
-                child: Text('$username',
+                child: Text('$firstname $lastname',
                     style: TextStyle(
                         color: Colors.white,
                         letterSpacing: 1.0,

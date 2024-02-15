@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructor
 
+//Contributors: Bill
+
 import 'dart:ffi';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,7 +28,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   int requestscompleted = 0;
 
   //WIP
-  //Bill's get user's info using testid (username right now)
+  //Bill's get user's info using testid (user email right now)
   void getUserInfo(String testid) async {
     var collection = FirebaseFirestore.instance.collection('Customers');
     var docSnapshot = await collection.doc(testid).get();
@@ -54,7 +56,10 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 
   //Bill's function to run all getters above to initialize variables
   void runGetters() async {
-    String testid = "erictest@test.com";
+    var current = FirebaseAuth.instance
+        .currentUser!; //Use to get the info of the currently logged in user
+    String testid = current.email!; //Get email of current user
+
     getUserInfo(testid);
     getJoinDate(testid);
     getRequestsCompleted(testid);
@@ -140,7 +145,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                                             CustomerTaskInfoPage(
                                                 taskinfo: info)));
                               },
-                              title: Text("test"),
+                              title: Text("test$index"),
                             ));
                           }))),
               Divider(

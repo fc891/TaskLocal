@@ -1,12 +1,10 @@
 // ignore_for_file: prefer_const_constructor
 
+//Contributors: Bill, Richard
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-// void main() => runApp(MaterialApp(
-//       home: CustomerRegistration(),
-//     ));
 
 class CustomerRegistration extends StatefulWidget {
   const CustomerRegistration({super.key});
