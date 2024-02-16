@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tasklocal/screens/authorization/passwordresetpage.dart';
 
 // Richard's code
 class TaskerLogin extends StatefulWidget {
@@ -68,7 +69,17 @@ class _TaskerLogin extends State<TaskerLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green[500],
+      // title of the login page
       appBar: AppBar(
+        title: Text( 
+          'Tasker Login',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.green[800],
         // Add a back button to the AppBar
         leading: IconButton(
@@ -92,15 +103,7 @@ class _TaskerLogin extends State<TaskerLogin> {
                     height: 300,
                   ),
                 ),
-                // title of the login page
-                Text(
-                  'Tasker Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -132,17 +135,46 @@ class _TaskerLogin extends State<TaskerLogin> {
                     obscureText: true,
                   )
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+
+                // Alex's code
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: userLogin,
-                      child: Text("Login"),
+                  padding: const EdgeInsets.symmetric(horizontal: 55.0), 
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return PasswordResetPage();
+                          }));
+                        },
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            color: Colors.yellow,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 15),
+                // Richard's code
+                // after press the login button, directs user to the home page
+                Center(
+                  child: ElevatedButton(
+                    onPressed: userLogin,
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green[800]),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Text("Login", style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
+                // for convenience, if user don't have an account they will be proceed to the register page
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
