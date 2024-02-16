@@ -3,6 +3,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/components/task_cat_box.dart';
+import 'package:tasklocal/screens/home_pages/task_category.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 
 class TaskerHomePage extends StatefulWidget {
@@ -13,9 +15,26 @@ class TaskerHomePage extends StatefulWidget {
 }
 
 class _TaskerHomePageState extends State<TaskerHomePage> {
-  // Richard's code
-  // keep track of the navigation bar's index
+  // Created a variable to track the selected button in the bottom navigation
   int _selectedIndex = 0;
+
+  List jobCategoryFirstRow = [
+    TaskCategory(name: "Furniture Assembly"),
+    TaskCategory(name: "Mounting Services"),
+    TaskCategory(name: "Yard Work"),
+    TaskCategory(name: "Cleaning Services"),
+    TaskCategory(name: "Handyman Services"),
+    TaskCategory(name: "Delivery Services"),
+  ];
+  List jobCategorySecondRow = [
+    TaskCategory(name: "Event Planning"),
+    TaskCategory(name: "Moving Services"),
+    TaskCategory(name: "Computer Services"),
+    TaskCategory(name: "Cleaning Services"),
+    TaskCategory(name: "Handyman Services"),
+    TaskCategory(name: "Delivery Services"),
+  ];
+
   // sign user out of the app
   void logUserOut() {
     FirebaseAuth.instance.signOut();
@@ -26,53 +45,168 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
+        title: Text('Welcome, Tasker!', style: TextStyle(color: Colors.white)),
+        // centerTitle: true,
+        backgroundColor: Colors.green[800],
+        elevation: 0.0,
         actions: [
+          IconButton(onPressed: () => {},icon: Icon(Icons.notifications, color: Colors.grey[300])),
           IconButton(
             onPressed: logUserOut, 
             icon: Icon(Icons.logout, color: Colors.grey[300],)
-          )
+          ),
         ],
-        title: Text('', style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-        backgroundColor: Colors.green[800],
-        elevation: 0.0,
-        automaticallyImplyLeading: false,
+//         title: Text('', style: TextStyle(color: Colors.white)),
+//         centerTitle: true,
+//         backgroundColor: Colors.green[800],
+//         elevation: 0.0,
+//         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Welcome, Tasker',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                // Text(
+                //   'Welcome, Tasker!',
+                //   style: TextStyle(
+                //     color: Colors.white,
+                //     fontSize: 20,
+                //   ),
+                // ),
+                SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(color: Colors.green[800], borderRadius: BorderRadius.circular(20)),
+                  padding: EdgeInsets.all(25),
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: const [
+                      Column(
+                        children: [
+                          Text("You have a scheduled appointment!"),
+                          Text("You have a scheduled appointment!")
+                        ],
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  'Sign up for a service!',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal:20),
+                  child: Text(
+                    'Sign up for a service!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 // Search bar to search for tasks
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search for available tasks...',
-                    filled: true,
-                    fillColor: Colors.grey[250],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal:20),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search for available tasks...',
+                      filled: true,
+                      fillColor: Colors.grey[250],
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black), 
+                        borderRadius: BorderRadius.circular(10)
+                      )
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left:20),
+                  child: Text(
+                    'Task Catagories',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  height: 170,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      // shrinkWrap: true,
+                      itemCount: jobCategoryFirstRow.length,
+                      itemBuilder: (context, index) => TaskCategoryBox(
+                        taskcat: jobCategoryFirstRow[index],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  height: 170,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:20.0),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      // shrinkWrap: true,
+                      itemCount: jobCategorySecondRow.length,
+                      itemBuilder: (context, index) => TaskCategoryBox(
+                        taskcat: jobCategorySecondRow[index],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left:20),
+                  child: Text(
+                    'Popular Task Catagories',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  height: 170,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:20.0),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      // shrinkWrap: true,
+                      itemCount: jobCategorySecondRow.length,
+                      itemBuilder: (context, index) => TaskCategoryBox(
+                        taskcat: jobCategorySecondRow[index],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  height: 170,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:20.0),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      // shrinkWrap: true,
+                      itemCount: jobCategorySecondRow.length,
+                      itemBuilder: (context, index) => TaskCategoryBox(
+                        taskcat: jobCategorySecondRow[index],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
                 // Job Categories
                 // Updated to display 3 categories per row
                 // Row(
@@ -141,7 +275,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               ],
             ),
           ),
-        ),
+        // ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -189,6 +323,36 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
           }
         },
       ),
+    );
+  }
+  Widget _buildCategoryBox(String category, String label, String imagePath, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(left: 0.0, right: 8.0, top: 8.0, bottom: 8.0),
+          width: 100,
+          height: 120,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          // child: Image.asset(
+          //   imagePath,
+          //   fit: BoxFit.cover,
+          // ),
+        ),
+        Container(
+          width: 100,
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
