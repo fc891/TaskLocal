@@ -13,8 +13,10 @@ class TaskerHomePage extends StatefulWidget {
 }
 
 class _TaskerHomePageState extends State<TaskerHomePage> {
+  // Richard's code
+  // keep track of the navigation bar's index
   int _selectedIndex = 0;
-
+  // sign user out of the app
   void logUserOut() {
     FirebaseAuth.instance.signOut();
   }
@@ -189,41 +191,4 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
       ),
     );
   }
-
-  Widget _buildCategoryBox(String category, String label, String imagePath, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(left: 0.0, right: 8.0, top: 8.0, bottom: 8.0),
-          width: 100,
-          height: 120,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-          ),
-        ),
-        Container(
-          width: 100,
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
-
-// void main() {
-//   runApp(MaterialApp(
-//     home: TaskerHomePage(),
-//   ));
-// }

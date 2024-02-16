@@ -1,3 +1,5 @@
+// Contributers: Richard N.
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/home_pages/tasker_home.dart';
@@ -10,15 +12,6 @@ class TaskerAuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   // Add a back button to the AppBar
-      //   leading: IconButton(
-      //     icon: Icon(Icons.arrow_back),
-      //     onPressed: () {
-      //       Navigator.pop(context); // Navigate back to previous page
-      //     },
-      //   ),
-      // ),
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {

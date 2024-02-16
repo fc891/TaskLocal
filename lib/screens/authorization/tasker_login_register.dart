@@ -12,23 +12,21 @@ class LoginOrRegisterPage extends StatefulWidget {
 }
 
 class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
-  // initially show login page
+  // show the login or register page depending on what the user click
   late bool _showLoginPage;
-
+  // initialize the local variable with the widget's variable
   @override
   void initState() {
     super.initState();
-    // Initialize _showLoginPage with the value from the widget
     _showLoginPage = widget.showLoginPage;
   }
-
-  // toggle between login and register page
+  // have the local variable change its value to either true/false
   void togglePages() {
     setState(() {
       _showLoginPage = !_showLoginPage;
     });
   }
-
+  // allow user to shift betweeen loggig in and registering
   @override
   Widget build(BuildContext context) {
     if (_showLoginPage) {

@@ -201,7 +201,6 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 ),
               ),
               SizedBox(height: 20),
-              
               // Richard's code where it allows users to go back to login page
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
