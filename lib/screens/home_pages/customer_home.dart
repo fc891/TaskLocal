@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:tasklocal/Screens/customer_requests/address_input.dart';
 import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
 
+// Eric's code for CustomerHomePage class
 class CustomerHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Customer Homepage'),
+        title: Text("Customer's Home Page"),
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
@@ -31,7 +32,7 @@ class CustomerHomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                // Search Box
+                // Eric's code for search box functionality
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Looking for something else?',
@@ -40,10 +41,11 @@ class CustomerHomePage extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
+                    prefixIcon: Icon(Icons.search), // Search icon added here
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Job Categories
+                // Eric's list of job categories
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -125,7 +127,7 @@ class CustomerHomePage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // Trending Projects
+                // Second section of job categories
                 Text(
                   'Trending Projects',
                   style: TextStyle(
@@ -226,16 +228,17 @@ class CustomerHomePage extends StatelessWidget {
             label: 'Profile',
           ),
         ],
+        // Eric's code for routing to different screens
         onTap: (int index) {
           switch (index) {
             case 0:
-              // Redirect to Calendar
+              // Redirects to calendar
               break;
             case 1:
-              // Redirect to Messages
+              // Redirect to messages
               break;
             case 2:
-              // Redirect to Profile
+              // Redirect to user's profile
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => CustomerProfilePage()),

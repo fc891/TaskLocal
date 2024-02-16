@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tasklocal/Screens/authorization/onboardingpage.dart';
 import 'firebase_options.dart';
-
-//GENERAL IMPORTS
-import 'Screens/authorization/loginpage.dart';
 
 //CUSTOMER IMPORTS
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:tasklocal/Screens/authorization/customerregistration.dart';
 import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
+import 'package:tasklocal/Screens/profiles/customertaskinfopage.dart';
+import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
 //TASKER IMPORTS
 import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TaskInfo defaultinfo = TaskInfo("Default", 0);
     return MaterialApp(
         title: 'TaskLocal',
         debugShowCheckedModeBanner: false,
@@ -39,11 +40,11 @@ class MyApp extends StatelessWidget {
         ),
         // Initial page that is shown when program is loaded up
         // >FOR TESTING: change initialRoute to an option from routing options below
-        initialRoute: '/customerhomepage',
+        initialRoute: '/home',
         // Routing between pages
         routes: {
           //'/': (context) => LoadScreen(), //loading screen (WIP)
-          '/home': (context) => LoginPage(),
+          '/home': (context) => OnboardingPage(),
           '/customerregistration': (context) => CustomerRegistration(),
           '/taskerregistration': (context) => TaskerRegistration(
                 onTap: () {},
@@ -52,6 +53,8 @@ class MyApp extends StatelessWidget {
           '/taskerhomepage': (context) => TaskerHomePage(),
           '/customerprofilepage': (context) => CustomerProfilePage(),
           '/taskerprofilepage': (context) => TaskerProfilePage(),
+          '/customertaskinfopage': (context) => CustomerTaskInfoPage(taskinfo:defaultinfo),
+
         });
   }
 }

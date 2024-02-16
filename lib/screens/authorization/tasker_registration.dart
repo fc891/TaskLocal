@@ -1,4 +1,5 @@
 // Tasker Registration UI/Screen
+// Contributors: Eric C., Richard N.
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,9 +13,10 @@ import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 //       home: TaskerRegistration(),
 //     ));
 
+// Eric's code for TaskerRegistration class
 class TaskerRegistration extends StatefulWidget {
   final Function()? onTap;  
-  const TaskerRegistration({Key? key, required this.onTap}) : super(key: key);
+  const TaskerRegistration({super.key, this.onTap});
 
   @override
   State<TaskerRegistration> createState() => _TaskerRegistrationState();
@@ -58,13 +60,6 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
             'username' : usernameController.text
           }
         );
-
-        // // Redirects to TaskerHomePage if registration is successful
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => TaskerHomePage()),
-        // );
-
       } else {
         Navigator.pop(context);
         showErrorMessage("Passwords don't match!");
@@ -97,6 +92,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
+        // automaticallyImplyLeading: false,
       ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -205,7 +201,6 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 ),
               ),
               SizedBox(height: 20),
-              
               // Richard's code where it allows users to go back to login page
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,

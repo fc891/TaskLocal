@@ -1,54 +1,66 @@
 // ignore_for_file: prefer_const_constructor
 
+//Contributors: Bill
+
 import 'dart:ffi';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/screens/profiles/customertaskinfopage.dart';
+import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
+FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+//Bill's Customer Profile Page Screen
 class CustomerProfilePage extends StatefulWidget {
   const CustomerProfilePage({super.key});
   @override
   State<CustomerProfilePage> createState() => _CustomerProfilePageState();
 }
 
-//Customer Profile Page Screen
+//Bill's Customer Profile Page Screen
 class _CustomerProfilePageState extends State<CustomerProfilePage> {
   String username = "TaskLocalCustomer";
+  String firstname = "First";
+  String lastname = "Last";
   String date = 'dd-MM-yyyy';
   int requestscompleted = 0;
+
   //WIP
-  //Get user's name using some sort of id (username?)
-  void getUserName(String id) async {
-    var userId = id;
-    username = "TaskLocal1";
-    final snapshot =
-        await FirebaseFirestore.instance.doc('customers/$userId').get();
-    if (snapshot.exists) {
-      print(snapshot);
-    } else {
-      print('No data available.');
-    }
+  //Bill's get user's info using testid (user email right now)
+  void getUserInfo(String testid) async {
+    var collection = FirebaseFirestore.instance.collection('Customers');
+    var docSnapshot = await collection.doc(testid).get();
+    Map<String, dynamic> data = docSnapshot.data()!;
+    setState(() {
+      username = data['username'];
+      firstname = data['first name'];
+      lastname = data['last name'];
+    });
   }
 
   //WIP
-  //Get user's join date using id
+  //Bill's get user's join date using id
   void getJoinDate(String id) async {
-    DateFormat joindateformat = DateFormat('dd-MM-yyyy');
-    DateTime joindate = DateTime(2024, 2, 6);
+    DateFormat joindateformat = DateFormat('MM-dd-yyyy');
+    DateTime joindate = DateTime(2024, 2, 15);
     date = joindateformat.format(joindate);
   }
 
   //WIP
-  //Get user's number of requested tasks completed using id
+  //Bill's get user's number of requested tasks completed using id
   void getRequestsCompleted(String id) async {
     requestscompleted = 1;
   }
 
-  //Run all getters above to initialize variables
-  void runGetters() {
-    String testid = "123";
+  //Bill's function to run all getters above to initialize variables
+  void runGetters() async {
+    var current = FirebaseAuth.instance
+        .currentUser!; //Use to get the info of the currently logged in user
+    String testid = current.email!; //Get email of current user
 
-    getUserName(testid);
+    getUserInfo(testid);
     getJoinDate(testid);
     getRequestsCompleted(testid);
   }
@@ -56,15 +68,16 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   //Bill's Customer profile page screen/UI code
   @override
   Widget build(BuildContext context) {
-    runGetters(); //Run all getter functions
+    runGetters();
     return Scaffold(
         //Background color of UI
         backgroundColor: Colors.green[500],
         appBar: AppBar(
-            title: Text('${username}\'s profile page'),
+            title: Text('$username\'s profile page'),
             centerTitle: true,
             backgroundColor: Colors.green[800],
             elevation: 0.0),
+        //Customer profile picture
         body: Padding(
             padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
             child: Column(children: <Widget>[
@@ -76,13 +89,14 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               ),
               Center(
                 //Username text
-                child: Text('$username',
+                child: Text('$firstname $lastname',
                     style: TextStyle(
                         color: Colors.white,
                         letterSpacing: 1.0,
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold)),
               ),
+              //Display customer info on profile page (join date, # of requested tasks completed)
               Column(children: <Widget>[
                 Text('Join Date: $date',
                     style: TextStyle(
@@ -97,10 +111,12 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                       fontSize: 16.0,
                     )),
               ]),
+              //Divider (line)
               Divider(
                 height: 20.0,
                 color: Colors.grey[1500],
               ),
+              //History of requested tasks
               Text('Request History',
                   style: TextStyle(
                       color: Colors.white,
@@ -111,6 +127,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                 height: 20.0,
                 color: Colors.grey[1500],
               ),
+              //Request history display
               Expanded(
                   child: SizedBox(
                       height: 50.0,
@@ -119,8 +136,16 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                           itemBuilder: (context, index) {
                             return Card(
                                 child: ListTile(
-                              onTap: () {},
-                              title: Text("test"),
+                              onTap: () {
+                                TaskInfo info = TaskInfo("Test", index);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            CustomerTaskInfoPage(
+                                                taskinfo: info)));
+                              },
+                              title: Text("test$index"),
                             ));
                           }))),
               Divider(

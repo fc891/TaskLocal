@@ -1,12 +1,10 @@
 // ignore_for_file: prefer_const_constructor
 
+//Contributors: Bill, Richard
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-// void main() => runApp(MaterialApp(
-//       home: CustomerRegistration(),
-//     ));
 
 class CustomerRegistration extends StatefulWidget {
   const CustomerRegistration({super.key});
@@ -22,6 +20,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   // Richard's code for the signUserUp function
   void signUserUp() async {
@@ -162,12 +162,23 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               child: SizedBox(
                 width: 400,
                 child: TextField(
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   controller: passwordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Password",
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey[300],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                   ),
+                ),
                 ),
               ),
             ),
@@ -177,12 +188,23 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               child: SizedBox(
                 width: 400,
                 child: TextField(
-                  obscureText: true,
+                  obscureText: _obscureConfirmPassword,
                   controller: confirmPasswordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Confirm Password",
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey[300],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
                   ),
+                ),
                 ),
               ),
             ),

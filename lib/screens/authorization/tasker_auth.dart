@@ -1,11 +1,13 @@
+// Contributers: Richard N.
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/home_pages/tasker_home.dart';
 import 'tasker_login_register.dart';
 
-// auth page 
 class TaskerAuthPage extends StatelessWidget {
-  const TaskerAuthPage({super.key});
+  final bool showLoginPage;
+  const TaskerAuthPage({super.key, required this.showLoginPage});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,9 @@ class TaskerAuthPage extends StatelessWidget {
           }
           // user is not logged in
           else {
-            return const LoginOrRegisterPage();
+            return LoginOrRegisterPage(showLoginPage: showLoginPage);
           }
         }
-
       )
     );
   }

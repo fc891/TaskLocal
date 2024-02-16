@@ -1,5 +1,5 @@
-// Contributers: Richard N., Eric C.
-// Tasker Home Page
+// Tasker Home Page UI/Screen
+// Contributors: Eric C., Richard N.
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +35,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
     TaskCategory(name: "Delivery Services"),
   ];
 
+  // sign user out of the app
   void logUserOut() {
     FirebaseAuth.instance.signOut();
   }
@@ -55,6 +56,11 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
             icon: Icon(Icons.logout, color: Colors.grey[300],)
           ),
         ],
+//         title: Text('', style: TextStyle(color: Colors.white)),
+//         centerTitle: true,
+//         backgroundColor: Colors.green[800],
+//         elevation: 0.0,
+//         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
           child: SingleChildScrollView(
@@ -319,7 +325,6 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
       ),
     );
   }
-
   Widget _buildCategoryBox(String category, String label, String imagePath, Color color) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
