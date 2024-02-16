@@ -14,15 +14,15 @@ class TaskCategoryBox extends StatelessWidget {
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(20),
       ),
-      margin: EdgeInsets.only(left: 25),
+      margin: EdgeInsets.only(right: 25),
       // padding: EdgeInsets.all(25),
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // image
           Container(
-            width: 200,
-            height: 200,
+            width: 150,
+            height: 150,
             decoration: BoxDecoration(
               color: Colors.blue,
               borderRadius: BorderRadius.circular(15.0),
