@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasklocal/Screens/authorization/tasker_auth.dart';
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tasklocal/Screens/authorization/onboardingpage.dart';

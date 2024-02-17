@@ -1,12 +1,12 @@
 class TaskCategory {
   String name;
-  // String imagePath;
+  String imagePath;
   
   TaskCategory({
     required this.name,
-    // required this.imagePath
+    required this.imagePath
   });
 
   String get _name => name;
-  // String get _imagePathh => imagePath;
+  String get _imagePathh => imagePath;
 }
