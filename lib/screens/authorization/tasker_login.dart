@@ -1,8 +1,11 @@
+// Contributors: Richard N.
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-// Richard's code
 class TaskerLogin extends StatefulWidget {
+  // Richard's code
+  // user can switch back and forth between login and register
   final Function()? onTap;
   const TaskerLogin({Key? key, required this.onTap}) : super(key: key);
 
@@ -11,9 +14,11 @@ class TaskerLogin extends StatefulWidget {
 }
 
 class _TaskerLogin extends State<TaskerLogin> {
+  // Richard's code
+  // created controllers for managing the info of user
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  // Richard's code for the userLogin function
   // login method called on when press the login button
   void userLogin() async {
     // display a loading circle to give users idea of time
@@ -63,18 +68,20 @@ class _TaskerLogin extends State<TaskerLogin> {
       },
     );
   }
-
+  // Richard's entire code for this Widget build
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green[500],
       appBar: AppBar(
         backgroundColor: Colors.green[800],
+        // Richard's code
         // Add a back button to the AppBar
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Navigate back to previous page
+            // Direct users to go back to the onboarding page
+            Navigator.pop(context);
           },
         ),
       ),
@@ -84,14 +91,15 @@ class _TaskerLogin extends State<TaskerLogin> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // app's logo image
+                // app's logo image displayed
                 Align(
-                  alignment: Alignment.topCenter, // Aligns to the top center
+                  alignment: Alignment.topCenter,
                   child: Image.asset(
                     'lib/images/tasklocaltransparent.png',
                     height: 300,
                   ),
                 ),
+                // Richard's code
                 // title of the login page
                 Text(
                   'Tasker Login',
@@ -102,6 +110,8 @@ class _TaskerLogin extends State<TaskerLogin> {
                   ),
                 ),
                 const SizedBox(height: 20),
+                // Richard's code
+                // Have the user input their email info
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: TextField(
@@ -117,6 +127,8 @@ class _TaskerLogin extends State<TaskerLogin> {
                   )
                 ),
                 const SizedBox(height: 20),
+                // Richard's code
+                // Have the user input their password info
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: TextField(
@@ -133,6 +145,8 @@ class _TaskerLogin extends State<TaskerLogin> {
                   )
                 ),
                 const SizedBox(height: 20),
+                // Richard's code
+                // Presses the Login button to verify if info is correct to proceed
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Center(
@@ -143,6 +157,9 @@ class _TaskerLogin extends State<TaskerLogin> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                // Richard's code
+                // go to register page to register if no account
+                // convenient for user to register quickly
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

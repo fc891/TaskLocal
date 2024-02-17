@@ -38,11 +38,11 @@ class OnboardingPage extends StatelessWidget {
                 const SizedBox(height: 25),
 
                 // Login as Tasker button
-                SelectionButtonTasker( // change to tasker
+                SelectionButtonTasker(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TaskerAuthPage(showLoginPage: true)), // change to tasker
+                      MaterialPageRoute(builder: (context) => TaskerAuthPage(showLoginPage: true)),
                     );
                   },
                 ),

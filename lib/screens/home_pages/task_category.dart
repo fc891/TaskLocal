@@ -1,3 +1,6 @@
+// Contributers: Richard N.
+// organizaes the data into one area
+
 class TaskCategory {
   String name;
   String imagePath;

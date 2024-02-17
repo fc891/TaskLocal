@@ -1,5 +1,5 @@
-// Contributers: Richard N.
 // Create the container for the task categories in tasker_home.dart
+// Contributers: Richard N.
 
 import 'package:flutter/material.dart';
 import '../screens/home_pages/task_category.dart';

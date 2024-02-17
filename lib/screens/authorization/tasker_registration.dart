@@ -6,15 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 
-// import 'package:tasklocal/Database/mongoconnection.dart';
-// import 'package:tasklocal/Database/mongodbmodelcustomer.dart';
-// import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
-// void main() => runApp(MaterialApp(
-//       home: TaskerRegistration(),
-//     ));
-
 // Eric's code for TaskerRegistration class
 class TaskerRegistration extends StatefulWidget {
+  // Richard's code
+  // user can switch back and forth between login and register
   final Function()? onTap;  
   const TaskerRegistration({super.key, this.onTap});
 
@@ -23,6 +18,8 @@ class TaskerRegistration extends StatefulWidget {
 }
 
 class _TaskerRegistrationState extends State<TaskerRegistration> {
+  // Richard's code
+  // created controllers for managing the info of user
   final fnameController = TextEditingController();
   final lnameController = TextEditingController();
   final usernameController = TextEditingController();
@@ -52,7 +49,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
           password: passwordController.text,
         );
         Navigator.pop(context);
-        // Create a document in the Cloud Firestore
+        // Create a document in the Cloud Firestore to store the user info
         await FirebaseFirestore.instance.collection("Taskers").doc(userCredential.user!.email).set(
           {
             'first name' : fnameController.text,
@@ -65,11 +62,12 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
         showErrorMessage("Passwords don't match!");
       }
     } on FirebaseAuthException catch (e) {
+      // any error besides password goes through here
       Navigator.pop(context);
       showErrorMessage(e.code);
     }
   }
-
+  // Richard's code
   // Display error message to user
   void showErrorMessage(String message) {
     showDialog(
@@ -104,6 +102,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  // Richard's code for the controller
                   controller: fnameController,
                   decoration: InputDecoration(
                     labelText: "First Name",
@@ -115,6 +114,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  // Richard's code for the controller
                   controller: lnameController,
                   decoration: InputDecoration(
                     labelText: "Last Name",
@@ -126,6 +126,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  // Richard's code for the controller
                   controller: usernameController,
                   decoration: InputDecoration(
                     labelText: "Username",
@@ -137,6 +138,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  // Richard's code for the controller
                   controller: emailController,
                   decoration: InputDecoration(
                     labelText: "Email Address",
@@ -149,6 +151,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   obscureText: !_isPasswordVisible,
+                  // Richard's code for the controller
                   controller: passwordController,
                   decoration: InputDecoration(
                     labelText: "Password",
@@ -172,6 +175,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   obscureText: !_isConfirmPasswordVisible,
+                  // Richard's code for the controller
                   controller: confirmPasswordController,
                   decoration: InputDecoration(
                     labelText: "Confirm Password",

@@ -22,7 +22,8 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
   // Richard's code
   // Created a variable to track the selected button in the bottom navigation
   int _selectedIndex = 0;
-
+  // Richard's code
+  // Created 2 list of TaskCategory objects that will be used to display in the page
   List jobCategoryFirstRow = [
     TaskCategory(name: "Furniture Assembly", imagePath: 'lib/images/tasker_home_images/furniture_assembly.jpeg'),
     TaskCategory(name: "Mounting Services", imagePath: 'lib/images/tasker_home_images/mounting_services.jpeg'),
@@ -46,13 +47,13 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
     TaskCategory(name: "Smart Home Installation", imagePath: 'lib/images/tasker_home_images/smart_home_install.jpeg'),
   ];
   // Richard's code
-  // sign user out of the app
+  // sign user out of the application
   void logUserOut() {
     FirebaseAuth.instance.signOut();
   }
-  
   // Richard's code
-  void navigateToTaserCategoryInfo(int index, List listRow) {
+  // direct user to a page for more info about each task category
+  void navigateToTaskerCategoryInfo(int index, List listRow) {
     Navigator.push(context,
       MaterialPageRoute(builder: (context) => TaskerCategoryInfo(taskCategory: listRow[index],)),
     );
@@ -63,18 +64,22 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
     return Scaffold(
       backgroundColor: Colors.green,
       // Richard's code
+      // app bar contains the title and sign out button
       appBar: AppBar(
         title: Text('Welcome, Tasker!', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.green[800],
         elevation: 0.0,
+        automaticallyImplyLeading: false,
         actions: [
+          // potential notification button to be used
           // IconButton(onPressed: () => {},icon: Icon(Icons.notifications, color: Colors.grey[300])),
+          // Richard's code
+          // direct user to the logUserOut function where they can log out
           IconButton(
             onPressed: logUserOut, 
             icon: Icon(Icons.logout, color: Colors.grey[300],)
           ),
         ],
-        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -83,6 +88,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
             children: [
               SizedBox(height: 20),
               // Richard's code
+              // Displays any important info of the user such as schedule appointments
               Container(
                 decoration: BoxDecoration(color: Colors.green[800], borderRadius: BorderRadius.circular(20)),
                 padding: EdgeInsets.all(25),
@@ -101,7 +107,6 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Eric's code
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal:20),
                 child: Text(
@@ -122,10 +127,13 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                     hintText: 'Search for available tasks...',
                     filled: true,
                     fillColor: Colors.grey[250],
+                    // Richard's code
+                    // border is black by default and when click the search bar border is white
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
+                    // Richard's code
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black), 
                       borderRadius: BorderRadius.circular(10)
@@ -135,6 +143,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               ),
               const SizedBox(height: 20),
               // Richard's code
+              // subtitle of the different categories available
               Padding(
                 padding: const EdgeInsets.only(left:20),
                 child: Text(
@@ -147,6 +156,8 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                 ),
               ),
               const SizedBox(height: 10),
+              // Richard's code
+              // display the images and title of the task categories
               Container(
                 height: 180,
                 // color: Colors.black,
@@ -156,14 +167,17 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                     scrollDirection: Axis.horizontal,
                     // shrinkWrap: true,
                     itemCount: jobCategoryFirstRow.length,
+                    // go through the list of the task categories and displays
                     itemBuilder: (context, index) => TaskCategoryBox(
                       taskCategory: jobCategoryFirstRow[index],
-                      onTap: () => navigateToTaserCategoryInfo(index, jobCategoryFirstRow),
+                      onTap: () => navigateToTaskerCategoryInfo(index, jobCategoryFirstRow),
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
+              // Richard's code
+              // display the images and title of the task categories
               Container(
                 height: 180,
                 child: Padding(
@@ -172,9 +186,10 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                     scrollDirection: Axis.horizontal,
                     // shrinkWrap: true,
                     itemCount: jobCategorySecondRow.length,
+                    // go through the list of the task categories and displays
                     itemBuilder: (context, index) => TaskCategoryBox(
                       taskCategory: jobCategorySecondRow[index], 
-                      onTap: () => navigateToTaserCategoryInfo(index, jobCategorySecondRow),
+                      onTap: () => navigateToTaskerCategoryInfo(index, jobCategorySecondRow),
                     ),
                   ),
                 ),
@@ -186,64 +201,69 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         // Richard's code
+        // Created additional navigation items
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         items: const [
+          // Richard's code
+          // navigates to home page
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
            // Richard's code
+           // navigates to a page where tasker can advertise themselves
           BottomNavigationBarItem(
             icon: Icon(Icons.add_box),
             label: 'Post Service',
           ),
-           // Richard's code
+          // navigates to the calendar page
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
             label: 'Calendar',
           ),
+          // navigates to the messages
           BottomNavigationBarItem(
             icon: Icon(Icons.message),
             label: 'Messages',
           ),
+          // navigates to the profile page
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
         ],
         onTap: (int index) {
+          // Richard's code
+          // switch indexes to identify which button has been selected
+          // by default the home page is selected
           setState(() {
-          _selectedIndex = index; // Update selected index
+          _selectedIndex = index;
           });
           switch (index) {
             case 0:
-              // Redirect to Home
-              // Richard's code
+              // navigates to the home page
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => TaskerHomePage()),
               );
               break;
             case 1:
-              // Redirect to Post Service
-              // Richard's code
+              // navigates to a page where tasker can advertise themselves
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => TaskerPostService()),
               );
               break;
             case 2:
-              // Redirect to Calendar
-              // Richard's code
+              // navigates to the calendar page
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => TaskerCalendar()),
               );
               break;
             case 3:
-              // Redirect to Messages
-              // Richard's code
+              // directs to the messages page where users can send and receive messages
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => TaskerMessages()),
@@ -251,7 +271,6 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               break;
             case 4:
               // Redirect to Profile
-              // Eric's code
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => TaskerProfilePage()),
