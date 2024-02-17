@@ -13,32 +13,26 @@ class TaskCategoryBox extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(20),
-        ),
+        // decoration: BoxDecoration(
+        //   borderRadius: BorderRadius.circular(40),
+        //   // color: Colors.red[100],
+        // ),
         margin: EdgeInsets.only(right: 25),
         // padding: EdgeInsets.all(25),
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // image
-            Image.asset(
-              taskCategory.imagePath,
-              height: 140,
-              
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                taskCategory.imagePath,
+                height: 140,
+              ),
             ),
-            // Container(
-            //   width: 150,
-            //   height: 150,
-            //   decoration: BoxDecoration(
-            //     color: Colors.blue,
-            //     borderRadius: BorderRadius.circular(15.0),
-            //   ),
-            // ),
-            // text
             Text(
               taskCategory.name,
+              style: TextStyle(color: Colors.white, fontSize: 14,),
             ),
           ],
         ),
