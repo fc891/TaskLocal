@@ -1,3 +1,4 @@
+// Contributers: Richard N.
 // Create the container for the task categories in tasker_home.dart
 
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class TaskCategoryBox extends StatelessWidget {
       child: Container(
         // decoration: BoxDecoration(
         //   borderRadius: BorderRadius.circular(40),
-        //   // color: Colors.red[100],
+        //   color: Colors.red[100],
         // ),
         margin: EdgeInsets.only(right: 25),
         // padding: EdgeInsets.all(25),
@@ -24,10 +25,11 @@ class TaskCategoryBox extends StatelessWidget {
           children: [
             // image
             ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(40),
               child: Image.asset(
                 taskCategory.imagePath,
-                height: 140,
+                height: 150,
+                width: 170,
               ),
             ),
             Text(

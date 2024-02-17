@@ -22,20 +22,26 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
   int _selectedIndex = 0;
 
   List jobCategoryFirstRow = [
-    TaskCategory(name: "Furniture Assembly", imagePath: 'lib/images/furniture_assembly.jpeg'),
-    TaskCategory(name: "Mounting Services", imagePath: ''),
-    TaskCategory(name: "Yard Work", imagePath: ''),
-    TaskCategory(name: "Cleaning Services", imagePath: ''),
-    TaskCategory(name: "Handyman Services", imagePath: ''),
-    TaskCategory(name: "Delivery Services", imagePath: ''),
+    TaskCategory(name: "Furniture Assembly", imagePath: 'lib/images/tasker_home_images/furniture_assembly.jpeg'),
+    TaskCategory(name: "Mounting Services", imagePath: 'lib/images/tasker_home_images/mounting_services.jpeg'),
+    TaskCategory(name: "Yard Work", imagePath: 'lib/images/tasker_home_images/yard_work.jpeg'),
+    TaskCategory(name: "Cleaning Services", imagePath: 'lib/images/tasker_home_images/cleaning_services.jpg'),
+    TaskCategory(name: "Handyman Services", imagePath: 'lib/images/tasker_home_images/handyman_services.jpg'),
+    TaskCategory(name: "Delivery Services", imagePath: 'lib/images/tasker_home_images/delivery_services.jpeg'),
+    TaskCategory(name: "Event Planning", imagePath: 'lib/images/tasker_home_images/event_planning.jpeg'),
+    TaskCategory(name: "Moving Services", imagePath: 'lib/images/tasker_home_images/moving_services.jpeg'),
+    TaskCategory(name: "Computer Services", imagePath: 'lib/images/tasker_home_images/computer_services.jpeg'),
   ];
   List jobCategorySecondRow = [
-    TaskCategory(name: "Event Planning", imagePath: ''),
-    TaskCategory(name: "Moving Services", imagePath: ''),
-    TaskCategory(name: "Computer Services", imagePath: ''),
-    TaskCategory(name: "Photography Projects", imagePath: ''),
-    TaskCategory(name: "Art Installations", imagePath: ''),
-    TaskCategory(name: "Tech Innovations", imagePath: ''),
+    TaskCategory(name: "Photography Projects", imagePath: 'lib/images/tasker_home_images/photography_proj.jpeg'),
+    TaskCategory(name: "Art Installations", imagePath: 'lib/images/tasker_home_images/art_installations.jpeg'),
+    TaskCategory(name: "Tech Innovations", imagePath: 'lib/images/tasker_home_images/tech_innovations.jpeg'),
+    TaskCategory(name: "Gardening Projects", imagePath: 'lib/images/tasker_home_images/gardening_proj.jpeg'),
+    TaskCategory(name: "Music Productions", imagePath: 'lib/images/tasker_home_images/music_prod.jpeg'),
+    TaskCategory(name: "Fitness Training", imagePath: 'lib/images/tasker_home_images/fitness_training.jpeg'),
+    TaskCategory(name: "Organization", imagePath: 'lib/images/tasker_home_images/organization.jpeg'),
+    TaskCategory(name: "Wall Repair", imagePath: 'lib/images/tasker_home_images/wall_repair.jpeg'),
+    TaskCategory(name: "Smart Home Installation", imagePath: 'lib/images/tasker_home_images/smart_home_install.jpeg'),
   ];
   // Richard's code
   // sign user out of the app
@@ -81,11 +87,13 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                 margin: EdgeInsets.only(left: 20, right: 20),
                 child: Row(
                   children: const [
-                    Column(
-                      children: [
-                        Text("You have a scheduled appointment!"),
-                        Text("You have a scheduled appointment!")
-                      ],
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 20.0),
+                      child: Column(
+                        children: [
+                          Text("You have a scheduled appointment!", style: TextStyle(color: Colors.white),),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -138,7 +146,8 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               ),
               const SizedBox(height: 10),
               Container(
-                height: 170,
+                height: 180,
+                // color: Colors.black,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: ListView.builder(
@@ -153,21 +162,21 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Container(
-              //   height: 170,
-              //   child: Padding(
-              //     padding: const EdgeInsets.symmetric(horizontal:20.0),
-              //     child: ListView.builder(
-              //       scrollDirection: Axis.horizontal,
-              //       // shrinkWrap: true,
-              //       itemCount: jobCategorySecondRow.length,
-              //       itemBuilder: (context, index) => TaskCategoryBox(
-              //         taskCategory: jobCategorySecondRow[index], 
-              //         onTap: () => navigateToTaserCategoryInfo(index, jobCategorySecondRow),
-              //       ),
-              //     ),
-              //   ),
-              // ),
+              Container(
+                height: 180,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal:20.0),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    // shrinkWrap: true,
+                    itemCount: jobCategorySecondRow.length,
+                    itemBuilder: (context, index) => TaskCategoryBox(
+                      taskCategory: jobCategorySecondRow[index], 
+                      onTap: () => navigateToTaserCategoryInfo(index, jobCategorySecondRow),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
             ],
           ),
