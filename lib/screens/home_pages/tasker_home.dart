@@ -5,7 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/components/task_category_box.dart';
 import 'package:tasklocal/screens/home_pages/task_category.dart';
+import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_category_info.dart';
+import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_post_service.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 
@@ -232,19 +234,19 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               );
               break;
             case 2:
-              // Redirect to Messages
-              // Richard's code
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TaskerProfilePage()),
-              );
-              break;
-            case 3:
               // Redirect to Calendar
               // Richard's code
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerProfilePage()),
+                MaterialPageRoute(builder: (context) => TaskerCalendar()),
+              );
+              break;
+            case 3:
+              // Redirect to Messages
+              // Richard's code
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TaskerMessages()),
               );
               break;
             case 4:
