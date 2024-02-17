@@ -57,7 +57,7 @@ class _TaskerLogin extends State<TaskerLogin> {
       }
     }
   }
-
+  // Richard's code
   // convenient method to display error message
   void showErrorMessage(String message) {
     showDialog(
@@ -75,12 +75,7 @@ class _TaskerLogin extends State<TaskerLogin> {
     return Scaffold(
       backgroundColor: Colors.green[500],
       appBar: AppBar(
-        title: Text('Tasker Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    // fontSize: 25,
-                    fontWeight: FontWeight.w600,
-                  )),
+        title: Text('Tasker Login', style: TextStyle( color: Colors.white,fontWeight: FontWeight.w600,)),
         centerTitle: true,
         backgroundColor: Colors.green[800],
         // Richard's code
@@ -186,7 +181,7 @@ class _TaskerLogin extends State<TaskerLogin> {
                       backgroundColor: Colors.green[800],
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15),
                       child: Text("Login", style: TextStyle(color: Colors.white)),
                     ),
                   ),

@@ -107,6 +107,9 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   decoration: InputDecoration(
                     labelText: "First Name",
                     border: OutlineInputBorder(),
+                    // Richard's code for TextField's background color
+                    filled: true,
+                    fillColor: Colors.grey[250],
                   ),
                 ),
               ),
@@ -119,6 +122,9 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   decoration: InputDecoration(
                     labelText: "Last Name",
                     border: OutlineInputBorder(),
+                    // Richard's code for TextField's background color
+                    filled: true,
+                    fillColor: Colors.grey[250],
                   ),
                 ),
               ),
@@ -131,6 +137,9 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   decoration: InputDecoration(
                     labelText: "Username",
                     border: OutlineInputBorder(),
+                    // Richard's code for TextField's background color
+                    filled: true,
+                    fillColor: Colors.grey[250],
                   ),
                 ),
               ),
@@ -143,6 +152,9 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   decoration: InputDecoration(
                     labelText: "Email Address",
                     border: OutlineInputBorder(),
+                    // Richard's code for TextField's background color
+                    filled: true,
+                    fillColor: Colors.grey[250],
                   ),
                 ),
               ),
@@ -156,10 +168,13 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   decoration: InputDecoration(
                     labelText: "Password",
                     border: OutlineInputBorder(),
+                    // Richard's code for TextField's background color
+                    filled: true,
+                    fillColor: Colors.grey[250],
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.grey[300],
+                        color: Colors.grey[500],
                       ),
                       onPressed: () {
                         setState(() {
@@ -180,10 +195,13 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   decoration: InputDecoration(
                     labelText: "Confirm Password",
                     border: OutlineInputBorder(),
+                    // Richard's code for TextField's background color
+                    filled: true,
+                    fillColor: Colors.grey[250],
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.grey[300],
+                        color: Colors.grey[500],
                       ),
                       onPressed: () {
                         setState(() {
@@ -195,16 +213,19 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 ),
               ),
               SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: signUserUp,
-                    child: Text("Register Account"),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green[800],
+                  ),
+                  onPressed: signUserUp,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text("Register Account", style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 15),
               // Richard's code where it allows users to go back to login page
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -229,28 +250,3 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
     );
   }
 }
-
-  // No longer using MongoDB
-  // Future<void> _insertTaskerData(String fname, String lname, String username,
-  //     String address, String password) async {
-  //   var _id = mongo_dart.ObjectId();
-  //   final data = Mongodbmodelcustomer(
-  //       id: _id,
-  //       firstName: fname,
-  //       lastName: lname,
-  //       username: username,
-  //       address: address,
-  //       password: password);
-  //   var result = await MongoConnection.insertCustomerData(data);
-  //   ScaffoldMessenger.of(context)
-  //       .showSnackBar(SnackBar(content: Text("Inserted ID " + _id.$oid)));
-  //   _clearAll();
-  // }
-
-  // void _clearAll() {
-  //   fnameController.text = '';
-  //   lnameController.text = '';
-  //   usernameController.text = '';
-  //   addressController.text = '';
-  //   passwordController.text = '';
-  // }
