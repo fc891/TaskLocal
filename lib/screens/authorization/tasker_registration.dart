@@ -6,10 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 
-// Eric's code for TaskerRegistration class
 class TaskerRegistration extends StatefulWidget {
-  // Richard's code
-  // user can switch back and forth between login and register
+  // Richard's code for onTap where user can switch back and forth between login and register
   final Function()? onTap;  
   const TaskerRegistration({super.key, this.onTap});
 
@@ -18,8 +16,7 @@ class TaskerRegistration extends StatefulWidget {
 }
 
 class _TaskerRegistrationState extends State<TaskerRegistration> {
-  // Richard's code
-  // created controllers for managing the info of user
+  // Richard's code for the controllers which is used for managing the info of user
   final fnameController = TextEditingController();
   final lnameController = TextEditingController();
   final usernameController = TextEditingController();
@@ -215,6 +212,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
               SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
+                  // Richard's code for button's background color
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green[800],
                   ),
@@ -227,22 +225,22 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
               ),
               SizedBox(height: 15),
               // Richard's code where it allows users to go back to login page
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Already have an account? ', style: TextStyle(color: Colors.white)),
-                    GestureDetector(
-                      onTap: widget.onTap,
-                      child: const Text(
-                        'Login Now', 
-                        style: TextStyle(
-                          color: Colors.yellow, 
-                          fontWeight: FontWeight.bold
-                        )
+              Row (
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Already have an account? ', style: TextStyle(color: Colors.white)),
+                  GestureDetector(
+                    onTap: widget.onTap,
+                    child: const Text(
+                      'Login Now', 
+                      style: TextStyle(
+                        color: Colors.yellow, 
+                        fontWeight: FontWeight.bold
                       )
-                    ),
-                  ],
-                ),
+                    )
+                  ),
+                ],
+              ),
             ],
           ),
         ),

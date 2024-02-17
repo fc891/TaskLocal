@@ -14,6 +14,7 @@ class CustomerRegistration extends StatefulWidget {
 
 //Customer registration screen
 class _CustomerRegistrationState extends State<CustomerRegistration> {
+  // Richard's code for the controllers which is used for managing the info of user
   var fnameController = TextEditingController();
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
@@ -35,7 +36,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
         });
 
     try {
-      // Creates the user
+      // Creates the customer user and directs them to CustomerHomePage
       if (passwordController.text == confirmPasswordController.text) {
         UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -43,7 +44,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
           password: passwordController.text,
         );
         Navigator.pop(context);
-        // Create a document in the Cloud Firestore
+        // Create a document in the Cloud Firestore to store the user info
         await FirebaseFirestore.instance
             .collection("Customers")
             .doc(userCredential.user!.email)
@@ -58,11 +59,12 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
         showErrorMessage("Passwords don't match!");
       }
     } on FirebaseAuthException catch (e) {
+      // any error besides password goes through here
       Navigator.pop(context);
       showErrorMessage(e.code);
     }
   }
-
+  // Richard's code
   // Display error message to user
   void showErrorMessage(String message) {
     showDialog(

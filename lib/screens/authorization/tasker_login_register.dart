@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 import 'tasker_login.dart';
 import 'tasker_registration.dart';
 
-class LoginOrRegisterPage extends StatefulWidget {
+// Richard's code for this entire class
+class TaskerLoginRegisterPage extends StatefulWidget {
+  // variable used to either go to login or register page
   final bool showLoginPage;
-  const LoginOrRegisterPage({super.key, required this.showLoginPage});
+  const TaskerLoginRegisterPage({super.key, required this.showLoginPage});
 
   @override
-  State<LoginOrRegisterPage> createState() => _LoginOrRegisterPageState();
+  State<TaskerLoginRegisterPage> createState() => _TaskerLoginRegisterPageState();
 }
 
-class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
+class _TaskerLoginRegisterPageState extends State<TaskerLoginRegisterPage> {
   // show the login or register page depending on what the user click
   late bool _showLoginPage;
   // initialize the local variable with the widget's variable

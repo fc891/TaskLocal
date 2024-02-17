@@ -2,9 +2,10 @@
 // Contributers: Richard N.
 
 import 'package:flutter/material.dart';
-import '../screens/home_pages/task_category.dart';
+import 'package:tasklocal/screens/home_pages/task_category.dart';
 
 class TaskCategoryBox extends StatelessWidget {
+  // variables and functions are created to access the separate pages of the task category
   final TaskCategory taskCategory;
   final void Function()? onTap;
   const TaskCategoryBox({super.key, required this.taskCategory, required this.onTap});
@@ -12,18 +13,18 @@ class TaskCategoryBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // directs the user to a separate page when tap the container
       onTap: onTap,
       child: Container(
+        // potential decoration
         // decoration: BoxDecoration(
         //   borderRadius: BorderRadius.circular(40),
         //   color: Colors.red[100],
         // ),
         margin: EdgeInsets.only(right: 25),
-        // padding: EdgeInsets.all(25),
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // image
+            // display the image of the task category
             ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: Image.asset(
@@ -32,6 +33,7 @@ class TaskCategoryBox extends StatelessWidget {
                 width: 170,
               ),
             ),
+            // display the text of the task category
             Text(
               taskCategory.name,
               style: TextStyle(color: Colors.white, fontSize: 14,),
