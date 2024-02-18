@@ -241,6 +241,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   ),
                 ],
               ),
+              SizedBox(height: 15),
             ],
           ),
         ),
