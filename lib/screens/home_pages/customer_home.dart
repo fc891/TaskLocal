@@ -1,11 +1,22 @@
 // Customer Home Page UI/Screen
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/Screens/customer_requests/address_input.dart';
 import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
 
 // Eric's code for CustomerHomePage class
-class CustomerHomePage extends StatelessWidget {
+class CustomerHomePage extends StatefulWidget {
+  @override
+  State<CustomerHomePage> createState() => _CustomerHomePageState();
+}
+
+class _CustomerHomePageState extends State<CustomerHomePage> {
+  void logUserOut() {
+    FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,6 +26,13 @@ class CustomerHomePage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: logUserOut,
+            icon: Icon(Icons.logout, color: Colors.grey[300],)
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
