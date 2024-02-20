@@ -87,6 +87,17 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                   _buildCategoryBox('Moving Services', 'lib/images/customer_home_images/moving_services.jpeg'),
                   _buildCategoryBox('Computer Services', 'lib/images/customer_home_images/computer_services.jpeg'),
                 ]),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Text(
+                    'Trending Projects',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 10),
                 _buildCategoryRow([
                   _buildCategoryBox('Photography Projects', 'lib/images/customer_home_images/photography_proj.jpeg'),
@@ -101,8 +112,8 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                 ]),
                 const SizedBox(height: 10),
                 _buildCategoryRow([
-                  _buildCategoryBox('Organization', 'lib/images/customer_home_images/organization.jpeg'),
-                  _buildCategoryBox('Wall Repair', 'lib/images/customer_home_images/wall_repair.jpeg'),
+                  _buildCategoryBox('Organization\n', 'lib/images/customer_home_images/organization.jpeg'),
+                  _buildCategoryBox('Wall Repair\n', 'lib/images/customer_home_images/wall_repair.jpeg'),
                   _buildCategoryBox('Smart Home Installation', 'lib/images/customer_home_images/smart_home_install.jpeg'),
                 ]),
                 const SizedBox(height: 20),
@@ -165,7 +176,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
   Widget _buildCategoryBox(String label, String imagePath) {
     return GestureDetector(
       onTap: () {
-        _navigateToAddressInputPage();
+        _navigateToAddressInputPage(context);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,17 +211,10 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     );
   }
 
-  void _navigateToAddressInputPage() {
+  void _navigateToAddressInputPage(BuildContext context) {
     Navigator.push(
-      _context, // Use stored context here
+      context,
       MaterialPageRoute(builder: (context) => AddressInputPage()),
-    );
-  }
-
-  void _navigateToTaskerProfilePage() {
-    Navigator.push(
-      _context, // Use stored context here
-      MaterialPageRoute(builder: (context) => TaskerProfilePage()),
     );
   }
 }
