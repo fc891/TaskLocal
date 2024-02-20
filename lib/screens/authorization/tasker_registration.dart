@@ -89,7 +89,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
         elevation: 0.0,
         // automaticallyImplyLeading: false,
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -241,7 +241,12 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              SizedBox(
+                height: 15,
+                child: Container(
+                  // color: Colors.blue, // Set the color here
+                ),
+              ),
             ],
           ),
         ),
