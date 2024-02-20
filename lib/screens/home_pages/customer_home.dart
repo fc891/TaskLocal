@@ -1,6 +1,7 @@
 // Customer Home Page UI/Screen
 // Contributors: Eric C.
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
@@ -33,6 +34,13 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: logUserOut,
+            icon: Icon(Icons.logout, color: Colors.grey[300],)
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
