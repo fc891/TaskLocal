@@ -1,13 +1,31 @@
 // Customer Home Page UI/Screen
+// Contributors: Eric C.
 
 import 'package:flutter/material.dart';
-import 'package:tasklocal/Screens/customer_requests/address_input.dart';
-import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
+import 'package:tasklocal/screens/customer_requests/address_input.dart';
+import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
+import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
+import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
 
-// Eric's code for CustomerHomePage class
-class CustomerHomePage extends StatelessWidget {
+// Eric's code for class
+class CustomerHomePage extends StatefulWidget {
+  @override
+  _CustomerHomePageState createState() => _CustomerHomePageState();
+}
+
+class _CustomerHomePageState extends State<CustomerHomePage> {
+  late BuildContext _context; // Store the context here
+
+  @override
+  void initState() {
+    super.initState();
+    _context = context;
+  }
+
+  // Eric's code for customer's home page UI
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -32,7 +50,6 @@ class CustomerHomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                // Eric's code for search box functionality
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Looking for something else?',
@@ -41,172 +58,45 @@ class CustomerHomePage extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    prefixIcon: Icon(Icons.search), // Search icon added here
+                    prefixIcon: Icon(Icons.search),
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Eric's list of job categories
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 1', 'Furniture Assembly', 'lib/images/furniture_assembly.webp', Colors.blue),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 2', 'Mounting Services', 'images/mounting_services.jpg', Colors.orange),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 3', 'Yard Work\n', 'images/yard_work.jpg', Colors.purple),
-                    ),
-                  ],
-                ),
+                _buildCategoryRow([
+                  _buildCategoryBox('Furniture Assembly', 'lib/images/customer_home_images/furniture_assembly.jpeg'),
+                  _buildCategoryBox('Mounting Services', 'lib/images/customer_home_images/mounting_services.jpeg'),
+                  _buildCategoryBox('Yard Work\n', 'lib/images/customer_home_images/yard_work.jpeg'),
+                ]),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 4', 'Cleaning Services', 'images/cleaning_services.jpg', Colors.red),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 5', 'Handyman Services', 'images/handyman_services.jpg', Colors.pink),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 6', 'Delivery Services', 'images/delivery_services.jpg', Colors.yellow),
-                    ),
-                  ],
-                ),
+                _buildCategoryRow([
+                  _buildCategoryBox('Cleaning Services', 'lib/images/customer_home_images/cleaning_services.jpg'),
+                  _buildCategoryBox('Handyman Services', 'lib/images/customer_home_images/handyman_services.jpg'),
+                  _buildCategoryBox('Delivery Services', 'lib/images/customer_home_images/delivery_services.jpeg'),
+                ]),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 7', 'Event Planning', 'images/event_planning.jpg', Colors.teal),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 8', 'Moving Services', 'images/moving_services.jpg', Colors.deepOrange),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox(
-                          'Job Category 9', 'Computer Services', 'images/computer_services.jpg', Colors.indigo),
-                    ),
-                  ],
-                ),
+                _buildCategoryRow([
+                  _buildCategoryBox('Event Planning', 'lib/images/customer_home_images/event_planning.jpeg'),
+                  _buildCategoryBox('Moving Services', 'lib/images/customer_home_images/moving_services.jpeg'),
+                  _buildCategoryBox('Computer Services', 'lib/images/customer_home_images/computer_services.jpeg'),
+                ]),
                 const SizedBox(height: 10),
-                // Second section of job categories
-                Text(
-                  'Trending Projects',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                  ),
-                ),
+                _buildCategoryRow([
+                  _buildCategoryBox('Photography Projects', 'lib/images/customer_home_images/photography_proj.jpeg'),
+                  _buildCategoryBox('Art Installations', 'lib/images/customer_home_images/art_installations.jpeg'),
+                  _buildCategoryBox('Tech Innovations', 'lib/images/customer_home_images/tech_innovations.jpeg'),
+                ]),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 1', 'Photography Projects', 'images/photography_projects.jpg', Colors.green),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 2', 'Art Installations', 'images/art_installations.jpg', Colors.cyan),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 3', 'Tech Innovations', 'images/tech_innovations.jpg', Colors.amber),
-                    ),
-                  ],
-                ),
+                _buildCategoryRow([
+                  _buildCategoryBox('Gardening Projects', 'lib/images/customer_home_images/gardening_proj.jpeg'),
+                  _buildCategoryBox('Music Productions', 'lib/images/customer_home_images/music_prod.jpeg'),
+                  _buildCategoryBox('Fitness Training', 'lib/images/customer_home_images/fitness_training.jpeg'),
+                ]),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 4', 'Gardening Projects', 'images/gardening_projects.jpg', Colors.deepPurple),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 5', 'Music Productions', 'images/music_productions.jpg', Colors.lightBlue),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 6', 'Fitness Training', 'images/fitness_training.jpg', Colors.lime),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 7', 'Organization\n', 'images/long_job_category_10.jpg', Colors.cyan),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 8', 'Wall Repair\n', 'images/very_long_job_category_11.jpg', Colors.amber),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _navigateToAddressInputPage(context);
-                      },
-                      child: _buildCategoryBox('Trending Project 9', 'Smart Home Installation', 'images/job_category_12.jpg', Colors.brown),
-                    ),
-                  ],
-                ),
+                _buildCategoryRow([
+                  _buildCategoryBox('Organization', 'lib/images/customer_home_images/organization.jpeg'),
+                  _buildCategoryBox('Wall Repair', 'lib/images/customer_home_images/wall_repair.jpeg'),
+                  _buildCategoryBox('Smart Home Installation', 'lib/images/customer_home_images/smart_home_install.jpeg'),
+                ]),
                 const SizedBox(height: 20),
               ],
             ),
@@ -228,63 +118,91 @@ class CustomerHomePage extends StatelessWidget {
             label: 'Profile',
           ),
         ],
-        // Eric's code for routing to different screens
+        // Eric's code for redirects
         onTap: (int index) {
           switch (index) {
             case 0:
               // Redirects to calendar
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TaskerCalendar()),
+              );
               break;
             case 1:
               // Redirect to messages
-              break;
-            case 2:
-              // Redirect to user's profile
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CustomerProfilePage()),
+                MaterialPageRoute(builder: (context) => TaskerMessages()),
               );
               break;
+            case 2:
+              // Redirect to tasker's profile
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TaskerProfilePage()),
+              );
           }
         },
       ),
     );
   }
 
-  Widget _buildCategoryBox(String category, String label, String imagePath, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(left: 0.0, right: 8.0, top: 8.0, bottom: 8.0),
-          width: 100,
-          height: 120,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-          ),
-        ),
-        Container(
-          width: 100,
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      ],
+  Widget _buildCategoryRow(List<Widget> categories) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: categories,
     );
   }
 
-  void _navigateToAddressInputPage(BuildContext context) {
+  Widget _buildCategoryBox(String label, String imagePath) {
+    return GestureDetector(
+      onTap: () {
+        _navigateToAddressInputPage();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(left: 0.0, right: 8.0, top: 8.0, bottom: 8.0),
+            width: 100,
+            height: 120,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0), // Rounded corners added here
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15.0),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Container(
+            width: 100,
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _navigateToAddressInputPage() {
     Navigator.push(
-      context,
+      _context, // Use stored context here
       MaterialPageRoute(builder: (context) => AddressInputPage()),
+    );
+  }
+
+  void _navigateToTaskerProfilePage() {
+    Navigator.push(
+      _context, // Use stored context here
+      MaterialPageRoute(builder: (context) => TaskerProfilePage()),
     );
   }
 }
