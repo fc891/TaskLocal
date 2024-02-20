@@ -10,6 +10,7 @@ import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_category_info.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_post_service.dart';
+import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_tasks.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 
 class TaskerHomePage extends StatefulWidget {
@@ -240,16 +241,20 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
             icon: Icon(Icons.add_box),
             label: 'Post Service',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.work),
+            label: 'My Tasks',
+          ),
           // navigates to the calendar page
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
             label: 'Calendar',
           ),
           // navigates to the messages
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.message),
+          //   label: 'Messages',
+          // ),
           // navigates to the profile page
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -282,14 +287,14 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               // navigates to the calendar page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerCalendar()),
+                MaterialPageRoute(builder: (context) => TaskerTasks()),
               );
               break;
             case 3:
               // directs to the messages page where users can send and receive messages
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerMessages()),
+                MaterialPageRoute(builder: (context) => TaskerCalendar()),
               );
               break;
             case 4:
