@@ -6,11 +6,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
 //Bill's Task Info Screen
-class CustomerTaskInfoPage extends StatelessWidget {
-  const CustomerTaskInfoPage({super.key, required this.taskinfo});
+class TaskerTaskInfoPage extends StatelessWidget {
+  const TaskerTaskInfoPage({super.key, required this.taskinfo});
   final TaskInfo taskinfo;
 
-//Bill's Customer task info screen
+//Bill's Tasker task info screen
   @override
   Widget build(BuildContext context) {
     String taskcategory = taskinfo.taskCategory;
@@ -20,7 +20,7 @@ class CustomerTaskInfoPage extends StatelessWidget {
       backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
-        title: Text('Customer Task#$tasknumber'),
+        title: Text('Tasker Task#$tasknumber'),
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,

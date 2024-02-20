@@ -8,6 +8,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'package:tasklocal/screens/profiles/taskertaskinfopage.dart';
+import 'package:tasklocal/screens/profiles/taskinfo.dart';
+
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 //Bill's Tasker Profile Page Screen
@@ -55,7 +58,8 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
 
   //Bill's function to run all getters above to initialize variables
   void runGetters() {
-    var current = FirebaseAuth.instance.currentUser!; //Use to get the info of the currently logged in user
+    var current = FirebaseAuth.instance
+        .currentUser!; //Use to get the info of the currently logged in user
     String testid = current.email!; //Get email of current user
 
     getUserInfo(testid);
@@ -174,7 +178,17 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                             child: SizedBox(
                                 width: 80.0,
                                 child: ListTile(
-                                  onTap: () {},
+                                  onTap: () {
+                                    TaskInfo info =
+                                        TaskInfo("Test", index); //Placeholder
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TaskerTaskInfoPage(
+                                                    //Change to tasker specific later
+                                                    taskinfo: info)));
+                                  },
                                   title: Text("test$index"),
                                 )));
                       })),
