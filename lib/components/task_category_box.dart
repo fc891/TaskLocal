@@ -31,6 +31,7 @@ class TaskCategoryBox extends StatelessWidget {
                 taskCategory.imagePath,
                 height: 150,
                 width: 170,
+                fit: BoxFit.cover,
               ),
             ),
             // display the text of the task category
