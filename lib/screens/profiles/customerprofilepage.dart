@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/profiles/customertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
+import 'package:tasklocal/screens/profiles/customereditprofile.dart';
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -65,6 +66,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     getRequestsCompleted(testid);
   }
 
+  void editProfilePage() {}
+
   //Bill's Customer profile page screen/UI code
   @override
   Widget build(BuildContext context) {
@@ -73,10 +76,22 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
         //Background color of UI
         backgroundColor: Colors.green[500],
         appBar: AppBar(
-            title: Text('$username\'s profile page'),
-            centerTitle: true,
-            backgroundColor: Colors.green[800],
-            elevation: 0.0),
+          title: Text('$username\'s profile page'),
+          centerTitle: true,
+          backgroundColor: Colors.green[800],
+          elevation: 0.0,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerEditProfile()));
+              },
+              icon: Icon(
+                Icons.edit_outlined,
+                color: Colors.grey[300],
+              ),
+            ),
+          ],
+        ),
         //Customer profile picture
         body: Padding(
             padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),

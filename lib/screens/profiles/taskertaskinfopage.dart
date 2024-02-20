@@ -20,7 +20,7 @@ class TaskerTaskInfoPage extends StatelessWidget {
       backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
-        title: Text('Tasker Task#$tasknumber'),
+        title: Text('$taskcategory# $tasknumber'),
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
@@ -35,6 +35,7 @@ class TaskerTaskInfoPage extends StatelessWidget {
           //   style: TextStyle(fontSize: 20),
           // ),
         ),
+        
       ])),
     );
   }

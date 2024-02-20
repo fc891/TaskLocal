@@ -147,7 +147,14 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                             child: SizedBox(
                                 width: 80.0,
                                 child: ListTile(
-                                  onTap: () {},
+                                  onTap: () {
+                                    TaskInfo info = TaskInfo("Task Category", index);
+                                    Navigator.push(context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TaskerTaskInfoPage(
+                                                    taskinfo: info)));
+                                  },
                                   title: Text("test$index"),
                                 )));
                       })),
@@ -179,15 +186,12 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                 width: 80.0,
                                 child: ListTile(
                                   onTap: () {
-                                    TaskInfo info =
-                                        TaskInfo("Test", index); //Placeholder
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TaskerTaskInfoPage(
-                                                    //Change to tasker specific later
-                                                    taskinfo: info)));
+                                    TaskInfo info = TaskInfo("Uploaded photos and videos", index);
+                                    Navigator.push(context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TaskerTaskInfoPage(
+                                                  taskinfo: info)));
                                   },
                                   title: Text("test$index"),
                                 )));
@@ -216,7 +220,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                           itemBuilder: (context, index) {
                             return Card(
                                 child: ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                TaskInfo info = TaskInfo("Task history", index); //Placeholder
+                                Navigator.push(context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          TaskerTaskInfoPage(
+                                              //Change to tasker specific later
+                                              taskinfo: info)));
+                              },
                               title: Text("test$index"),
                             ));
                           }))),
