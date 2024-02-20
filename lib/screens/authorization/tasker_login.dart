@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tasklocal/screens/authorization/passwordresetpage.dart';
+import 'package:tasklocal/screens/home_pages/tasker_home.dart';
 
 class TaskerLogin extends StatefulWidget {
   // Richard's code
@@ -38,8 +39,15 @@ class _TaskerLogin extends State<TaskerLogin> {
         email: emailController.text, 
         password: passwordController.text,
       );
+      // potential alternate to match customer login
+      // .then((_) {
+      //   Navigator.pop(context);
+      //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      //     return TaskerHomePage(); 
+      //   }));
+      // });
       // remove the loading circle after logging in
-      Navigator.pop(context);   
+      Navigator.pop(context);
 
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);

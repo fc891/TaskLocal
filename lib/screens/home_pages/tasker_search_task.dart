@@ -1,3 +1,5 @@
+// Contributors: Richard N.
+
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/home_pages/task_category.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_category_info.dart';
