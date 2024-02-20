@@ -66,6 +66,7 @@ flutter:
   assets: 
     - lib/images/tasklocaltransparent.png
     - lib/images/tasker_home_images/
+    - lib/images/customer_home_images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

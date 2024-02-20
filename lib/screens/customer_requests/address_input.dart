@@ -23,6 +23,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
     );
   }
 
+  // Eric's code for screen's UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(

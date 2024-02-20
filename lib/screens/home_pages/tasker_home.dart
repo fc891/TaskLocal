@@ -1,5 +1,5 @@
 // Tasker Home Page UI/Screen
-// Contributors: Eric C., Richard N.
+// Contributors: Richard N., Eric C.
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

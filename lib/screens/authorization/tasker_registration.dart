@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
+import 'package:tasklocal/screens/home_pages/tasker_home.dart';
 
 class TaskerRegistration extends StatefulWidget {
   // Richard's code for onTap where user can switch back and forth between login and register
@@ -37,7 +37,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
         );
       }
     );
-
+    // Eric's code for routing
     try {
       // Creates the tasker user and directs them to TaskerHomePage
       if (passwordController.text == confirmPasswordController.text) {
