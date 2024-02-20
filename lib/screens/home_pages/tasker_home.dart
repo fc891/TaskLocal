@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/components/task_category_box.dart';
 import 'package:tasklocal/screens/home_pages/task_category.dart';
+import 'package:tasklocal/screens/home_pages/tasker_search_task.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_category_info.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
@@ -20,11 +21,18 @@ class TaskerHomePage extends StatefulWidget {
 
 class _TaskerHomePageState extends State<TaskerHomePage> {
   // Richard's code
+  final FocusNode _focusNode = FocusNode();
+  @override
+  void dispose() {
+    _focusNode.dispose(); // Dispose the focus node when the widget is disposed
+    super.dispose();
+  }
+  final searchController = TextEditingController();
   // Created a variable to track the selected button in the bottom navigation
   int _selectedIndex = 0;
   // Richard's code
   // Created 2 list of TaskCategory objects that will be used to display in the page
-  List jobCategoryFirstRow = [
+  List<TaskCategory> jobCategoryFirstRow = [
     TaskCategory(name: "Furniture Assembly", imagePath: 'lib/images/tasker_home_images/furniture_assembly.jpeg'),
     TaskCategory(name: "Mounting Services", imagePath: 'lib/images/tasker_home_images/mounting_services.jpeg'),
     TaskCategory(name: "Yard Work", imagePath: 'lib/images/tasker_home_images/yard_work.jpeg'),
@@ -35,7 +43,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
     TaskCategory(name: "Moving Services", imagePath: 'lib/images/tasker_home_images/moving_services.jpeg'),
     TaskCategory(name: "Computer Services", imagePath: 'lib/images/tasker_home_images/computer_services.jpeg'),
   ];
-  List jobCategorySecondRow = [
+  List<TaskCategory> jobCategorySecondRow = [
     TaskCategory(name: "Photography Projects", imagePath: 'lib/images/tasker_home_images/photography_proj.jpeg'),
     TaskCategory(name: "Art Installations", imagePath: 'lib/images/tasker_home_images/art_installations.jpeg'),
     TaskCategory(name: "Tech Innovations", imagePath: 'lib/images/tasker_home_images/tech_innovations.jpeg'),
@@ -46,10 +54,12 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
     TaskCategory(name: "Wall Repair", imagePath: 'lib/images/tasker_home_images/wall_repair.jpeg'),
     TaskCategory(name: "Smart Home Installation", imagePath: 'lib/images/tasker_home_images/smart_home_install.jpeg'),
   ];
+  late List<TaskCategory> jobCategoryCombinedRow = [...jobCategoryFirstRow, ...jobCategorySecondRow];
   // Richard's code
   // sign user out of the application
   void logUserOut() {
     FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
   }
   // Richard's code
   // direct user to a page for more info about each task category
@@ -120,24 +130,36 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               ),
               const SizedBox(height: 5),
               // Eric's code
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal:20),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search for available tasks...',
-                    filled: true,
-                    fillColor: Colors.grey[250],
-                    // Richard's code
-                    // border is black by default and when click the search bar border is white
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(10.0),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: FocusScope(
+                  node: FocusScopeNode(),
+                  child: TextFormField(
+                    focusNode: _focusNode,
+                    onTap: () {
+                      _focusNode.unfocus();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TaskerSearchTask(taskList: jobCategoryCombinedRow)),
+                      );
+                    },
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search for task categories',
+                      filled: true,
+                      fillColor: Colors.grey[250],
+                      // Richard's code
+                      // border is black by default and when click the search bar border is white
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      // Richard's code
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black), 
+                        borderRadius: BorderRadius.circular(10)
+                      )
                     ),
-                    // Richard's code
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black), 
-                      borderRadius: BorderRadius.circular(10)
-                    )
                   ),
                 ),
               ),
