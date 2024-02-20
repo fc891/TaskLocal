@@ -111,6 +111,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     controller: fnameController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.grey[250],
                       labelText: "First Name",
                     ),
                   ),
@@ -124,6 +126,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     controller: lnameController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.grey[250],
                       labelText: "Last Name",
                     ),
                   ),
@@ -139,6 +143,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   controller: usernameController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.grey[250],
                     labelText: "Username",
                   ),
                 ),
@@ -153,6 +159,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   controller: emailController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.grey[250],
                     labelText: "Email Address",
                   ),
                 ),
@@ -168,6 +176,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   controller: passwordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.grey[250],
                     labelText: "Password",
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -194,6 +204,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   controller: confirmPasswordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.grey[250],
                     labelText: "Confirm Password",
                     suffixIcon: IconButton(
                       icon: Icon(

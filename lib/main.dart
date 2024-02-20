@@ -16,6 +16,7 @@ import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 import 'package:tasklocal/Screens/authorization/tasker_registration.dart';
 import 'package:tasklocal/Screens/profiles/taskerprofilepage.dart';
+import 'package:tasklocal/Screens/profiles/taskertaskinfopage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
           '/customerprofilepage': (context) => CustomerProfilePage(),
           '/taskerprofilepage': (context) => TaskerProfilePage(),
           '/customertaskinfopage': (context) => CustomerTaskInfoPage(taskinfo:defaultinfo),
+          '/taskertaskinfopage': (context) => TaskerTaskInfoPage(taskinfo: defaultinfo),
 
         });
   }
