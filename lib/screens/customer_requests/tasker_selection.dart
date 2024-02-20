@@ -29,11 +29,19 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
     List<Map<String, dynamic>> taskers = [
       {
         "name": "Tasker 1",
-        "description": "Join Date: 01-02-2023\nTasks Completed: 10\nRating: 4.5",
+        "description": "Join Date: 01-02-2023\nTasks Completed: 10\nRating: 4.5, \nBiography: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       },
       {
         "name": "Tasker 2",
-        "description": "Join Date: 15-05-2022\nTasks Completed: 20\nRating: 4.8",
+        "description": "Join Date: 15-05-2022\nTasks Completed: 20\nRating: 4.8, \nBiography: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      },
+      {
+        "name": "Tasker 3",
+        "description": "Join Date: 15-03-2019\nTasks Completed: 25\nRating: 4.3, \nBiography: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      },
+      {
+        "name": "Tasker 4",
+        "description": "Join Date: 19-02-2024\nTasks Completed: 5\nRating: 4.0, \nBiography: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       },
       // Add more tasker profiles here
     ];
@@ -69,19 +77,22 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
           ],
         ),
       ),
-      body: ListView.builder(
-        itemCount: taskers.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text(taskers[index]["name"]),
-            subtitle: Text(taskers[index]["description"]),
-            leading: CircleAvatar(
-              // You can add profile images for each tasker here
-              child: Text('T${index + 1}'),
-            ),
-            onTap: _navigateToTaskerProfilePage,
-          );
-        },
+      body: Container(
+        color: Colors.white, // Set background color to white
+        child: ListView.builder(
+          itemCount: taskers.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              title: Text(taskers[index]["name"]),
+              subtitle: Text(taskers[index]["description"]),
+              leading: CircleAvatar(
+                // You can add profile images for each tasker here
+                child: Text('T${index + 1}'),
+              ),
+              onTap: _navigateToTaskerProfilePage,
+            );
+          },
+        ),
       ),
     );
   }
@@ -91,33 +102,36 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
       context: context,
       builder: (BuildContext context) {
         return Container(
+          width: MediaQuery.of(context).size.width, // Set width to full screen width
+          color: Colors.white, // Background color set to white
           padding: EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Filter by:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              DropdownButton<String>(
-                value: _selectedFilter,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedFilter = newValue!;
-                  });
-                },
-                items: <String>[
-                  'Proximity',
-                  'Budget',
-                  'Experience',
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+              Center( // Center the filter options
+                child: DropdownButton<String>(
+                  value: _selectedFilter,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedFilter = newValue!;
+                    });
+                  },
+                  items: <String>[
+                    'Proximity',
+                    'Budget',
+                    'Experience',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
               ),
               SizedBox(height: 20),
               ElevatedButton(
