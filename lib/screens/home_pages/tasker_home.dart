@@ -72,6 +72,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.green,
       // Richard's code
       // app bar contains the title and sign out button

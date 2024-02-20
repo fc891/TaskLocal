@@ -4,6 +4,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
+import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
@@ -16,7 +17,12 @@ class CustomerHomePage extends StatefulWidget {
 
 class _CustomerHomePageState extends State<CustomerHomePage> {
   late BuildContext _context; // Store the context here
-
+  
+  void logUserOut() {
+    FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
+  }
+  
   @override
   void initState() {
     super.initState();
@@ -158,7 +164,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               // Redirect to tasker's profile
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerProfilePage()),
+                MaterialPageRoute(builder: (context) => CustomerProfilePage()),
               );
           }
         },

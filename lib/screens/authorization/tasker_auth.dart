@@ -14,6 +14,7 @@ class TaskerAuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: StreamBuilder<User?>(
         // detects the info of the user whether logged in or not
         stream: FirebaseAuth.instance.authStateChanges(),
