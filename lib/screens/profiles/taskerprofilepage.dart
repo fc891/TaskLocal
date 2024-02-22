@@ -139,7 +139,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               ]),
               //Divider (line)
               Divider(
-                height: 20.0,
+                height: 10.0,
                 color: Colors.grey[1500],
               ),
               //List task categories of tasker
@@ -150,13 +150,13 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold)),
               Divider(
-                height: 20.0,
+                height: 10.0,
                 color: Colors.grey[1500],
               ),
               //Task Categories Display
               Flexible(
                   flex: 1,
-                  fit:FlexFit.loose,
+                  fit: FlexFit.loose,
                   child: SizedBox(
                       height: 80.0,
                       width: 1000.0,
@@ -182,7 +182,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                     )));
                           }))),
               Divider(
-                height: 20.0,
+                height: 10.0,
                 color: Colors.grey[1500],
               ),
               //List uploaded photos and videos by tasker
@@ -193,13 +193,13 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold)),
               Divider(
-                height: 20.0,
+                height: 10.0,
                 color: Colors.grey[1500],
               ),
               //Uploaded Photos and Videos Display
               Flexible(
                   flex: 1,
-                  fit:FlexFit.loose,
+                  fit: FlexFit.loose,
                   child: SizedBox(
                       height: 80.0,
                       width: 1000.0,
@@ -225,7 +225,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                     )));
                           }))),
               Divider(
-                height: 20.0,
+                height: 10.0,
                 color: Colors.grey[1500],
               ),
               //List history of tasks that tasker has completed
@@ -236,13 +236,13 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold)),
               Divider(
-                height: 20.0,
+                height: 10.0,
                 color: Colors.grey[1500],
               ),
               //Task history display
               Flexible(
-                  flex: 1,
-                  fit:FlexFit.tight,
+                  flex: 2,
+                  fit: FlexFit.tight,
                   child: SizedBox(
                       //height: 100.0,
                       child: ListView.builder(
