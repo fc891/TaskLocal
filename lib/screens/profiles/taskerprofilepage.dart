@@ -8,7 +8,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'package:tasklocal/screens/profiles/taskereditprofile.dart';
 import 'package:tasklocal/screens/profiles/taskertaskinfopage.dart';
+import 'package:tasklocal/screens/profiles/taskeruploadedmedia.dart';
+import 'package:tasklocal/screens/profiles/taskertaskcategory.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -75,10 +78,25 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
         //Background color of UI
         backgroundColor: Colors.green[500],
         appBar: AppBar(
-            title: Text('${username}\'s profile page'),
-            centerTitle: true,
-            backgroundColor: Colors.green[800],
-            elevation: 0.0),
+          title: Text('${username}\'s profile page'),
+          centerTitle: true,
+          backgroundColor: Colors.green[800],
+          elevation: 0.0,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TaskerEditProfile()));
+              },
+              icon: Icon(
+                Icons.edit_outlined,
+                color: Colors.grey[300],
+              ),
+            ),
+          ],
+        ),
         //Profile page picture
         body: Padding(
             padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
@@ -136,28 +154,33 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 color: Colors.grey[1500],
               ),
               //Task Categories Display
-              SizedBox(
-                  height: 80.0,
-                  width: 1000.0,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return Card(
-                            child: SizedBox(
-                                width: 80.0,
-                                child: ListTile(
-                                  onTap: () {
-                                    TaskInfo info = TaskInfo("Task Category", index);
-                                    Navigator.push(context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TaskerTaskInfoPage(
-                                                    taskinfo: info)));
-                                  },
-                                  title: Text("test$index"),
-                                )));
-                      })),
+              Flexible(
+                  flex: 1,
+                  fit:FlexFit.loose,
+                  child: SizedBox(
+                      height: 80.0,
+                      width: 1000.0,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return Card(
+                                child: SizedBox(
+                                    width: 80.0,
+                                    child: ListTile(
+                                      onTap: () {
+                                        TaskInfo info =
+                                            TaskInfo("Task Category", index);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TaskerTaskCategory(
+                                                        taskinfo: info)));
+                                      },
+                                      title: Text("test$index"),
+                                    )));
+                          }))),
               Divider(
                 height: 20.0,
                 color: Colors.grey[1500],
@@ -174,28 +197,33 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 color: Colors.grey[1500],
               ),
               //Uploaded Photos and Videos Display
-              SizedBox(
-                  height: 80.0,
-                  width: 1000.0,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return Card(
-                            child: SizedBox(
-                                width: 80.0,
-                                child: ListTile(
-                                  onTap: () {
-                                    TaskInfo info = TaskInfo("Uploaded photos and videos", index);
-                                    Navigator.push(context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TaskerTaskInfoPage(
-                                                  taskinfo: info)));
-                                  },
-                                  title: Text("test$index"),
-                                )));
-                      })),
+              Flexible(
+                  flex: 1,
+                  fit:FlexFit.loose,
+                  child: SizedBox(
+                      height: 80.0,
+                      width: 1000.0,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return Card(
+                                child: SizedBox(
+                                    width: 80.0,
+                                    child: ListTile(
+                                      onTap: () {
+                                        TaskInfo info =
+                                            TaskInfo("Uploaded Media", index);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TaskerUploadedMedia(
+                                                        taskinfo: info)));
+                                      },
+                                      title: Text("test$index"),
+                                    )));
+                          }))),
               Divider(
                 height: 20.0,
                 color: Colors.grey[1500],
@@ -212,22 +240,25 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 color: Colors.grey[1500],
               ),
               //Task history display
-              Expanded(
+              Flexible(
+                  flex: 1,
+                  fit:FlexFit.tight,
                   child: SizedBox(
-                      height: 100.0,
+                      //height: 100.0,
                       child: ListView.builder(
                           itemCount: 20,
                           itemBuilder: (context, index) {
                             return Card(
                                 child: ListTile(
                               onTap: () {
-                                TaskInfo info = TaskInfo("Task history", index); //Placeholder
-                                Navigator.push(context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          TaskerTaskInfoPage(
-                                              //Change to tasker specific later
-                                              taskinfo: info)));
+                                TaskInfo info = TaskInfo(
+                                    "Task History", index); //Placeholder
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TaskerTaskInfoPage(
+                                            //Change to tasker specific later
+                                            taskinfo: info)));
                               },
                               title: Text("test$index"),
                             ));

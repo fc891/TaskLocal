@@ -26,15 +26,58 @@ class CustomerTaskInfoPage extends StatelessWidget {
         elevation: 0.0,
       ),
       resizeToAvoidBottomInset: false,
-      body: SafeArea(
-          child: Column(children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 30, bottom: 20),
-          // child: Text(
-          //   "",
-          //   style: TextStyle(fontSize: 20),
-          // ),
-        ),
+      body: Center(
+        child: Column(children: [
+          Column(children: <Widget>[
+            Text('Task Completed Date:',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.0,
+                  fontSize: 26.0,
+                )),
+            Text('testdate',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.0,
+                  fontSize: 16.0,
+                )),
+            Text('Tasks Completed By:',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.0,
+                  fontSize: 26.0,
+                )),
+            Text('taskername',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.0,
+                  fontSize: 16.0,
+                )),
+            Text('Task Duration:',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.0,
+                  fontSize: 26.0,
+                )),
+            Text('testduration',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.0,
+                  fontSize: 16.0,
+                )),
+            Text('Price: 20',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.0,
+                  fontSize: 26.0,
+                )),
+            Text('20',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.0,
+                  fontSize: 16.0,
+                )),
+            ]),
       ])),
     );
   }

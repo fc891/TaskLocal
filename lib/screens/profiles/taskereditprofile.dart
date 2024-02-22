@@ -3,17 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
+import 'package:tasklocal/Screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
-class CustomerEditProfile extends StatefulWidget {
-  const CustomerEditProfile({super.key});
+class TaskerEditProfile extends StatefulWidget {
+  const TaskerEditProfile({super.key});
   @override
-  State<CustomerEditProfile> createState() => _CustomerEditProfileState();
+  State<TaskerEditProfile> createState() => _TaskerEditProfileState();
 }
 
 //Customer profile edit screen
-class _CustomerEditProfileState extends State<CustomerEditProfile> {
+class _TaskerEditProfileState extends State<TaskerEditProfile> {
   var fnameController = TextEditingController();
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
@@ -28,7 +28,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
   void confirmChanges() async {
     var current = FirebaseAuth.instance.currentUser!;
 
-    var collection = FirebaseFirestore.instance.collection('Customers');
+    var collection = FirebaseFirestore.instance.collection('Taskers');
     var docSnapshot = await collection.doc(current.email!).get();
     Map<String, dynamic> data = docSnapshot.data()!;
 
@@ -37,7 +37,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     var newLastName = data['last name'];
 
     final currentDB = FirebaseFirestore.instance
-        .collection("Customers")
+        .collection("Taskers")
         .doc("${current.email}");
     FirebaseFirestore.instance.runTransaction((transaction) async {
       //Changing values based on user entry. If empty, do not change (keep same)
@@ -63,7 +63,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     );
   }
 
-//Bill's Customer edit profile screen/UI code
+//Bill's Tasker edit profile screen/UI code
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,12 +71,12 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
         backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
-          title: Text('Edit Customer Profile Page'),
+          title: Text('Edit Tasker Profile Page'),
           centerTitle: true,
           backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
             child: Column(
           children: [
