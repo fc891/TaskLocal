@@ -61,7 +61,9 @@ class _LoginPageCustomerState extends State<LoginPageCustomer> {
     return Scaffold(
       backgroundColor: Colors.green[500],
       appBar: AppBar(
-        backgroundColor: Colors.green[500],
+        title: Text('Customer Login', style: TextStyle( color: Colors.white,fontWeight: FontWeight.w600,)),
+        centerTitle: true,
+        backgroundColor: Colors.green[800],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

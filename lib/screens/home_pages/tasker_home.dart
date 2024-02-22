@@ -12,6 +12,7 @@ import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_post_service.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_tasks.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
+import 'package:tasklocal/screens/calendar/calendarfront.dart';
 
 class TaskerHomePage extends StatefulWidget {
   const TaskerHomePage({super.key});
@@ -294,7 +295,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               // directs to the messages page where users can send and receive messages
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerCalendar()),
+                MaterialPageRoute(builder: (context) => CalendarFront()),
               );
               break;
             case 4:
