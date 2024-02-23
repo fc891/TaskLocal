@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
-  final String receiverEmail;
+  final String receiverFirstName;
+  final String receiverLastName;
   final String receiverUsername;
-  const ChatPage({super.key, required this.receiverEmail, required this.receiverUsername,});
+  const ChatPage({super.key, required this.receiverFirstName, 
+  required this.receiverLastName,
+  required this.receiverUsername,});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -12,6 +15,8 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(title: Text("${widget.receiverFirstName} ${widget.receiverLastName}")),
+    );
   }
 }

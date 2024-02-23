@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/screens/messages/chat_page.dart';
 
 class MessagesHome extends StatefulWidget {
   const MessagesHome({super.key});
@@ -12,7 +13,7 @@ class MessagesHome extends StatefulWidget {
 }
 
 class _MessagesHomeState extends State<MessagesHome> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +28,11 @@ class _MessagesHomeState extends State<MessagesHome> {
     );
   }
 
-  // creates the record of taskers that the customer is contact with
-  Widget _createListOfTaskers(DocumentSnapshot document) {
+  // creates the record of taskers that the customer is in contact with
+  Widget _createListOfTaskers() {
     return StreamBuilder<QuerySnapshot>(
       // later find a way to have customers add and remove taskers to their messages page
-      stream: FirebaseFirestore.instance.collection('taskers').snapshots(),
+      stream: FirebaseFirestore.instance.collection('Taskers').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text('error');
@@ -41,7 +42,7 @@ class _MessagesHomeState extends State<MessagesHome> {
         }
         return ListView(
           children: snapshot.data!.docs.map<Widget>((doc) => _createEachListOfTaskers(doc)).toList(),
-        ) 
+        );
       },
     );
   }
@@ -51,9 +52,20 @@ class _MessagesHomeState extends State<MessagesHome> {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     // shows the entire taskers
     return ListTile(
-      title: data['email'],
+      leading: CircleAvatar(
+        child: Icon(Icons.account_circle),
+      ),
+      title: Text("${data['first name']} ${data['last name']} @${data['username']}"),
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(),))
+        Navigator.push(context, 
+          MaterialPageRoute(
+            builder: (context) => ChatPage(
+              receiverFirstName: data['first name'], 
+              receiverLastName: data['last name'],
+              receiverUsername: data['username'],
+            ),
+          )
+        );
       },
     );
   }
