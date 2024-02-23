@@ -237,10 +237,10 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
           ),
            // Richard's code
            // navigates to a page where tasker can advertise themselves
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: 'Post Service',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.add_box),
+          //   label: 'Post Service',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.work),
             label: 'My Tasks',
@@ -251,10 +251,10 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
             label: 'Calendar',
           ),
           // navigates to the messages
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.message),
-          //   label: 'Messages',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: 'Messages',
+          ),
           // navigates to the profile page
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -271,30 +271,37 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
           switch (index) {
             case 0:
               // navigates to the home page
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => TaskerHomePage()),
               );
               break;
-            case 1:
+            // case 1:
               // navigates to a page where tasker can advertise themselves
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => TaskerPostService()),
+              // );
+              // break;
+            case 1:
+              // navigates to tasker's list of tasks that they have to complete
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerPostService()),
+                MaterialPageRoute(builder: (context) => TaskerTasks()),
               );
               break;
             case 2:
               // navigates to the calendar page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerTasks()),
+                MaterialPageRoute(builder: (context) => TaskerCalendar()),
               );
               break;
             case 3:
               // directs to the messages page where users can send and receive messages
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerCalendar()),
+                MaterialPageRoute(builder: (context) => TaskerMessages()),
               );
               break;
             case 4:
