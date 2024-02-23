@@ -3,6 +3,7 @@ import 'package:tasklocal/Screens/authorization/tasker_auth.dart';
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tasklocal/Screens/authorization/onboardingpage.dart';
+import 'package:tasklocal/screens/messages/messages_home.dart';
 import 'firebase_options.dart';
 
 //CUSTOMER IMPORTS
@@ -34,30 +35,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskInfo defaultinfo = TaskInfo("Default", 0);
     return MaterialApp(
-        title: 'TaskLocal',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-          useMaterial3: true,
-        ),
-        // Initial page that is shown when program is loaded up
-        // >FOR TESTING: change initialRoute to an option from routing options below
-        initialRoute: '/home',
-        // Routing between pages
-        routes: {
-          //'/': (context) => LoadScreen(), //loading screen (WIP)
-          '/home': (context) => OnboardingPage(),
-          '/customerregistration': (context) => CustomerRegistration(),
-          '/taskerregistration': (context) => TaskerRegistration(
-                onTap: () {},
-              ),
-          '/customerhomepage': (context) => CustomerHomePage(),
-          '/taskerhomepage': (context) => TaskerHomePage(),
-          '/customerprofilepage': (context) => CustomerProfilePage(),
-          '/taskerprofilepage': (context) => TaskerProfilePage(),
-          '/customertaskinfopage': (context) => CustomerTaskInfoPage(taskinfo:defaultinfo),
-          '/taskertaskinfopage': (context) => TaskerTaskInfoPage(taskinfo: defaultinfo),
-
-        });
+      title: 'TaskLocal',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        useMaterial3: true,
+      ),
+      // Initial page that is shown when program is loaded up
+      // >FOR TESTING: change initialRoute to an option from routing options below
+      initialRoute: '/home',
+      // Routing between pages
+      routes: {
+        //'/': (context) => LoadScreen(), //loading screen (WIP)
+        '/home': (context) => OnboardingPage(),
+        '/customerregistration': (context) => CustomerRegistration(),
+        '/taskerregistration': (context) => TaskerRegistration(onTap: () {}),
+        '/customerhomepage': (context) => CustomerHomePage(),
+        '/taskerhomepage': (context) => TaskerHomePage(),
+        '/customerprofilepage': (context) => CustomerProfilePage(),
+        '/taskerprofilepage': (context) => TaskerProfilePage(),
+        '/customertaskinfopage': (context) => CustomerTaskInfoPage(taskinfo:defaultinfo),
+        '/taskertaskinfopage': (context) => TaskerTaskInfoPage(taskinfo: defaultinfo),
+        '/messageshome': (context) => MessagesHome(),
+      },
+    );
   }
 }
