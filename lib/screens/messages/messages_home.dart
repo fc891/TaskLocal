@@ -13,7 +13,7 @@ class MessagesHome extends StatefulWidget {
 }
 
 class _MessagesHomeState extends State<MessagesHome> {
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class _MessagesHomeState extends State<MessagesHome> {
   Widget _createListOfTaskers() {
     return StreamBuilder<QuerySnapshot>(
       // later find a way to have customers add and remove taskers to their messages page
-      stream: FirebaseFirestore.instance.collection('Taskers').snapshots(),
+      stream: FirebaseFirestore.instance.collection('Customers').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text('error');
@@ -51,23 +51,26 @@ class _MessagesHomeState extends State<MessagesHome> {
   Widget _createEachListOfTaskers(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     // shows the entire taskers
-    return ListTile(
-      leading: CircleAvatar(
-        child: Icon(Icons.account_circle),
-      ),
-      title: Text("@${data['username']} ${data['first name']} ${data['last name']} "),
-      onTap: () {
-        Navigator.push(context, 
-          MaterialPageRoute(
-            builder: (context) => ChatPage(
-              receiverFirstName: data['first name'],
-              receiverLastName: data['last name'],
-              receiverUsername: data['username'],
-              receiverEmail: data['email'],
-            ),
-          )
-        );
-      },
-    );
+    if(_auth.currentUser!.email != data['email']) {    
+        return ListTile(
+        leading: CircleAvatar(
+          child: Icon(Icons.account_circle),
+        ),
+        title: Text("@${data['username']} ${data['first name']} ${data['last name']} "),
+        onTap: () {
+          Navigator.push(context, 
+            MaterialPageRoute(
+              builder: (context) => ChatPage(
+                receiverFirstName: data['first name'],
+                receiverLastName: data['last name'],
+                receiverUsername: data['username'],
+                receiverEmail: data['email'],
+              ),
+            )
+          );
+        },
+      );
+    }
+    return Container();
   }
 }
