@@ -35,12 +35,37 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(title: Text("${widget.receiverFirstName} ${widget.receiverLastName}")),
       body: Column(
         children: [        
-          Expanded(
-            child: _createMessageList(),
-          ),
+          // Expanded(
+          //   child: ,
+          // ),
+
+
+
+          //Get the user's input for the message
           Row(
             children: [
-              Expanded
+              Expanded(
+                child: TextField(
+                  controller: _messageController,
+                  decoration: InputDecoration(
+                    hintText: 'Type Message...',
+                    filled: true,
+                    fillColor: Colors.grey[250],
+                    // Richard's code
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black), 
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    // Richard's code
+                    // border is black by default and when click the search bar border is white
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                ),
+              ),
+              IconButton(onPressed: sendMessage, icon: Icon(Icons.arrow_upward, size: 40)),
             ],
           ),
         ],
