@@ -20,20 +20,19 @@ class ChatFunctionality extends ChangeNotifier {
       timestamp: timestamp)
     ;
 
-    // 
     List<String?> emails = [currUserEmail, receiverEmail];
     emails.sort();
     String chatAreaEmail = emails.join("_");
-    await _fireStore.collection("chat area").doc(chatAreaEmail).collection('messages').add(newMessage.toMap());
+    await _fireStore.collection("Chatting Area").doc(chatAreaEmail).collection('messages').add(newMessage.toMap());
   }
 
   // Retrieve messages
   Stream<QuerySnapshot> getMessages(String firstUserEmail, secondUserEmail) {
-    List<String?> emails = [firstUserEmail, secondUserEmail];
+    List<String> emails = [firstUserEmail, secondUserEmail];
     emails.sort();
     String chatAreaEmail = emails.join("_"); 
-    return _fireStore.collection('chat area').doc(chatAreaEmail).collection('messages')
-    .orderBy('timestamp', descending: false).snapshots();
+    return _fireStore.collection('Chatting Area').doc(chatAreaEmail).collection('messages')
+          .orderBy('timestamp', descending: false).snapshots();
   }
 
 }
