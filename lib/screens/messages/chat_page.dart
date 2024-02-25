@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/components/chat_bubble.dart';
 import 'package:tasklocal/screens/messages/chat_functionality.dart';
 
 class ChatPage extends StatefulWidget {
@@ -45,74 +46,94 @@ class _ChatPageState extends State<ChatPage> {
         elevation: 0.0,
       ),
       body: Column(
-        children: [        
+        children: [
           Expanded(
             child: _createMessageList(),
           ),
-
           //Get the user's input for the message
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _messageController,
-                  decoration: InputDecoration(
-                    hintText: 'Type Message...',
-                    filled: true,
-                    fillColor: Colors.grey[250],
-                    // Richard's code
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black), 
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    // Richard's code
-                    // border is black by default and when click the search bar border is white
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(10.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      hintText: 'Text Message',
+                      filled: true,
+                      fillColor: Colors.grey[250],
+                      // Richard's code
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black), 
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      // Richard's code
+                      // border is black by default and when click the search bar border is white
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              IconButton(onPressed: sendMessage, icon: Icon(Icons.arrow_upward, size: 40)),
-            ],
+                IconButton(onPressed: sendMessage, icon: Icon(Icons.arrow_upward, size: 40)),
+              ],
+            ),
           ),
+          SizedBox(height: 20),
         ],
       ),
     );
   }
 
   Widget _createMessageList() {
-    return StreamBuilder(
-      stream: _chatFunctionality.getMessages(widget.receiverEmail, _firebaseAuth.currentUser!.email), 
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error${snapshot.error}');
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification is OverscrollNotification) {
+          // Scroll the ListView down when overscroll occurs
+          if (notification.overscroll > 0) {
+            Scrollable.ensureVisible(
+              context,
+              alignment: 1.0,
+              duration: Duration(milliseconds: 200),
+            );
+          }
         }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text('Loading...');
-        }
-        return ListView(
-          children: snapshot.data!.docs.map(
-            (document) => _createMessageItem(document)).toList(),
-        );
+        return false;
       },
+      child: StreamBuilder(
+        stream: _chatFunctionality.getMessages(widget.receiverEmail, _firebaseAuth.currentUser!.email), 
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error${snapshot.error}');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text('Loading...');
+          }
+          return ListView(
+            children: snapshot.data!.docs.map(
+              (document) => _createMessageItem(document)).toList(),
+          );
+        },
+      ),
     );
   }
 
   Widget _createMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    // align the messages to the right if sender, otherwise to the left
+    // align the messages to the right if sender, to the left if receiver
     var alignment = (data['senderEmail'] == _firebaseAuth.currentUser!.email) ? Alignment.centerRight : Alignment.centerLeft;
-
     return Container(
       alignment: alignment,
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
+          crossAxisAlignment: (data['senderEmail'] == _firebaseAuth.currentUser!.email) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          // mainAxisAlignment: (data['senderEmail'] == _firebaseAuth.currentUser!.email) ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             Text(data['senderEmail']), 
-            Text(data['message'])
+            SizedBox(height: 5),
+            ChatBubble(message: data['message']),
           ],
         ),
       ),
