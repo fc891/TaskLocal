@@ -52,7 +52,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
           //Get the user's input for the message
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
             child: Row(
               children: [
                 Expanded(
@@ -80,43 +80,51 @@ class _ChatPageState extends State<ChatPage> {
               ],
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
         ],
       ),
     );
   }
+final ScrollController _scrollController = ScrollController();
 
   Widget _createMessageList() {
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is OverscrollNotification) {
-          // Scroll the ListView down when overscroll occurs
+          // Scroll the ListView to the bottom when overscroll occurs (keyboard is shown)
           if (notification.overscroll > 0) {
-            Scrollable.ensureVisible(
-              context,
-              alignment: 1.0,
-              duration: Duration(milliseconds: 200),
-            );
+            _scrollToBottom();
           }
         }
         return false;
       },
-      child: StreamBuilder(
-        stream: _chatFunctionality.getMessages(widget.receiverEmail, _firebaseAuth.currentUser!.email), 
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error${snapshot.error}');
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text('Loading...');
-          }
-          return ListView(
-            children: snapshot.data!.docs.map(
-              (document) => _createMessageItem(document)).toList(),
-          );
-        },
+      child: SingleChildScrollView(
+        reverse: true, // Display messages from bottom to top
+        controller: _scrollController,
+        child: StreamBuilder(
+          stream: _chatFunctionality.getMessages(widget.receiverEmail, _firebaseAuth.currentUser!.email), 
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error${snapshot.error}');
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text('Loading...');
+            }
+            return Column(
+              children: snapshot.data!.docs.map(
+                (document) => _createMessageItem(document)).toList(),
+            );
+          },
+        ),
       ),
     );
+  }
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
   }
 
   Widget _createMessageItem(DocumentSnapshot document) {
@@ -126,7 +134,7 @@ class _ChatPageState extends State<ChatPage> {
     return Container(
       alignment: alignment,
       child: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Column(
           crossAxisAlignment: (data['senderEmail'] == _firebaseAuth.currentUser!.email) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           // mainAxisAlignment: (data['senderEmail'] == _firebaseAuth.currentUser!.email) ? MainAxisAlignment.end : MainAxisAlignment.start,
