@@ -5,12 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
-//Bill's Task Info Screen
+//Bill's Tasker Task Info Screen
 class TaskerTaskInfoPage extends StatelessWidget {
   const TaskerTaskInfoPage({super.key, required this.taskinfo});
   final TaskInfo taskinfo;
 
-//Bill's Tasker task info screen
+//Bill's Tasker Task Info Screen
   @override
   Widget build(BuildContext context) {
     String taskcategory = taskinfo.taskCategory;
