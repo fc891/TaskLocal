@@ -7,13 +7,11 @@ import 'package:tasklocal/screens/messages/chat_functionality.dart';
 class ChatPage extends StatefulWidget {
   final String receiverFirstName;
   final String receiverLastName;
-  final String receiverUsername;
   final String receiverEmail;
   const ChatPage({
     super.key, 
     required this.receiverFirstName, 
     required this.receiverLastName,
-    required this.receiverUsername,
     required this.receiverEmail
   });
 
@@ -25,13 +23,29 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ChatFunctionality _chatFunctionality = ChatFunctionality();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final ScrollController _scrollController = ScrollController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void sendMessage() async {
+    List<DocumentSnapshot> senderInfoList = await _retrieveSenderInfo();
+    var currUserData = senderInfoList[0].data() as Map<String, dynamic>;
+
     // if there is no message
     if (_messageController.text.isNotEmpty) {
-      await _chatFunctionality.sendMessage(widget.receiverEmail, _messageController.text);
+      await _chatFunctionality.sendMessage(widget.receiverEmail, _messageController.text, currUserData['first name'], currUserData['last name']);
       _messageController.clear();
     }
+  }
+  Future<List<DocumentSnapshot>> _retrieveSenderInfo() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('Customers').get();
+    // List<DocumentSnapshot> docs = snapshot.docs;
+    
+    // Find the current user/sender's document and return it as a List
+    List<DocumentSnapshot> currUserDoc = snapshot.docs.where((doc) {
+      Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
+      return _auth.currentUser!.email == data['email'];
+    }).toList();
+    return currUserDoc;
   }
 
   @override
@@ -85,7 +99,6 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-final ScrollController _scrollController = ScrollController();
 
   Widget _createMessageList() {
     return NotificationListener<ScrollNotification>(
@@ -137,9 +150,8 @@ final ScrollController _scrollController = ScrollController();
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Column(
           crossAxisAlignment: (data['senderEmail'] == _firebaseAuth.currentUser!.email) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          // mainAxisAlignment: (data['senderEmail'] == _firebaseAuth.currentUser!.email) ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
-            Text(data['senderEmail']), 
+            Text("${data['senderFirstName']} ${data['senderLastName']}"),
             SizedBox(height: 5),
             ChatBubble(message: data['message']),
           ],

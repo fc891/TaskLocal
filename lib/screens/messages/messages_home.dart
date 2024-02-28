@@ -56,14 +56,13 @@ class _MessagesHomeState extends State<MessagesHome> {
         leading: CircleAvatar(
           child: Icon(Icons.account_circle),
         ),
-        title: Text("@${data['username']} ${data['first name']} ${data['last name']} "),
+        title: Text("${data['first name']} ${data['last name']} @${data['username']}"),
         onTap: () {
           Navigator.push(context, 
             MaterialPageRoute(
               builder: (context) => ChatPage(
                 receiverFirstName: data['first name'],
                 receiverLastName: data['last name'],
-                receiverUsername: data['username'],
                 receiverEmail: data['email'],
               ),
             )

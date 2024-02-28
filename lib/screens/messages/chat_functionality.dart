@@ -8,13 +8,15 @@ class ChatFunctionality extends ChangeNotifier {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   
   // allow users to send a message
-  Future<void> sendMessage(String receiverEmail, String message) async {
+  Future<void> sendMessage(String receiverEmail, String message, String senderFirstName, String senderLastName) async {
     // retrieve the user information
     final String? currUserEmail = _firebaseAuth.currentUser!.email;
     final Timestamp timestamp = Timestamp.now();
 
     Message newMessage = Message(
       senderEmail: currUserEmail,
+      senderFirstName: senderFirstName,
+      senderLastName: senderLastName,
       receiverEmail: receiverEmail,
       message: message, 
       timestamp: timestamp)
