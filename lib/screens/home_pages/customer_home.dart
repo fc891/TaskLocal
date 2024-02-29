@@ -6,6 +6,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
+import 'package:tasklocal/screens/messages/messages_home.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
 // import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
@@ -159,7 +160,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               // Redirect to messages
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerMessages()),
+                MaterialPageRoute(builder: (context) => MessagesHome()),
               );
               break;
             case 2:

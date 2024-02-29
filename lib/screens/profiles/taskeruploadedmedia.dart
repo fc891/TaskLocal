@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
-//Bill's Tasker Uploadaed Media Screen
+//Bill's Tasker Uploaded Media Screen
 class TaskerUploadedMedia extends StatelessWidget {
   const TaskerUploadedMedia({super.key, required this.taskinfo});
   final TaskInfo taskinfo; //WIP: convert this to some sort of image/video once implemented in the future
