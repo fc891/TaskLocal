@@ -1,12 +1,14 @@
 // Customer Home Page UI/Screen
 // Contributors: Eric C.
 
+// TODO: add 'my tasks'
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
 import 'package:tasklocal/screens/messages/messages_home.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
-import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
+// import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
 
