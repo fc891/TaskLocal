@@ -5,11 +5,13 @@
 import 'dart:ffi';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/profiles/customertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/profiles/customereditprofile.dart';
+import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -27,6 +29,11 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   String lastname = "Last";
   String date = 'dd-MM-yyyy';
   int requestscompleted = 0;
+  final dB = FirebaseStorage.instance;
+  String defaultProfilePictureURL =
+      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/tasklocaltransparent.png?alt=media&token=efd2ce92-36a6-44e1-ac88-c8ac0d5f6928";
+  late String profilePictureURL;
+  bool _hasProfilePicture = false;
 
   //WIP
   //Bill's get user's info using testid (user email right now)
@@ -55,12 +62,30 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     requestscompleted = 1;
   }
 
+  //Bill's get user's profile picture using id
+  void getProfilePicture(String id) async {
+    try {
+      final ref = dB.ref().child("{$id}profilepicture.jpg");
+      final url = await ref.getDownloadURL();
+      setState(() {
+        profilePictureURL = url;
+        _hasProfilePicture = true;
+        globals.checkProfilePicture = false; //Set to false after one check so that this function does not run multiple times
+      });
+    } catch (err) {
+      _hasProfilePicture = false;
+      globals.checkProfilePicture = false; //Set to false after one check so that this function does not run multiple times
+    }
+  }
+
   //Bill's function to run all getters above to initialize variables
-  void runGetters() async {
+  void runGetters() {
     var current = FirebaseAuth.instance
         .currentUser!; //Use to get the info of the currently logged in user
     String testid = current.email!; //Get email of current user
-
+    if (globals.checkProfilePicture) {
+      getProfilePicture(testid);
+    }
     getUserInfo(testid);
     getJoinDate(testid);
     getRequestsCompleted(testid);
@@ -83,7 +108,10 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerEditProfile()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CustomerEditProfile()));
               },
               icon: Icon(
                 Icons.edit_outlined,
@@ -95,13 +123,36 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
         //Customer profile picture
         body: Padding(
             padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-            child: Column(children: <Widget>[
+            child: Column(children: [
               Center(
-                child: CircleAvatar(
-                  child: Image.asset('lib/images/tasklocaltransparent.png'),
-                  radius: 40.0,
-                ),
-              ),
+                  child: Stack(
+                children: <Widget>[
+                  Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 4,
+                            color: Colors.white,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                color: Colors.green)
+                          ],
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: _hasProfilePicture
+                                ? NetworkImage(
+                                    profilePictureURL) //If user has selected an image from their gallery, display it
+                                : NetworkImage(
+                                        defaultProfilePictureURL) //If user has NOT selected an image from their gallery, display their original profile picture
+                                    as ImageProvider,
+                            fit: BoxFit.cover,
+                          ))),
+                ],
+              )),
               Center(
                 //Username text
                 child: Text('$firstname $lastname',
