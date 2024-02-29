@@ -4,6 +4,7 @@ import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tasklocal/Screens/authorization/onboardingpage.dart';
 import 'package:tasklocal/screens/messages/messages_home.dart';
+import 'package:tasklocal/screens/calendar/calendarfront.dart';
 import 'firebase_options.dart';
 
 //CUSTOMER IMPORTS

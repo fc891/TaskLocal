@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tasklocal/screens/calendar/addapointment.dart';
+import 'package:tasklocal/screens/calendar/setavailability.dart';
+import 'package:tasklocal/screens/calendar/viewschedule.dart';
 
-class ViewSchedule extends StatefulWidget {
-  const ViewSchedule({Key? key}) : super(key: key);
+class CalendarFront extends StatefulWidget {
+  const CalendarFront({Key? key}) : super(key: key);
   @override
-  State<ViewSchedule> createState() => _CalendarFrontState();
+  State<CalendarFront> createState() => _CalendarFrontState();
 }
 
-class _CalendarFrontState extends State<ViewSchedule> {
+class _CalendarFrontState extends State<CalendarFront> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -64,7 +67,29 @@ class _CalendarFrontState extends State<ViewSchedule> {
               ),
             ),
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 100),
+          Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: DropdownButton<String>(
+              items: <String>['Add Appointment', 'Set Availability', 'View Schedule']
+                  .map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? value) {
+                if (value == 'Add Appointment') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddAppointment()));
+                } else if (value == 'Set Availability') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SetAvailability()));
+                } else if (value == 'View Schedule') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ViewSchedule()));
+                }
+              },
+              hint: Text('Select an option'),
+            ),
+          ),
         ],
       ),
     );

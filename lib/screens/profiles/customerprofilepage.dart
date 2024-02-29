@@ -128,7 +128,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               ]),
               //Divider (line)
               Divider(
-                height: 20.0,
+                height: 10.0,
                 color: Colors.grey[1500],
               ),
               //History of requested tasks
@@ -139,7 +139,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                       fontSize: 26.0,
                       fontWeight: FontWeight.bold)),
               Divider(
-                height: 20.0,
+                height: 10.0,
                 color: Colors.grey[1500],
               ),
               //Request history display

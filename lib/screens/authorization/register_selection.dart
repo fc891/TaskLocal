@@ -14,7 +14,7 @@ class RegisterSelection extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.green[500],
       appBar: AppBar(
-        backgroundColor: Colors.green[500],
+        backgroundColor: Colors.green[800],
       ),
       body: SafeArea(
         child: Center(
