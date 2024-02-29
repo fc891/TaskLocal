@@ -49,6 +49,7 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
         // Create a document in the Cloud Firestore to store the user info
         await FirebaseFirestore.instance.collection("Taskers").doc(userCredential.user!.email).set(
           {
+            'email' : userCredential.user!.email,
             'first name' : fnameController.text,
             'last name' : lnameController.text,
             'username' : usernameController.text
