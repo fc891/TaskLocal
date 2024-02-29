@@ -6,8 +6,8 @@ import 'dart:ffi';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
 import 'package:tasklocal/screens/profiles/taskereditprofile.dart';
 import 'package:tasklocal/screens/profiles/taskertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskeruploadedmedia.dart';
@@ -31,6 +31,8 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   String date = 'dd-MM-yyyy';
   int taskscompleted = 0;
   double rating = 5.0;
+  final dB = FirebaseStorage.instance;
+  String profilePictureURL = "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/tasklocaltransparent.png?alt=media&token=efd2ce92-36a6-44e1-ac88-c8ac0d5f6928";
 
   //WIP
   //Bill's get user's info using testid (username right now)
@@ -45,6 +47,14 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     });
   }
 
+  void getProfilePicture(String id) async {
+    final ref = dB.ref().child("{$id}profilepicture.jpg");
+    final url = await ref.getDownloadURL();
+    setState(() {
+      profilePictureURL = url;
+    });
+  }
+
   //WIP
   //Bill's get user's join date using id
   void getJoinDate(String id) async {
@@ -55,19 +65,20 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
 
   //WIP
   //Bill's get user's number of requested tasks completed using id
-  void getTaskssCompleted(String id) async {
+  void getTasksCompleted(String id) async {
     taskscompleted = 10;
   }
 
   //Bill's function to run all getters above to initialize variables
-  void runGetters() {
+  void runGetters(){
     var current = FirebaseAuth.instance
         .currentUser!; //Use to get the info of the currently logged in user
     String testid = current.email!; //Get email of current user
 
+    getProfilePicture(testid);
     getUserInfo(testid);
     getJoinDate(testid);
-    getTaskssCompleted(testid);
+    getTasksCompleted(testid);
   }
 
   //Bill's Tasker profile page screen/UI code
@@ -97,16 +108,34 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
             ),
           ],
         ),
-        //Profile page picture
+        //Tasker profile picture
         body: Padding(
             padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-            child: Column(children: <Widget>[
+            child: Column(children: [
               Center(
-                child: CircleAvatar(
-                  child: Image.asset('lib/images/tasklocaltransparent.png'),
-                  radius: 40.0,
-                ),
-              ),
+                  child: Stack(
+                children: <Widget>[
+                  Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 4,
+                            color: Colors.white,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                color: Colors.green)
+                          ],
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(profilePictureURL),
+                          ))),
+                ],
+              )),
               Center(
                 //Username text
                 child: Text('$firstname $lastname',

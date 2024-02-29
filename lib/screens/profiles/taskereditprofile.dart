@@ -1,10 +1,15 @@
 // ignore_for_file: prefer_const_constructor
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tasklocal/Screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
+import 'package:tasklocal/screens/profiles/pickimage.dart';
 
 class TaskerEditProfile extends StatefulWidget {
   const TaskerEditProfile({super.key});
@@ -18,12 +23,54 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
   var emailController = TextEditingController();
+  bool _selectedImage = false;
+  String profilePictureURL =
+      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/tasklocaltransparent.png?alt=media&token=efd2ce92-36a6-44e1-ac88-c8ac0d5f6928";
+
+  final dB = FirebaseStorage.instance;
+
+  Uint8List? _image;
 
   //WIP: Controllers to edit password
   // var passwordController = TextEditingController();
   // var confirmPasswordController = TextEditingController();
   // bool _obscurePassword = true;
   // bool _obscureConfirmPassword = true;
+
+  void selectImage() async {
+    //Pick image from device and convert to Uint8List type
+    Uint8List image = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = image;
+      _selectedImage = true;
+    });
+  }
+
+  void setImage() async {
+    var current = FirebaseAuth.instance.currentUser!;
+    var currentemail = current.email;
+
+    // Create a storage reference from our app
+    final storageRef = FirebaseStorage.instance.ref();
+    // Create a reference to "profilepicture.jpg"
+    final profileRef = storageRef.child("{$currentemail}profilepicture.jpg");
+    // Create a reference to 'images/profilepicture.jpg'
+    final profileImageRef =
+        storageRef.child("images/{$currentemail}profilepicture.jpg");
+    // While the file names are the same, the references point to different files
+    assert(profileRef.name == profileImageRef.name);
+    assert(profileRef.fullPath != profileImageRef.fullPath);
+    //Insert to Firebase storage
+    await profileRef.putData(_image!);
+  }
+
+  void getProfilePicture(String id) async {
+    final ref = dB.ref().child("{$id}profilepicture.jpg");
+    final url = await ref.getDownloadURL();
+    setState(() {
+      profilePictureURL = url;
+    });
+  }
 
   void confirmChanges() async {
     var current = FirebaseAuth.instance.currentUser!;
@@ -51,11 +98,15 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
         newLastName = lnameController.text;
       }
 
+      setImage();
+      getProfilePicture(current.email!);
+
       //Update the current user based on entered information
       transaction.update(currentDB, {
         "username": newUserName,
         "first name": newFirstName,
         "last name": newLastName,
+        "profile picture": profilePictureURL,
       });
     }).then(
       (value) => print("DocumentSnapshot successfully updated!"),
@@ -66,6 +117,8 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
 //Bill's Tasker edit profile screen/UI code
   @override
   Widget build(BuildContext context) {
+    var current = FirebaseAuth.instance.currentUser!;
+    getProfilePicture(current.email!);
     return Scaffold(
         //Background color of UI
         backgroundColor: Colors.green[500],
@@ -76,13 +129,58 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
           backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
-        resizeToAvoidBottomInset: true,
+        //Tasker profile picture
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Column(
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 30, bottom: 20),
             ),
+            Center(
+                child: Stack(
+              children: <Widget>[
+                Container(
+                    width: 130,
+                    height: 130,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 4,
+                          color: Colors.white,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              color: Colors.green)
+                        ],
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: _selectedImage
+                              ? MemoryImage(_image!) //If user has selected an image from their gallery, display it
+                              : NetworkImage(profilePictureURL) //If user has NOT selected an image from their gallery, display their original profile picture
+                                  as ImageProvider,
+                          fit: BoxFit.cover,
+                        ))),
+                Positioned(
+                    bottom: 0.0,
+                    right: 0.0,
+                    child: Container(
+                        height: 40.0,
+                        width: 40.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(width: 1, color: Colors.white),
+                          color: Colors.white,
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.edit, color: Colors.grey),
+                          onPressed: () {
+                            selectImage();
+                          },
+                        ))),
+              ],
+            )),
             //First name entry field
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 37, vertical: 10),
