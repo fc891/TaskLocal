@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         ),
         // Initial page that is shown when program is loaded up
         // >FOR TESTING: change initialRoute to an option from routing options below
-        initialRoute: '/home',
+        initialRoute: '/customerhomepage',
         // Routing between pages
         routes: {
           //'/': (context) => LoadScreen(), //loading screen (WIP)
