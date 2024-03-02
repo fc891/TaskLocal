@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/profiles/pickimage.dart';
+import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
 class CustomerEditProfile extends StatefulWidget {
   const CustomerEditProfile({super.key});
@@ -23,6 +24,11 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
   var emailController = TextEditingController();
+  String profilePictureURL =
+      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/tasklocaltransparent.png?alt=media&token=efd2ce92-36a6-44e1-ac88-c8ac0d5f6928";
+
+  final dB = FirebaseStorage.instance;
+  bool _setProfilePicture = false;
 
   Uint8List? _image;
 
@@ -31,6 +37,43 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
   // var confirmPasswordController = TextEditingController();
   // bool _obscurePassword = true;
   // bool _obscureConfirmPassword = true;
+
+  void selectImage() async {
+    //Pick image from device and convert to Uint8List type
+    Uint8List image = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = image;
+      _setProfilePicture = true;
+    });
+  }
+
+  void setImage() async {
+    var current = FirebaseAuth.instance.currentUser!;
+    var currentemail = current.email;
+
+    // Create a storage reference from our app
+    final storageRef = FirebaseStorage.instance.ref();
+    // Create a reference to "profilepicture.jpg"
+    final profileRef = storageRef.child("{$currentemail}profilepicture.jpg");
+    // Create a reference to 'images/profilepicture.jpg'
+    final profileImageRef =
+        storageRef.child("images/{$currentemail}profilepicture.jpg");
+    // While the file names are the same, the references point to different files
+    assert(profileRef.name == profileImageRef.name);
+    assert(profileRef.fullPath != profileImageRef.fullPath);
+    //Insert to Firebase storage
+    await profileRef.putData(_image!);
+
+    globals.checkProfilePicture = true; //Set to true so that the new profile picture is displayed on the profile page after changes are confirmed
+  }
+
+  void getProfilePicture(String id) async {
+    final ref = dB.ref().child("{$id}profilepicture.jpg");
+    final url = await ref.getDownloadURL();
+    setState(() {
+      profilePictureURL = url;
+    });
+  }
 
   void confirmChanges() async {
     var current = FirebaseAuth.instance.currentUser!;
@@ -58,13 +101,15 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
         newLastName = lnameController.text;
       }
 
+      setImage();
+      getProfilePicture(current.email!);
+
       //Update the current user based on entered information
       transaction.update(currentDB, {
         "username": newUserName,
         "first name": newFirstName,
         "last name": newLastName,
-        "profile picture":
-            'https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/asaur.png?alt=media&token=29af6d0f-4385-4afa-a460-43b8ab1fa312',
+        "profile picture": profilePictureURL,
       });
     }).then(
       (value) => print("DocumentSnapshot successfully updated!"),
@@ -72,32 +117,11 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     );
   }
 
-  void selectImage() async {
-    
-    //Pick image from device and convert to Uint8List type
-    Uint8List image = await pickImage(ImageSource.gallery);
-    setState(() {
-      _image = image;
-    });
-
-    var current = FirebaseAuth.instance.currentUser!;
-    var currentemail = current.email;
-    // Create a storage reference from our app
-    final storageRef = FirebaseStorage.instance.ref();
-    // Create a reference to "profilepicture.jpg"
-    final profileRef = storageRef.child("{$currentemail}profilepicture.jpg");
-    // Create a reference to 'images/profilepicture.jpg'
-    final profileImageRef = storageRef.child("images/{$currentemail}profilepicture.jpg");
-    // While the file names are the same, the references point to different files
-    assert(profileRef.name == profileImageRef.name);
-    assert(profileRef.fullPath != profileImageRef.fullPath);
-    //Insert to Firebase storage
-    await profileRef.putData(_image!);
-  }
-
 //Bill's Customer edit profile screen/UI code
   @override
   Widget build(BuildContext context) {
+    var current = FirebaseAuth.instance.currentUser!;
+    getProfilePicture(current.email!);
     return Scaffold(
         //Background color of UI
         backgroundColor: Colors.green[500],
@@ -108,6 +132,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
           backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
+        //Customer profile picture
         resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Column(
@@ -115,7 +140,6 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
             const Padding(
               padding: EdgeInsets.only(top: 30, bottom: 20),
             ),
-            //Customer profile picture
             Center(
                 child: Stack(
               children: <Widget>[
@@ -131,13 +155,17 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                           BoxShadow(
                               spreadRadius: 2,
                               blurRadius: 10,
-                              color: Colors.grey)
+                              color: Colors.green)
                         ],
                         shape: BoxShape.circle,
                         image: DecorationImage(
+                          image: _setProfilePicture
+                              ? MemoryImage(
+                                  _image!) //If user has selected an image from their gallery, display it
+                              : NetworkImage(
+                                      profilePictureURL) //If user has NOT selected an image from their gallery, display their original profile picture
+                                  as ImageProvider,
                           fit: BoxFit.cover,
-                          image: NetworkImage(
-                              'https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/asaur.png?alt=media&token=29af6d0f-4385-4afa-a460-43b8ab1fa312'),
                         ))),
                 Positioned(
                     bottom: 0.0,
