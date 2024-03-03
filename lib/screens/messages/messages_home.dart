@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/messages/chat_page.dart';
+import 'package:tasklocal/screens/messages/msg_list_to_add.dart';
 
 class MessagesHome extends StatefulWidget {
   const MessagesHome({super.key});
@@ -24,6 +25,20 @@ class _MessagesHomeState extends State<MessagesHome> {
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MsgListToAdd())
+              );
+            },
+            icon: Icon(
+              Icons.message,
+              color: Colors.grey[300],
+            ),
+          ),
+        ],
       ),
       body: _createListOfTaskers(),
     );
