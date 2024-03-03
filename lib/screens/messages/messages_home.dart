@@ -14,6 +14,7 @@ class MessagesHome extends StatefulWidget {
 
 class _MessagesHomeState extends State<MessagesHome> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -27,25 +28,65 @@ class _MessagesHomeState extends State<MessagesHome> {
       body: _createListOfTaskers(),
     );
   }
+  // original
+  //   Widget _createListOfTaskers() {
+  //   return StreamBuilder<QuerySnapshot>(
+  //     // later find a way to have customers add and remove taskers to their messages page
+  //     stream: FirebaseFirestore.instance.collection('Customers').doc(_auth.currentUser!.email).snapshots(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.hasError) {
+  //         return const Text('error');
+  //       }
+  //       if (snapshot.connectionState == ConnectionState.waiting) {
+  //         return const Text('');
+  //       }
+  //       return ListView(
+  //         children: snapshot.data!.docs.map<Widget>((doc) => _createEachListOfTaskers(doc)).toList(),
+  //       );
+  //     },
+  //   );
+  // }
 
-  // creates the record of taskers that the customer is in contact with
   Widget _createListOfTaskers() {
     return StreamBuilder<QuerySnapshot>(
-      // later find a way to have customers add and remove taskers to their messages page
-      stream: FirebaseFirestore.instance.collection('Customers').snapshots(),
+      stream: FirebaseFirestore.instance.collection('Customers').doc(_auth.currentUser!.email).collection('Message Taskers').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Text('error');
+          return const Text('Error');
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('');
+          return CircularProgressIndicator();
         }
+        // Reference to the user's document
+        DocumentReference userDocRef = _fireStore.collection('Customers').doc(_auth.currentUser!.email);
+        
+        // Check if the 'messages' collection exists in the user's document
+        userDocRef.collection('Message Taskers').get().then((querySnapshot) {
+          if (querySnapshot.size == 0) {
+            // 'messages' collection doesn't exist, create it
+            // userDocRef.collection('Message Taskers').doc('placeholder').set({});
+            userDocRef.collection('Message Taskers').doc('placeholder');
+          }
+        });
+
+        // // Extracting documents from the snapshot
+        // final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+        // // Mapping documents to widgets using _createEachListOfTaskers
+        // final List<Widget> widgets = documents.map((doc) => _createEachListOfTaskers(doc)).toList();
+
         return ListView(
-          children: snapshot.data!.docs.map<Widget>((doc) => _createEachListOfTaskers(doc)).toList(),
+          children: snapshot.data!.docs.map((doc) => _createEachListOfTaskers(doc)).toList(),
         );
+        // final userData = snapshot.data!.data() as Map<String, dynamic>;
+        // final taskersData = userData['taskers'] ?? []; // Assuming 'taskers' is a list
+        // return ListView(
+        //   // children: snapshot.data!.docs.map<Widget>((doc) => _createEachListOfTaskers(doc)).toList(),
+        //   children: taskersData.map<Widget>((tasker) => _createEachListOfTaskers(tasker)).toList(),
+        // );
       },
     );
   }
+
 
   // create each taskers record object
   Widget _createEachListOfTaskers(DocumentSnapshot document) {
