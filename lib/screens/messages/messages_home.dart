@@ -64,55 +64,55 @@ class _MessagesHomeState extends State<MessagesHome> {
 
   Widget _createListOfTaskers() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('Customers').doc(_auth.currentUser!.email).collection('Message Taskers').snapshots(),
+      stream: _fireStore.collection('Customers').doc(_auth.currentUser!.email).collection('Message Taskers').snapshots(),
       builder: (context, snapshot) {
+        // Ensures there is no error when loading in the widget
         if (snapshot.hasError) {
           return const Text('Error');
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         }
-        // Reference to the user's document
-        DocumentReference userDocRef = _fireStore.collection('Customers').doc(_auth.currentUser!.email);
-        
-        // Check if the 'messages' collection exists in the user's document
-        userDocRef.collection('Message Taskers').get().then((querySnapshot) {
-          if (querySnapshot.size == 0) {
-            // 'messages' collection doesn't exist, create it
-            // userDocRef.collection('Message Taskers').doc('placeholder').set({});
-            userDocRef.collection('Message Taskers').doc('placeholder');
-          }
-        });
-
-        // // Extracting documents from the snapshot
-        // final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
-        // // Mapping documents to widgets using _createEachListOfTaskers
-        // final List<Widget> widgets = documents.map((doc) => _createEachListOfTaskers(doc)).toList();
-
+        // provides a view of the list of taskers
         return ListView(
-          children: snapshot.data!.docs.map((doc) => _createEachListOfTaskers(doc)).toList(),
+          children: snapshot.data!.docs.map((doc) => _createEachTasker(doc)).toList(),
         );
-        // final userData = snapshot.data!.data() as Map<String, dynamic>;
-        // final taskersData = userData['taskers'] ?? []; // Assuming 'taskers' is a list
-        // return ListView(
-        //   // children: snapshot.data!.docs.map<Widget>((doc) => _createEachListOfTaskers(doc)).toList(),
-        //   children: taskersData.map<Widget>((tasker) => _createEachListOfTaskers(tasker)).toList(),
-        // );
       },
     );
   }
 
-
-  // create each taskers record object
-  Widget _createEachListOfTaskers(DocumentSnapshot document) {
+  Widget _createEachTasker(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-    // shows the entire taskers
+    // shows all the taskers in list of rows
     if(_auth.currentUser!.email != data['email']) {    
         return ListTile(
         leading: CircleAvatar(
           child: Icon(Icons.account_circle),
         ),
         title: Text("${data['first name']} ${data['last name']} @${data['username']}"),
+        trailing: IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            // Access the logged in customer's collection of taskers that they want to message and
+            // remove the tasker document from the collection
+            _fireStore.collection('Customers').doc(_auth.currentUser!.email)
+                      .collection('Message Taskers').doc(data['email']).delete()
+            .then((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Tasker removed'),
+                ),
+              );
+            })
+            .catchError((error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Error: $error'),
+                ),
+              );
+            });
+          },
+        ),
         onTap: () {
           Navigator.push(context, 
             MaterialPageRoute(
