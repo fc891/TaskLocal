@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tasklocal/Screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/profiles/pickimage.dart';
+import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
 class TaskerEditProfile extends StatefulWidget {
   const TaskerEditProfile({super.key});
@@ -23,10 +24,10 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
   var emailController = TextEditingController();
-  bool _selectedImage = false;
   String profilePictureURL =
-      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/tasklocaltransparent.png?alt=media&token=efd2ce92-36a6-44e1-ac88-c8ac0d5f6928";
+      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836";
 
+  bool _setProfilePicture = false;
   final dB = FirebaseStorage.instance;
 
   Uint8List? _image;
@@ -42,7 +43,7 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
     Uint8List image = await pickImage(ImageSource.gallery);
     setState(() {
       _image = image;
-      _selectedImage = true;
+      _setProfilePicture = true;
     });
   }
 
@@ -53,19 +54,21 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
     // Create a storage reference from our app
     final storageRef = FirebaseStorage.instance.ref();
     // Create a reference to "profilepicture.jpg"
-    final profileRef = storageRef.child("{$currentemail}profilepicture.jpg");
+    final profileRef = storageRef.child("profilepictures/$currentemail/profilepicture.jpg");
     // Create a reference to 'images/profilepicture.jpg'
-    final profileImageRef =
-        storageRef.child("images/{$currentemail}profilepicture.jpg");
+    final profileImageRef = storageRef.child("images/$currentemail/profilepicture.jpg");
     // While the file names are the same, the references point to different files
     assert(profileRef.name == profileImageRef.name);
     assert(profileRef.fullPath != profileImageRef.fullPath);
     //Insert to Firebase storage
     await profileRef.putData(_image!);
+
+    globals.checkProfilePictureTasker =
+        true; //Set to true so that the new profile picture is displayed on the profile page after changes are confirmed
   }
 
   void getProfilePicture(String id) async {
-    final ref = dB.ref().child("{$id}profilepicture.jpg");
+    final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
     final url = await ref.getDownloadURL();
     setState(() {
       profilePictureURL = url;
@@ -156,9 +159,11 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
                         ],
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: _selectedImage
-                              ? MemoryImage(_image!) //If user has selected an image from their gallery, display it
-                              : NetworkImage(profilePictureURL) //If user has NOT selected an image from their gallery, display their original profile picture
+                          image: _setProfilePicture
+                              ? MemoryImage(
+                                  _image!) //If user has selected an image from their gallery, display it
+                              : NetworkImage(
+                                      profilePictureURL) //If user has NOT selected an image from their gallery, display their original profile picture
                                   as ImageProvider,
                           fit: BoxFit.cover,
                         ))),

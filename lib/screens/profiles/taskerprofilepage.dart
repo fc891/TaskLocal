@@ -3,6 +3,7 @@
 //Contributors: Bill
 
 import 'dart:ffi';
+import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,6 +14,7 @@ import 'package:tasklocal/screens/profiles/taskertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskeruploadedmedia.dart';
 import 'package:tasklocal/screens/profiles/taskertaskcategory.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
+import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -32,7 +34,13 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   int taskscompleted = 0;
   double rating = 5.0;
   final dB = FirebaseStorage.instance;
-  String profilePictureURL = "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/tasklocaltransparent.png?alt=media&token=efd2ce92-36a6-44e1-ac88-c8ac0d5f6928";
+  String defaultProfilePictureURL =
+      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836";
+  late String profilePictureURL;
+  bool _hasProfilePicture = false;
+  bool runOnce = true;
+  int numMediaUploaded = 0;
+  List <String> mediaList = [];
 
   //WIP
   //Bill's get user's info using testid (username right now)
@@ -47,12 +55,22 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     });
   }
 
+  //Bill's get user's profile picture using id
   void getProfilePicture(String id) async {
-    final ref = dB.ref().child("{$id}profilepicture.jpg");
-    final url = await ref.getDownloadURL();
-    setState(() {
-      profilePictureURL = url;
-    });
+    try {
+      final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
+      final url = await ref.getDownloadURL();
+      setState(() {
+        profilePictureURL = url;
+      });
+      _hasProfilePicture = true;
+      globals.checkProfilePictureTasker =
+          false; //Set to false after one check so that this function does not run multiple times
+    } catch (err) {
+      _hasProfilePicture = false;
+      globals.checkProfilePictureTasker =
+          false; //Set to false after one check so that this function does not run multiple times
+    }
   }
 
   //WIP
@@ -69,21 +87,50 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     taskscompleted = 10;
   }
 
+  void getUploadedMedia(String id) async {
+    numMediaUploaded = 0;
+    globals.checkMedia = false;
+    final storageRef = dB.ref().child("taskermedia/$id");
+    final listResult = await storageRef.listAll();
+    // for (var prefix in listResult.prefixes) {
+    //   final url = await prefix.getDownloadURL();
+    //   mediaList[numMediaUploaded] = url;
+    //   numMediaUploaded += 1;
+    // }
+    for (var item in listResult.items) {
+      final url = await item.getDownloadURL();
+      setState(() {
+        mediaList.add(url);
+      });
+      numMediaUploaded += 1;
+    }
+  }
+
   //Bill's function to run all getters above to initialize variables
-  void runGetters(){
+  void runGetters() async {
     var current = FirebaseAuth.instance
         .currentUser!; //Use to get the info of the currently logged in user
     String testid = current.email!; //Get email of current user
-
-    getProfilePicture(testid);
+    if (globals.checkProfilePictureTasker) {
+      getProfilePicture(testid);
+    }
     getUserInfo(testid);
     getJoinDate(testid);
     getTasksCompleted(testid);
+    if (globals.checkMedia) {
+      getUploadedMedia(testid);
+    }
   }
 
   //Bill's Tasker profile page screen/UI code
   @override
   Widget build(BuildContext context) {
+    if (runOnce) {
+      globals.checkProfilePictureTasker =
+          true; //Check once in case user has a profile page set but did not set a new one
+      globals.checkMedia = true;
+      runOnce = false;
+    }
     runGetters(); //Run all getter functions
     return Scaffold(
         //Background color of UI
@@ -131,8 +178,13 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                           ],
                           shape: BoxShape.circle,
                           image: DecorationImage(
+                            image: _hasProfilePicture
+                                ? NetworkImage(
+                                    profilePictureURL) //If user has selected an image from their gallery, display it
+                                : NetworkImage(
+                                        defaultProfilePictureURL) //If user has NOT selected an image from their gallery, display their original profile picture
+                                    as ImageProvider,
                             fit: BoxFit.cover,
-                            image: NetworkImage(profilePictureURL),
                           ))),
                 ],
               )),
@@ -215,7 +267,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 color: Colors.grey[1500],
               ),
               //List uploaded photos and videos by tasker
-              Text('Uploaded Photos and Videos',
+              Text('Uploaded Photos and Videos($numMediaUploaded)',
                   style: TextStyle(
                       color: Colors.white,
                       letterSpacing: 1.3,
@@ -234,24 +286,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       width: 1000.0,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: 10,
+                          itemCount: numMediaUploaded,
                           itemBuilder: (context, index) {
                             return Card(
                                 child: SizedBox(
                                     width: 80.0,
                                     child: ListTile(
-                                      onTap: () {
-                                        TaskInfo info =
-                                            TaskInfo("Uploaded Media", index);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TaskerUploadedMedia(
-                                                        taskinfo: info)));
-                                      },
-                                      title: Text("test$index"),
-                                    )));
+                                        onTap: () {
+                                          TaskInfo info =
+                                              TaskInfo("Uploaded Media", index);
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TaskerUploadedMedia(
+                                                          taskinfo: info)));
+                                        },
+                                        trailing: Image.network(mediaList[index]))));
                           }))),
               Divider(
                 height: 10.0,
