@@ -1,6 +1,11 @@
 library globals;
 
-bool checkProfilePicture = true; //Keeps track of whether or not to check for a new profile picture
+bool checkProfilePictureCustomer =
+    true; //Keeps track of whether or not to check for a new profile picture (customer)
+bool checkProfilePictureTasker =
+    true; //Keeps track of whether or not to check for a new profile picture (tasker)
+
+bool checkMedia = true;
 
 // class ProfilePageGlobals {
 //   static bool _hasProfilePicture = false;

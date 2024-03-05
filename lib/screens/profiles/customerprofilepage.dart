@@ -31,9 +31,10 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   int requestscompleted = 0;
   final dB = FirebaseStorage.instance;
   String defaultProfilePictureURL =
-      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/tasklocaltransparent.png?alt=media&token=efd2ce92-36a6-44e1-ac88-c8ac0d5f6928";
+      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836";
   late String profilePictureURL;
   bool _hasProfilePicture = false;
+  bool runOnce = true;
 
   //WIP
   //Bill's get user's info using testid (user email right now)
@@ -65,25 +66,27 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   //Bill's get user's profile picture using id
   void getProfilePicture(String id) async {
     try {
-      final ref = dB.ref().child("{$id}profilepicture.jpg");
+      final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
       final url = await ref.getDownloadURL();
       setState(() {
         profilePictureURL = url;
-        _hasProfilePicture = true;
-        globals.checkProfilePicture = false; //Set to false after one check so that this function does not run multiple times
       });
+      _hasProfilePicture = true;
+      globals.checkProfilePictureCustomer =
+          false; //Set to false after one check so that this function does not run multiple times
     } catch (err) {
       _hasProfilePicture = false;
-      globals.checkProfilePicture = false; //Set to false after one check so that this function does not run multiple times
+      globals.checkProfilePictureCustomer =
+          false; //Set to false after one check so that this function does not run multiple times
     }
   }
 
   //Bill's function to run all getters above to initialize variables
-  void runGetters() {
+  void runGetters() async {
     var current = FirebaseAuth.instance
         .currentUser!; //Use to get the info of the currently logged in user
     String testid = current.email!; //Get email of current user
-    if (globals.checkProfilePicture) {
+    if (globals.checkProfilePictureCustomer) {
       getProfilePicture(testid);
     }
     getUserInfo(testid);
@@ -96,6 +99,10 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   //Bill's Customer profile page screen/UI code
   @override
   Widget build(BuildContext context) {
+    if (runOnce) {
+      globals.checkProfilePictureCustomer = true; //Check once in case user has a profile page set but did not set a new one
+      runOnce = false;
+    }
     runGetters();
     return Scaffold(
         //Background color of UI

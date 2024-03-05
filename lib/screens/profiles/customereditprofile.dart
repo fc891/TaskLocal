@@ -25,7 +25,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
   var usernameController = TextEditingController();
   var emailController = TextEditingController();
   String profilePictureURL =
-      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/tasklocaltransparent.png?alt=media&token=efd2ce92-36a6-44e1-ac88-c8ac0d5f6928";
+      "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836";
 
   final dB = FirebaseStorage.instance;
   bool _setProfilePicture = false;
@@ -54,21 +54,20 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     // Create a storage reference from our app
     final storageRef = FirebaseStorage.instance.ref();
     // Create a reference to "profilepicture.jpg"
-    final profileRef = storageRef.child("{$currentemail}profilepicture.jpg");
+    final profileRef = storageRef.child("profilepictures/$currentemail/profilepicture.jpg");
     // Create a reference to 'images/profilepicture.jpg'
-    final profileImageRef =
-        storageRef.child("images/{$currentemail}profilepicture.jpg");
+    final profileImageRef = storageRef.child("images/$currentemail/profilepicture.jpg");
     // While the file names are the same, the references point to different files
     assert(profileRef.name == profileImageRef.name);
     assert(profileRef.fullPath != profileImageRef.fullPath);
     //Insert to Firebase storage
     await profileRef.putData(_image!);
 
-    globals.checkProfilePicture = true; //Set to true so that the new profile picture is displayed on the profile page after changes are confirmed
+    globals.checkProfilePictureCustomer = true; //Set to true so that the new profile picture is displayed on the profile page after changes are confirmed
   }
 
   void getProfilePicture(String id) async {
-    final ref = dB.ref().child("{$id}profilepicture.jpg");
+    final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
     final url = await ref.getDownloadURL();
     setState(() {
       profilePictureURL = url;
