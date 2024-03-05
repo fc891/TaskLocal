@@ -132,6 +132,7 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
+  // prevent the keyboard from moving the screen to the top
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
