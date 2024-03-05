@@ -8,11 +8,13 @@ class ChatPage extends StatefulWidget {
   final String receiverFirstName;
   final String receiverLastName;
   final String receiverEmail;
+  final String taskersOrCustomersCollection;
   const ChatPage({
     super.key, 
     required this.receiverFirstName, 
     required this.receiverLastName,
-    required this.receiverEmail
+    required this.receiverEmail,
+    required this.taskersOrCustomersCollection,
   });
 
   @override
@@ -37,7 +39,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
   Future<List<DocumentSnapshot>> _retrieveSenderInfo() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('Customers').get();
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection(widget.taskersOrCustomersCollection).get();
     // List<DocumentSnapshot> docs = snapshot.docs;
     
     // Find the current user/sender's document and return it as a List
@@ -70,27 +72,32 @@ class _ChatPageState extends State<ChatPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Text Message',
-                      filled: true,
-                      fillColor: Colors.grey[250],
-                      // Richard's code
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black), 
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                      // Richard's code
-                      // border is black by default and when click the search bar border is white
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(10.0),
+                  child: Container(
+                    height: 50,
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        hintText: 'Text Message',
+                        contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                        // filled: true,
+                        // fillColor: Colors.grey[250],
+                        // Richard's code
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black), 
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        // Richard's code
+                        // border is black by default and when click the search bar border is white
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        suffixIcon: IconButton(onPressed: sendMessage, icon: Icon(Icons.arrow_upward, size: 30)),
                       ),
                     ),
                   ),
                 ),
-                IconButton(onPressed: sendMessage, icon: Icon(Icons.arrow_upward, size: 40)),
+                // IconButton(onPressed: sendMessage, icon: Icon(Icons.arrow_upward, size: 30)),
               ],
             ),
           ),

@@ -120,6 +120,7 @@ class _MessagesHomeState extends State<MessagesHome> {
                 receiverFirstName: data['first name'],
                 receiverLastName: data['last name'],
                 receiverEmail: data['email'],
+                taskersOrCustomersCollection: 'Customers',
               ),
             )
           );
