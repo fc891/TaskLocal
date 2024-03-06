@@ -24,19 +24,19 @@ class _TaskerMsgListToAddState extends State<TaskerMsgListToAdd> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         // taskers can only chat with customers that were initiated by them
-        stream: _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Message Customers').snapshots(),
+        stream: _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Constant Message Customers').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-          final taskers = snapshot.data!.docs;
+          final customers = snapshot.data!.docs;
           return ListView.builder(
-            itemCount: taskers.length,
+            itemCount: customers.length,
             itemBuilder: (context, idx) {
-              final taskerData = taskers[idx].data() as Map<String, dynamic>;
-              // print("TASKER DATA: ${taskerData}, ${taskers[idx]}");
+              final customerData = customers[idx].data() as Map<String, dynamic>;
+              // print("TASKER DATA: ${customerData}, ${customers[idx]}");
               return Container(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 padding: EdgeInsets.all(20),
@@ -47,7 +47,7 @@ class _TaskerMsgListToAddState extends State<TaskerMsgListToAdd> {
                 child: Row(
                   children: [
                     Text(
-                      '${taskerData['first name']} ${taskerData['last name']}\n@${taskerData['username']}',
+                      '${customerData['first name']} ${customerData['last name']}\n@${customerData['username']}',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Spacer(),
@@ -58,7 +58,7 @@ class _TaskerMsgListToAddState extends State<TaskerMsgListToAdd> {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          _addTaskerToCollection(taskerData);
+                          _addCustomerToCollection(customerData);
                         },
                         icon: Icon(
                           Icons.add,
@@ -74,32 +74,46 @@ class _TaskerMsgListToAddState extends State<TaskerMsgListToAdd> {
       ),
     );
   }
-  Future<void> _addTaskerToCollection(Map<String, dynamic> taskerData) async {
-  try {
-    // Reference to the user's document
-    DocumentReference userDocRef = _firestore.collection('Taskers').doc(_auth.currentUser!.email);
-    
-    // Check if the 'Message Taskers' collection exists in the user's document
-    DocumentSnapshot userDocSnapshot = await userDocRef.get();
-    if (!userDocSnapshot.exists) {
-      // User's document doesn't exist, create it
-      await userDocRef.set({});
-    }
-    
-    // Add customer to the 'Message Customer' collection
-    await userDocRef.collection('Message Customers').doc(taskerData['email']).set(taskerData);
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Tasker added to collection.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-    } catch (e) {
-      print('Error adding customer to collection: $e');
+  // adds customer to tasker's messaging home page
+  // updates the customer data in both the tasker's list of customers and messaging home page
+  Future<void> _addCustomerToCollection(Map<String, dynamic> customerData) async {
+    try {
+      // Reference to the user's document
+      DocumentReference userDocRef = _firestore.collection('Taskers').doc(_auth.currentUser!.email);
+
+      /////////////
+      DocumentSnapshot currCustomerDoc = await _firestore.collection('Customers').doc(customerData['email']).get();
+      Map<String, dynamic> currCustomerData = currCustomerDoc.data() as Map<String, dynamic>;
+      // print(customerData);
+      // print("split");
+      // print(currCustomerData);
+      
+      //////////////////////////////////////////
+      // Check if the 'Message Taskers' collection exists in the user's document
+      // DocumentSnapshot userDocSnapshot = await userDocRef.get();
+      // if (!userDocSnapshot.exists) {
+      //   // User's document doesn't exist, create it
+      //   await userDocRef.set({});
+      //   print("inside here yyyy");
+      // }
+      //////////////////////////////////////////
+      
+      // Add customer to the 'Message Customer' collection. Customer's data is also updated
+      await userDocRef.collection('Message Customers').doc(customerData['email']).set(currCustomerData);
+      await userDocRef.collection('Constant Message Customers').doc(customerData['email']).set(currCustomerData);
+      
+      // indicate the execution was successful
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to add customer to collection.'),
+          content: Text('Customer added'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      print('Error adding customer: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add customer'),
           duration: Duration(seconds: 2),
         ),
       );
