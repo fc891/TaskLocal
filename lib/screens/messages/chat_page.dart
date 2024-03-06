@@ -56,7 +56,7 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(
         title: Text(
           "${widget.receiverFirstName} ${widget.receiverLastName}", 
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 30)),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 25)),
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,
@@ -161,7 +161,10 @@ class _ChatPageState extends State<ChatPage> {
           children: [
             Text("${data['senderFirstName']} ${data['senderLastName']}"),
             SizedBox(height: 5),
-            ChatBubble(message: data['message']),
+            Container(
+              constraints: BoxConstraints(maxWidth: 195),
+              child: ChatBubble(message: data['message'])
+            ),
           ],
         ),
       ),

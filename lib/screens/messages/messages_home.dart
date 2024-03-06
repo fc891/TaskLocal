@@ -40,27 +40,12 @@ class _MessagesHomeState extends State<MessagesHome> {
           ),
         ],
       ),
-      body: _createListOfTaskers(),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: _createListOfTaskers(),
+      ),
     );
   }
-  // original
-  //   Widget _createListOfTaskers() {
-  //   return StreamBuilder<QuerySnapshot>(
-  //     // later find a way to have customers add and remove taskers to their messages page
-  //     stream: FirebaseFirestore.instance.collection('Customers').doc(_auth.currentUser!.email).snapshots(),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.hasError) {
-  //         return const Text('error');
-  //       }
-  //       if (snapshot.connectionState == ConnectionState.waiting) {
-  //         return const Text('');
-  //       }
-  //       return ListView(
-  //         children: snapshot.data!.docs.map<Widget>((doc) => _createEachListOfTaskers(doc)).toList(),
-  //       );
-  //     },
-  //   );
-  // }
 
   Widget _createListOfTaskers() {
     return StreamBuilder<QuerySnapshot>(
