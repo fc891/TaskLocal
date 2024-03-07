@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructor
 
+//Contributors: Bill
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +15,7 @@ class CustomerTaskInfoPage extends StatelessWidget {
 //Bill's Customer Task Info Screen
   @override
   Widget build(BuildContext context) {
-    String taskcategory = taskinfo.taskCategory;
+    String taskcategory = taskinfo.taskInfo;
     int tasknumber = taskinfo.taskNumber;
     return Scaffold(
       //Background color of UI

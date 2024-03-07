@@ -1,5 +1,7 @@
 library globals;
 
+//Contributors: Bill
+
 bool checkProfilePictureCustomer =
     true; //Keeps track of whether or not to check for a new profile picture (customer)
 bool checkProfilePictureTasker =
