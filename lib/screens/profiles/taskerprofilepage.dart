@@ -40,7 +40,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   bool _hasProfilePicture = false;
   bool runOnce = true;
   int numMediaUploaded = 0;
-  List <String> mediaList = [];
+  List<String> mediaList = [];
 
   //WIP
   //Bill's get user's info using testid (username right now)
@@ -87,22 +87,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     taskscompleted = 10;
   }
 
+  //Bill's get links of tasker's uploaded media using id
   void getUploadedMedia(String id) async {
     numMediaUploaded = 0;
-    globals.checkMedia = false;
-    final storageRef = dB.ref().child("taskermedia/$id");
-    final listResult = await storageRef.listAll();
+    globals.checkMedia = false; //Set to false after checking media so that app does not continuously check (set to True after tasker uploads new media)
+    final storageRef = dB.ref().child("taskermedia/$id"); //Folder in Firebase storage
+    final listResult = await storageRef.listAll(); //Convert media to link 
     // for (var prefix in listResult.prefixes) {
     //   final url = await prefix.getDownloadURL();
     //   mediaList[numMediaUploaded] = url;
     //   numMediaUploaded += 1;
     // }
-    for (var item in listResult.items) {
+    for (var item in listResult.items) { //Loop through all files found in Firebase storage folder
       final url = await item.getDownloadURL();
       setState(() {
-        mediaList.add(url);
+        mediaList.add(url); //All files under folder are converted to link and added to mediaList array for later use
       });
-      numMediaUploaded += 1;
+      numMediaUploaded += 1; //Counter to keep track of number of files in folder
     }
   }
 
@@ -289,20 +290,35 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                           itemCount: numMediaUploaded,
                           itemBuilder: (context, index) {
                             return Card(
-                                child: SizedBox(
-                                    width: 80.0,
-                                    child: ListTile(
-                                        onTap: () {
-                                          TaskInfo info =
-                                              TaskInfo("Uploaded Media", index);
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      TaskerUploadedMedia(
-                                                          taskinfo: info)));
-                                        },
-                                        trailing: Image.network(mediaList[index]))));
+                              child: Container(
+                                  height: 40.0,
+                                  width: 80.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(mediaList[index]),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color: Colors.white,
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(Icons.camera,
+                                        color: Colors.green.withOpacity(
+                                            0)), //Transparent icon to put button over image without covering it
+                                    onPressed: () {
+                                      TaskInfo info =
+                                          TaskInfo(mediaList[index], index);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TaskerUploadedMedia(
+                                                      taskinfo: info)));
+                                    },
+                                  )),
+                            );
                           }))),
               Divider(
                 height: 10.0,

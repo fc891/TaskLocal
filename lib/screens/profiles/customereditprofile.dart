@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructor
 
-import 'dart:typed_data';
+//Contributors: Bill
 
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +13,7 @@ import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/profiles/pickimage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
+//Bill's edit profile screen/UI (for Customer)
 class CustomerEditProfile extends StatefulWidget {
   const CustomerEditProfile({super.key});
   @override
@@ -38,6 +40,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
   // bool _obscurePassword = true;
   // bool _obscureConfirmPassword = true;
 
+  //Prompt user to select image from device gallery
   void selectImage() async {
     //Pick image from device and convert to Uint8List type
     Uint8List image = await pickImage(ImageSource.gallery);
@@ -47,6 +50,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     });
   }
 
+  //Save the selected image from selectImage() function to the database
   void setImage() async {
     var current = FirebaseAuth.instance.currentUser!;
     var currentemail = current.email;
@@ -66,6 +70,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     globals.checkProfilePictureCustomer = true; //Set to true so that the new profile picture is displayed on the profile page after changes are confirmed
   }
 
+  //Get the profile picture link of the current user
   void getProfilePicture(String id) async {
     final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
     final url = await ref.getDownloadURL();
@@ -74,6 +79,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     });
   }
 
+  //Confirms all changes made by the user
   void confirmChanges() async {
     var current = FirebaseAuth.instance.currentUser!;
 
@@ -166,6 +172,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                                   as ImageProvider,
                           fit: BoxFit.cover,
                         ))),
+                // Select image button (next to the profile picture itself)
                 Positioned(
                     bottom: 0.0,
                     right: 0.0,
@@ -180,7 +187,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                         child: IconButton(
                           icon: Icon(Icons.edit, color: Colors.grey),
                           onPressed: () {
-                            selectImage();
+                            selectImage(); //Call selectImage() function once pressed, allow user to browse their device's gallery
                           },
                         ))),
               ],
