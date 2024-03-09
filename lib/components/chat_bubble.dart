@@ -1,3 +1,5 @@
+// Contributors: Richard N.
+
 import 'package:flutter/material.dart';
 
 class ChatBubble extends StatelessWidget {

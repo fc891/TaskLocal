@@ -4,16 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/messages/chat_page.dart';
-import 'package:tasklocal/screens/messages/msg_list_to_add.dart';
+import 'package:tasklocal/screens/messages/tasker_msg_list_to_add.dart';
 
-class MessagesHome extends StatefulWidget {
-  const MessagesHome({super.key});
+class TaskerMessagesHome extends StatefulWidget {
+  const TaskerMessagesHome({super.key});
 
   @override
-  State<MessagesHome> createState() => _MessagesHomeState();
+  State<TaskerMessagesHome> createState() => _TaskerMessagesHomeState();
 }
 
-class _MessagesHomeState extends State<MessagesHome> {
+class _TaskerMessagesHomeState extends State<TaskerMessagesHome> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
@@ -30,7 +30,7 @@ class _MessagesHomeState extends State<MessagesHome> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MsgListToAdd())
+                MaterialPageRoute(builder: (context) => TaskerMsgListToAdd())
               );
             },
             icon: Icon(
@@ -49,7 +49,7 @@ class _MessagesHomeState extends State<MessagesHome> {
 
   Widget _createListOfTaskers() {
     return StreamBuilder<QuerySnapshot>(
-      stream: _fireStore.collection('Customers').doc(_auth.currentUser!.email).collection('Message Taskers').snapshots(),
+      stream: _fireStore.collection('Taskers').doc(_auth.currentUser!.email).collection('Message Customers').snapshots(),
       builder: (context, snapshot) {
         // Ensures there is no error when loading in the widget
         if (snapshot.hasError) {
@@ -70,7 +70,7 @@ class _MessagesHomeState extends State<MessagesHome> {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     // shows all the taskers in list of rows
     if(_auth.currentUser!.email != data['email']) {    
-        return ListTile(
+      return ListTile(
         leading: CircleAvatar(
           child: Icon(Icons.account_circle),
         ),
@@ -80,12 +80,12 @@ class _MessagesHomeState extends State<MessagesHome> {
           onPressed: () {
             // Access the logged in customer's collection of taskers that they want to message and
             // remove the tasker document from the collection
-            _fireStore.collection('Customers').doc(_auth.currentUser!.email)
-                      .collection('Message Taskers').doc(data['email']).delete()
+            _fireStore.collection('Taskers').doc(_auth.currentUser!.email)
+                      .collection('Message Customers').doc(data['email']).delete()
             .then((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Tasker removed'),
+                  content: Text('Customer removed'),
                 ),
               );
             })
@@ -98,7 +98,6 @@ class _MessagesHomeState extends State<MessagesHome> {
             });
           },
         ),
-         // go to the page to chat with user
         onTap: () {
           Navigator.push(context, 
             MaterialPageRoute(
@@ -106,7 +105,7 @@ class _MessagesHomeState extends State<MessagesHome> {
                 receiverFirstName: data['first name'],
                 receiverLastName: data['last name'],
                 receiverEmail: data['email'],
-                taskersOrCustomersCollection: 'Customers',
+                taskersOrCustomersCollection: 'Taskers',
               ),
             )
           );
