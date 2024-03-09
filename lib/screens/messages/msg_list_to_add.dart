@@ -3,7 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tasklocal/screens/profiles/test_non_logged_in_profile/nonloggedin_taskerprofile.dart';
+// import 'package:tasklocal/screens/profiles/test_non_logged_in_profile/nonloggedin_taskerprofile.dart';
 
 class MsgListToAdd extends StatefulWidget {
   const MsgListToAdd({super.key});
@@ -50,18 +50,21 @@ class _MsgListToAddState extends State<MsgListToAdd> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 12.0),
-                      // allow customer to view the tasker's profile before messaging them
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => NonLoggedInTaskerProfilePage(email: taskerData['email'])),
-                          );
-                        },    
-                        child: CircleAvatar(
-                          child: Icon(Icons.account_circle),
-                        ),
+                      child: CircleAvatar(
+                        child: Icon(Icons.account_circle),
                       ),
+                      // allow customer to view the tasker's profile before messaging them
+                      // child: GestureDetector(
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(builder: (context) => NonLoggedInTaskerProfilePage(email: taskerData['email'])),
+                      //     );
+                      //   },    
+                      //   child: CircleAvatar(
+                      //     child: Icon(Icons.account_circle),
+                      //   ),
+                      // ),
                     ),
                     Text(
                       '${taskerData['first name']} ${taskerData['last name']} \n@${taskerData['username']}',
