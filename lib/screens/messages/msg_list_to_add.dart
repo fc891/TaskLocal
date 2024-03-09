@@ -1,6 +1,9 @@
+// Contributors: Richard N.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/screens/profiles/test_non_logged_in_profile/nonloggedin_taskerprofile.dart';
 
 class MsgListToAdd extends StatefulWidget {
   const MsgListToAdd({super.key});
@@ -36,7 +39,6 @@ class _MsgListToAddState extends State<MsgListToAdd> {
             itemCount: taskers.length,
             itemBuilder: (context, idx) {
               final taskerData = taskers[idx].data() as Map<String, dynamic>;
-              // print("TASKER DATA: ${taskerData}, ${taskers[idx]}");
               return Container(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 padding: EdgeInsets.all(20),
@@ -46,15 +48,30 @@ class _MsgListToAddState extends State<MsgListToAdd> {
                 ),
                 child: Row(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      // allow customer to view the tasker's profile before messaging them
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NonLoggedInTaskerProfilePage(email: taskerData['email'])),
+                          );
+                        },    
+                        child: CircleAvatar(
+                          child: Icon(Icons.account_circle),
+                        ),
+                      ),
+                    ),
                     Text(
-                      '${taskerData['first name']} ${taskerData['last name']}\n@${taskerData['username']}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      '${taskerData['first name']} ${taskerData['last name']} \n@${taskerData['username']}',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Spacer(),
                      Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.grey[300], // Set background color of the icon
+                        color: Colors.grey[300],
                       ),
                       child: IconButton(
                         onPressed: () {
@@ -78,37 +95,21 @@ class _MsgListToAddState extends State<MsgListToAdd> {
   // updates the tasker data in the customer's messaging home page
   Future<void> _addTaskerToCollection(Map<String, dynamic> taskerData) async {
     try {
-      // Reference to the user's document
-      DocumentReference userDocRef = _firestore.collection('Customers').doc(_auth.currentUser!.email);
-      DocumentReference userDocRef2 = _firestore.collection('Taskers').doc(taskerData['email']);
-      // DocumentReference userDocRef3 = _firestore.collection('Taskers').doc(taskerData['email']);
+      DocumentReference customerDocRef = _firestore.collection('Customers').doc(_auth.currentUser!.email);
+      DocumentReference taskerDocRef = _firestore.collection('Taskers').doc(taskerData['email']);
 
-      ///////
-      // _firestore.collection('Taskers').snapshots();
-      // final taskers = snapshots.data!.docs;
       DocumentSnapshot customerDoc = await _firestore.collection('Customers').doc(_auth.currentUser!.email).get();
       Map<String, dynamic> customerData = customerDoc.data() as Map<String, dynamic>;
 
-      ///////////////////////////////////
-      // Check if the 'Message Taskers' collection exists in the user's document
-      // DocumentSnapshot userDocSnapshot = await userDocRef.get();
-      // if (!userDocSnapshot.exists) {
-      //   // User's document doesn't exist, create it
-      //   await userDocRef.set({});
-      //   await userDocRef2.set({});
-      //   print("hereeeeee");
-      // }
-      ///////////////////////////////////
-
       // Add tasker's data to the 'Message Taskers' collection and tasker's data is updated as well
-      await userDocRef.collection('Message Taskers').doc(taskerData['email']).set(taskerData);
+      await customerDocRef.collection('Message Taskers').doc(taskerData['email']).set(taskerData);
       
       // Tasker's side
       // create 2 collections here in order to initialize the collections for the Taskers
       // size of collection is updated from tasker's "tasker's_msg_list_to_add.dart"
-      await userDocRef2.collection('Message Customers').doc(_auth.currentUser!.email).set(customerData);
+      await taskerDocRef.collection('Message Customers').doc(_auth.currentUser!.email).set(customerData);
       // size of collection remains the same
-      await userDocRef2.collection('Constant Message Customers').doc(_auth.currentUser!.email).set(customerData);
+      await taskerDocRef.collection('Constant Message Customers').doc(_auth.currentUser!.email).set(customerData);
       
       // continuing customer's side
       // indicate the execution was successful
@@ -119,7 +120,7 @@ class _MsgListToAddState extends State<MsgListToAdd> {
         ),
       );
     } catch (e) {
-      print('Error adding tasker: $e');
+      // print('Error adding tasker: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to add tasker'),

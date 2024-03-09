@@ -70,7 +70,7 @@ class _TaskerMessagesHomeState extends State<TaskerMessagesHome> {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     // shows all the taskers in list of rows
     if(_auth.currentUser!.email != data['email']) {    
-        return ListTile(
+      return ListTile(
         leading: CircleAvatar(
           child: Icon(Icons.account_circle),
         ),

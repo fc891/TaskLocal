@@ -98,6 +98,7 @@ class _MessagesHomeState extends State<MessagesHome> {
             });
           },
         ),
+         // go to the page to chat with user
         onTap: () {
           Navigator.push(context, 
             MaterialPageRoute(

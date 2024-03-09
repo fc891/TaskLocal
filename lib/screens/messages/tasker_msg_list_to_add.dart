@@ -1,3 +1,5 @@
+// Contributors: Richard N.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -78,29 +80,14 @@ class _TaskerMsgListToAddState extends State<TaskerMsgListToAdd> {
   // updates the customer data in both the tasker's list of customers and messaging home page
   Future<void> _addCustomerToCollection(Map<String, dynamic> customerData) async {
     try {
-      // Reference to the user's document
-      DocumentReference userDocRef = _firestore.collection('Taskers').doc(_auth.currentUser!.email);
+      DocumentReference taskerDocRef = _firestore.collection('Taskers').doc(_auth.currentUser!.email);
 
-      /////////////
       DocumentSnapshot currCustomerDoc = await _firestore.collection('Customers').doc(customerData['email']).get();
       Map<String, dynamic> currCustomerData = currCustomerDoc.data() as Map<String, dynamic>;
-      // print(customerData);
-      // print("split");
-      // print(currCustomerData);
-      
-      //////////////////////////////////////////
-      // Check if the 'Message Taskers' collection exists in the user's document
-      // DocumentSnapshot userDocSnapshot = await userDocRef.get();
-      // if (!userDocSnapshot.exists) {
-      //   // User's document doesn't exist, create it
-      //   await userDocRef.set({});
-      //   print("inside here yyyy");
-      // }
-      //////////////////////////////////////////
       
       // Add customer to the 'Message Customer' collection. Customer's data is also updated
-      await userDocRef.collection('Message Customers').doc(customerData['email']).set(currCustomerData);
-      await userDocRef.collection('Constant Message Customers').doc(customerData['email']).set(currCustomerData);
+      await taskerDocRef.collection('Message Customers').doc(customerData['email']).set(currCustomerData);
+      await taskerDocRef.collection('Constant Message Customers').doc(customerData['email']).set(currCustomerData);
       
       // indicate the execution was successful
       ScaffoldMessenger.of(context).showSnackBar(
