@@ -42,12 +42,12 @@ class _TaskerMessagesHomeState extends State<TaskerMessagesHome> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 10.0),
-        child: _createListOfTaskers(),
+        child: _createListOfCustomers(),
       ),
     );
   }
 
-  Widget _createListOfTaskers() {
+  Widget _createListOfCustomers() {
     return StreamBuilder<QuerySnapshot>(
       stream: _fireStore.collection('Taskers').doc(_auth.currentUser!.email).collection('Message Customers').snapshots(),
       builder: (context, snapshot) {
@@ -60,13 +60,13 @@ class _TaskerMessagesHomeState extends State<TaskerMessagesHome> {
         }
         // provides a view of the list of taskers
         return ListView(
-          children: snapshot.data!.docs.map((doc) => _createEachTasker(doc)).toList(),
+          children: snapshot.data!.docs.map((doc) => _createEachCustomer(doc)).toList(),
         );
       },
     );
   }
 
-  Widget _createEachTasker(DocumentSnapshot document) {
+  Widget _createEachCustomer(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     // shows all the taskers in list of rows
     if(_auth.currentUser!.email != data['email']) {    

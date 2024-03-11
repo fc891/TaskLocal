@@ -56,7 +56,7 @@ class _TaskerMsgListToAddState extends State<TaskerMsgListToAdd> {
                      Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.grey[300], // Set background color of the icon
+                        color: Colors.grey[300],
                       ),
                       child: IconButton(
                         onPressed: () {
