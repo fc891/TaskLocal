@@ -1,3 +1,5 @@
+// Contributors: Richard N.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
@@ -5,7 +7,6 @@ class Message {
   final String receiverEmail;
   final String senderFirstName;
   final String senderLastName;
-  // final String senderUserName;
   final String message;
   final Timestamp timestamp;
 
@@ -14,7 +15,6 @@ class Message {
     required this.receiverEmail,
     required this.senderFirstName,
     required this.senderLastName,
-    // required this.senderUserName,
     required this.message,
     required this.timestamp,
   });
@@ -25,7 +25,6 @@ class Message {
       'receiverEmail': receiverEmail,
       'senderFirstName': senderFirstName,
       'senderLastName': senderLastName,
-      // 'senderUserName': senderUserName,
       'message': message,
       'timestamp': timestamp,
     };

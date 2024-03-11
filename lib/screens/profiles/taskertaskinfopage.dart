@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructor
 
+//Contributors: Bill
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,14 +15,14 @@ class TaskerTaskInfoPage extends StatelessWidget {
 //Bill's Tasker Task Info Screen
   @override
   Widget build(BuildContext context) {
-    String taskcategory = taskinfo.taskCategory;
+    String info = taskinfo.taskInfo;
     int tasknumber = taskinfo.taskNumber;
     return Scaffold(
       //Background color of UI
       backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
-        title: Text('$taskcategory# $tasknumber'),
+        title: Text('$info# $tasknumber'),
         centerTitle: true,
         backgroundColor: Colors.green[800],
         elevation: 0.0,

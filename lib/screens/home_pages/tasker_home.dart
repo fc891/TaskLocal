@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:tasklocal/components/task_category_box.dart';
 import 'package:tasklocal/screens/home_pages/task_category.dart';
 import 'package:tasklocal/screens/home_pages/tasker_search_task.dart';
-import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_category_info.dart';
-import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
-import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_post_service.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_tasks.dart';
+import 'package:tasklocal/screens/messages/tasker_messages_home.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/calendar/calendarfront.dart';
 
@@ -237,11 +235,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
             label: 'Home',
           ),
            // Richard's code
-           // navigates to a page where tasker can advertise themselves
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.add_box),
-          //   label: 'Post Service',
-          // ),
+           // navigates to tasker's past, current, and future tasks
           BottomNavigationBarItem(
             icon: Icon(Icons.work),
             label: 'My Tasks',
@@ -277,13 +271,6 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                 MaterialPageRoute(builder: (context) => TaskerHomePage()),
               );
               break;
-            // case 1:
-              // navigates to a page where tasker can advertise themselves
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => TaskerPostService()),
-              // );
-              // break;
             case 1:
               // navigates to tasker's list of tasks that they have to complete
               Navigator.push(
@@ -302,7 +289,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               // directs to the messages page where users can send and receive messages
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerMessages()),
+                MaterialPageRoute(builder: (context) => TaskerMessagesHome()),
               );
               break;
             case 4:
