@@ -11,7 +11,7 @@ import 'package:tasklocal/screens/messages/messages_home.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
 // import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
-import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
+// import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
 
 // Eric's code for class
 class CustomerHomePage extends StatefulWidget {
