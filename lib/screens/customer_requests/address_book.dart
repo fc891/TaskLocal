@@ -19,7 +19,10 @@ class AddressBook extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(dummyAddresses[index]),
-            // You can add more functionality like selecting addresses here
+            onTap: () {
+              // Pass selected address back to previous screen
+              Navigator.pop(context, dummyAddresses[index]);
+            },
           );
         },
       ),
