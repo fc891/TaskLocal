@@ -1,13 +1,17 @@
 // Customer Home Page UI/Screen
 // Contributors: Eric C.
 
+// TODO: add 'my tasks'
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
+import 'package:tasklocal/screens/home_pages/customer_search_plus.dart';
+import 'package:tasklocal/screens/messages/messages_home.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
-import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
+// import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
-import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
+// import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
 
 // Eric's code for class
 class CustomerHomePage extends StatefulWidget {
@@ -16,20 +20,39 @@ class CustomerHomePage extends StatefulWidget {
 }
 
 class _CustomerHomePageState extends State<CustomerHomePage> {
-  late BuildContext _context; // Store the context here
-  
-  void logUserOut() {
-    FirebaseAuth.instance.signOut();
-    Navigator.pop(context);
-  }
-  
+  late BuildContext _context;
+  List<String> _jobCategories = [
+    'Furniture Assembly',
+    'Mounting Services',
+    'Yard Work',
+    'Cleaning Services',
+    'Handyman Services',
+    'Delivery Services',
+    'Event Planning',
+    'Moving Services',
+    'Computer Services',
+    'Photography Projects',
+    'Art Installations',
+    'Tech Innovations',
+    'Gardening Projects',
+    'Music Productions',
+    'Fitness Training',
+    'Organization',
+    'Wall Repair',
+    'Smart Home Installation',
+  ];
+
   @override
   void initState() {
     super.initState();
     _context = context;
   }
 
-  // Eric's code for customer's home page UI
+  void logUserOut() {
+    FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     _context = context;
@@ -44,7 +67,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
         actions: [
           IconButton(
             onPressed: logUserOut,
-            icon: Icon(Icons.logout, color: Colors.grey[300],)
+            icon: Icon(Icons.logout, color: Colors.grey[300],),
           ),
         ],
       ),
@@ -64,15 +87,25 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Looking for something else?',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchPage(jobCategories: _jobCategories),
+                      )
+                    );
+                  },
+                  child: TextField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                      hintText: 'Looking for something else?',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      prefixIcon: Icon(Icons.search),
                     ),
-                    prefixIcon: Icon(Icons.search),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -157,7 +190,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               // Redirect to messages
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerMessages()),
+                MaterialPageRoute(builder: (context) => MessagesHome()),
               );
               break;
             case 2:
@@ -192,7 +225,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             width: 100,
             height: 120,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0), // Rounded corners added here
+              borderRadius: BorderRadius.circular(15.0),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15.0),

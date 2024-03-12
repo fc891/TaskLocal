@@ -49,6 +49,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
             .collection("Customers")
             .doc(userCredential.user!.email)
             .set({
+              'email' : userCredential.user!.email,
           'first name': fnameController.text,
           'last name': lnameController.text,
           'username': usernameController.text,

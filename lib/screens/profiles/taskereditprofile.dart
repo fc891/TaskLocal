@@ -8,20 +8,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
+import 'package:tasklocal/Screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/profiles/pickimage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
-//Bill's edit profile screen/UI (for Customer)
-class CustomerEditProfile extends StatefulWidget {
-  const CustomerEditProfile({super.key});
+//Bill's edit profile screen/UI (for Tasker)
+class TaskerEditProfile extends StatefulWidget {
+  const TaskerEditProfile({super.key});
   @override
-  State<CustomerEditProfile> createState() => _CustomerEditProfileState();
+  State<TaskerEditProfile> createState() => _TaskerEditProfileState();
 }
 
 //Customer profile edit screen
-class _CustomerEditProfileState extends State<CustomerEditProfile> {
+class _TaskerEditProfileState extends State<TaskerEditProfile> {
   var fnameController = TextEditingController();
   var lnameController = TextEditingController();
   var usernameController = TextEditingController();
@@ -29,8 +29,8 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
   String profilePictureURL =
       "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836";
 
-  final dB = FirebaseStorage.instance;
   bool _setProfilePicture = false;
+  final dB = FirebaseStorage.instance;
 
   Uint8List? _image;
 
@@ -67,15 +67,16 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     //Insert to Firebase storage
     await profileRef.putData(_image!);
 
-    globals.checkProfilePictureCustomer = true; //Set to true so that the new profile picture is displayed on the profile page after changes are confirmed
+    globals.checkProfilePictureTasker =
+        true; //Set to true so that the new profile picture is displayed on the profile page after changes are confirmed
   }
 
   //Get the profile picture link of the current user
   void getProfilePicture(String id) async {
     final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
-    final url = await ref.getDownloadURL();
+    final url = await ref.getDownloadURL(); //Convert profile picture from Firebase storage to link
     setState(() {
-      profilePictureURL = url;
+      profilePictureURL = url; //Update profilePictureURL field so that it contains the link to Firebase where the profile picture is located
     });
   }
 
@@ -83,7 +84,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
   void confirmChanges() async {
     var current = FirebaseAuth.instance.currentUser!;
 
-    var collection = FirebaseFirestore.instance.collection('Customers');
+    var collection = FirebaseFirestore.instance.collection('Taskers');
     var docSnapshot = await collection.doc(current.email!).get();
     Map<String, dynamic> data = docSnapshot.data()!;
 
@@ -92,7 +93,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     var newLastName = data['last name'];
 
     final currentDB = FirebaseFirestore.instance
-        .collection("Customers")
+        .collection("Taskers")
         .doc("${current.email}");
     FirebaseFirestore.instance.runTransaction((transaction) async {
       //Changing values based on user entry. If empty, do not change (keep same)
@@ -122,7 +123,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     );
   }
 
-//Bill's Customer edit profile screen/UI code
+//Bill's Tasker edit profile screen/UI code
   @override
   Widget build(BuildContext context) {
     var current = FirebaseAuth.instance.currentUser!;
@@ -132,12 +133,12 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
         backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
-          title: Text('Edit Customer Profile Page'),
+          title: Text('Edit Tasker Profile Page'),
           centerTitle: true,
           backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
-        //Customer profile picture
+        //Tasker profile picture
         resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Column(
@@ -172,7 +173,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                                   as ImageProvider,
                           fit: BoxFit.cover,
                         ))),
-                // Select image button (next to the profile picture itself)
+                //Select image button (next to the profile picture itself)
                 Positioned(
                     bottom: 0.0,
                     right: 0.0,
@@ -187,7 +188,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                         child: IconButton(
                           icon: Icon(Icons.edit, color: Colors.grey),
                           onPressed: () {
-                            selectImage(); //Call selectImage() function once pressed, allow user to browse their device's gallery
+                            selectImage();
                           },
                         ))),
               ],
