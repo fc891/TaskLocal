@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tasklocal/screens/calendar/addapointment.dart';
-import 'package:tasklocal/screens/calendar/setavailability.dart';
-import 'package:tasklocal/screens/calendar/viewschedule.dart';
+import 'package:tasklocal/screens/calendar/calendarfeatures.dart';
 
 class CalendarFront extends StatefulWidget {
   const CalendarFront({Key? key}) : super(key: key);
@@ -30,6 +28,7 @@ class _CalendarFrontState extends State<CalendarFront> {
     }
   }
 
+  // build layout
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +40,7 @@ class _CalendarFrontState extends State<CalendarFront> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // display calendar using API
           Expanded(
             child: Center(
               child: TableCalendar(
@@ -56,6 +56,7 @@ class _CalendarFrontState extends State<CalendarFront> {
                 ),
                 onFormatChanged: (format) {
                   if (_calendarFormat != format) {
+                    // allow user to click on the different dates and set state to currently selected
                     setState(() {
                       _calendarFormat = format;
                     });
@@ -68,26 +69,20 @@ class _CalendarFrontState extends State<CalendarFront> {
             ),
           ),
           SizedBox(height: 100),
+          // create button for adding or viewing schedule
           Padding(
             padding: const EdgeInsets.all(32.0),
-            child: DropdownButton<String>(
-              items: <String>['Add Appointment', 'Set Availability', 'View Schedule']
-                  .map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? value) {
-                if (value == 'Add Appointment') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddAppointment()));
-                } else if (value == 'Set Availability') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SetAvailability()));
-                } else if (value == 'View Schedule') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ViewSchedule()));
-                }
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CalendarFeatures()));
               },
-              hint: Text('Select an option'),
+              child: Text(
+                'Add or View Upcoming Schedule',
+                style: TextStyle(fontSize: 14),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+              ),
             ),
           ),
         ],

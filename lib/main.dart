@@ -4,7 +4,10 @@ import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tasklocal/Screens/authorization/onboardingpage.dart';
 import 'package:tasklocal/screens/calendar/calendarfront.dart';
+import 'package:tasklocal/screens/notifications/notification_services.dart';
 import 'firebase_options.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 //CUSTOMER IMPORTS
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
