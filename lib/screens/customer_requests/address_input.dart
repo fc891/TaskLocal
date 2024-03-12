@@ -19,11 +19,6 @@ class _AddressInputPageState extends State<AddressInputPage> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _unitController = TextEditingController();
   bool _isGeolocationPermissionGranted = false;
-  List<String> _recentAddresses = [
-    '123 Main St, Anytown, USA',
-    // '456 Elm St, Anycity, USA',
-    // '789 Oak St, Anyville, USA',
-  ];
 
   void _navigateToTaskerSelectionPage() {
     if (_addressController.text.trim().isEmpty) {
@@ -68,10 +63,39 @@ class _AddressInputPageState extends State<AddressInputPage> {
     }
   }
 
-  void _loadRecentAddresses() {
-    setState(() {
-      _addressController.text = _recentAddresses.join('\n');
-    });
+  void _loadRecentAddresses() async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Reference to the "Customer Address" document for the current user
+        DocumentSnapshot addressSnapshot = await FirebaseFirestore.instance
+            .collection('Customers')
+            .doc(user.email) // Use user's email as document ID
+            .collection('Customer Address')
+            .doc('latestAddressInput') // Assuming there's a document named 'latestAddressInput' holding the latestAddressInput address
+            .get();
+
+        if (addressSnapshot.exists) {
+          Map<String, dynamic> addressData = addressSnapshot.data() as Map<String, dynamic>;
+          setState(() {
+            _addressController.text = addressData['address'] ?? '';
+            _unitController.text = addressData['unit'] ?? '';
+          });
+        } else {
+          // No recent address found
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('No recent address found.'),
+            ),
+          );
+        }
+      } else {
+        throw 'User not logged in.';
+      }
+    } catch (e) {
+      print('Error loading recent addresses: $e');
+    }
   }
 
   void _saveAddressToFirestore() async {
@@ -91,21 +115,18 @@ class _AddressInputPageState extends State<AddressInputPage> {
         // Reference to the "Customer Address" document for the current user
         DocumentReference customerAddressRef = FirebaseFirestore.instance
             .collection('Customers')
-            .doc(user.uid) // Use user's UID as document ID
+            .doc(user.email) // Use user's email as document ID
             .collection('Customer Address')
-            .doc('addressInput');
+            .doc('latestAddressInput');
 
-        // Update the address in the document, merge with existing data if document exists
+        // Update the address in the document
         await customerAddressRef.set({
           'address': _addressController.text,
           'unit': _unitController.text,
-        }, SetOptions(merge: true));
+        });
 
         // Close the loading dialog
         Navigator.pop(context);
-
-        // Clear input fields
-        _clearFields();
 
         // Navigate to tasker selection page
         Navigator.push(
@@ -142,11 +163,6 @@ class _AddressInputPageState extends State<AddressInputPage> {
         );
       },
     );
-  }
-
-  void _clearFields() {
-    _addressController.clear();
-    _unitController.clear();
   }
 
   @override
