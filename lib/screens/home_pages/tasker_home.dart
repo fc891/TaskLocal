@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:tasklocal/components/task_category_box.dart';
 import 'package:tasklocal/screens/home_pages/task_category.dart';
 import 'package:tasklocal/screens/home_pages/tasker_search_task.dart';
-import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_category_info.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_tasks.dart';
 import 'package:tasklocal/screens/messages/tasker_messages_home.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/calendar/calendarfront.dart';
+import 'package:tasklocal/screens/sign_up_task/sign_up_task.dart';
 
 class TaskerHomePage extends StatefulWidget {
   const TaskerHomePage({super.key});
@@ -65,7 +65,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
   // direct user to a page for more info about each task category
   void navigateToTaskerCategoryInfo(int index, List listRow) {
     Navigator.push(context,
-      MaterialPageRoute(builder: (context) => TaskerCategoryInfo(taskCategory: listRow[index],)),
+      MaterialPageRoute(builder: (context) => SignUpTask(taskCategory: listRow[index],)),
     );
   }
 
