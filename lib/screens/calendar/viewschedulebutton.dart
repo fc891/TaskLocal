@@ -20,7 +20,7 @@ class ViewScheduleButton extends StatelessWidget {
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color:Colors.blue,
+          color:Colors.green,
         ),
         alignment: Alignment.center,
         child:Text(
