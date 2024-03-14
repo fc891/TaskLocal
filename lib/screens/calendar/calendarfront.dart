@@ -76,12 +76,16 @@ class _CalendarFrontState extends State<CalendarFront> {
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => CalendarFeatures()));
               },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                primary: Colors.green,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+              ),
               child: Text(
                 'Add or View Upcoming Schedule',
-                style: TextStyle(fontSize: 14),
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                style: TextStyle(fontSize: 14, color: Colors.white),
               ),
             ),
           ),

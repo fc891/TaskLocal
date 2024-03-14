@@ -92,7 +92,7 @@ class _CalendarFeaturesState extends State<CalendarFeatures> {
               height: 100,
               width: 80,
               initialSelectedDate: DateTime.now(),
-              selectionColor: Colors.blue,
+              selectionColor: Colors.green,
               selectedTextColor: Colors.white,
               dateTextStyle: GoogleFonts.lato(
                 textStyle: TextStyle(
