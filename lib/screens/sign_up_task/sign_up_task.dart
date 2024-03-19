@@ -180,62 +180,68 @@ class _SignUpTaskState extends State<SignUpTask> {
             SizedBox(height: 20), // Add some space between the experience section and skills section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Skills:",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Skills:",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: skills.length + 1, // +1 for the initial empty text field
-                    itemBuilder: (context, index) {
-                      if (index == skills.length) {
-                        // Add button to add more skills
-                        return TextButton(
-                          onPressed: () {
-                            setState(() {
-                              skills.add('');
-                            });
-                          },
-                          child: Text(
-                            "Add Skill",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        );
-                      }
-                      return TextFormField(
-                        initialValue: skills[index],
-                        onChanged: (value) {
-                          setState(() {
-                            skills[index] = value;
-                          });
+                    SizedBox(height: 8),
+                    SizedBox(
+                      width: 150,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: skills.length + 1, // +1 for the initial empty text field
+                        itemBuilder: (context, index) {
+                          if (index == skills.length) {
+                            // Add button to add more skills
+                            return TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  skills.add('');
+                                });
+                              },
+                              child: Text(
+                                "Add Skill",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            );
+                          }
+                          return TextFormField(
+                            // initialValue: skills[index],
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     skills[index] = value;
+                            //   });
+                            // },
+                            style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              hintText: "Enter skill ${index + 1}",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          );
                         },
-                        style: TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: "Enter skill ${index + 1}",
-                          hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
