@@ -19,29 +19,32 @@ class TaskerUploadedMedia extends StatefulWidget {
 
 //Bill's Tasker Uploaded Media Screen
 class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
+  // Using video_player.dart reference
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(Uri.parse(
+      widget.taskinfo.taskInfo,
+    ))
+      ..initialize().then((_) {
+        _controller.play();
+        setState(() {
+          //wip
+        });
+      });
 
-  //Using video_player.dart reference
-  // late VideoPlayerController _controller;
-  // late Future<void> _initializeVideoPlayerFuture;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _controller = VideoPlayerController.networkUrl(
-  //     Uri.parse(
-  //       widget.taskinfo.taskInfo,
-  //     ),
-  //   );
+    _initializeVideoPlayerFuture = _controller.initialize();
+  }
 
-  //   _initializeVideoPlayerFuture = _controller.initialize();
-  // }
+  @override
+  void dispose() {
+    // Ensure disposing of the VideoPlayerController to free up resources.
+    _controller.dispose();
 
-  // @override
-  // void dispose() {
-  //   // Ensure disposing of the VideoPlayerController to free up resources.
-  //   _controller.dispose();
-
-  //   super.dispose();
-  // }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,27 +67,29 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
           //Display media
           Image(image: NetworkImage(mediaLink)),
 
-          // FutureBuilder(
-          //   future: _initializeVideoPlayerFuture,
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.done) {
-          //       // If the VideoPlayerController has finished initialization, use
-          //       // the data it provides to limit the aspect ratio of the video.
-          //       return AspectRatio(
-          //         aspectRatio: _controller.value.aspectRatio,
-          //         // Use the VideoPlayer widget to display the video.
-          //         child: VideoPlayer(_controller),
-          //       );
-          //     } else {
-          //       // If the VideoPlayerController is still initializing, show a
-          //       // loading spinner.
-          //       return const Center(
-          //         child: CircularProgressIndicator(),
-          //       );
-          //     }
-          //   },
-          // ),
-          
+          FutureBuilder(
+            future: _initializeVideoPlayerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the VideoPlayerController has finished initialization, use
+                // the data it provides to limit the aspect ratio of the video.
+                return AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  // Use the VideoPlayer widget to display the video.
+                  child: _controller.value.isInitialized
+                      ? VideoPlayer(_controller)
+                      : Container(),
+                );
+              } else {
+                // If the VideoPlayerController is still initializing, show a
+                // loading spinner.
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
+
           //Task details
           Text('Task info here',
               style: TextStyle(
