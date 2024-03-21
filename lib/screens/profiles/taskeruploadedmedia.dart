@@ -17,11 +17,14 @@ class TaskerUploadedMedia extends StatefulWidget {
       taskinfo; //WIP: convert this to some sort of image/video once implemented in the future
 }
 
+enum UrlType { IMAGE, VIDEO, UNKNOWN }
+
 //Bill's Tasker Uploaded Media Screen
 class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
   // Using video_player.dart reference
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
+
   @override
   void initState() {
     super.initState();
@@ -46,10 +49,24 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
     super.dispose();
   }
 
+  UrlType getUrlType(String url) {
+    Uri uri = Uri.parse(url);
+    String typeString = uri.path.substring(uri.path.length - 3).toLowerCase();
+    if (typeString == "jpg" || typeString == "png" || typeString == "gif") {
+      return UrlType.IMAGE;
+    }
+    if (typeString == "mp4") {
+      return UrlType.VIDEO;
+    } else {
+      return UrlType.UNKNOWN;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String mediaLink = widget.taskinfo.taskInfo;
     int tasknumber = widget.taskinfo.taskNumber + 1;
+    UrlType type = getUrlType(mediaLink);
     return Scaffold(
       //Background color of UI
       backgroundColor: Colors.green[500],
@@ -64,9 +81,11 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
       body: Center(
           child: Column(children: [
         Column(children: <Widget>[
-          //Display media
+          //Display media (Image)
+          if(type == UrlType.IMAGE)
           Image(image: NetworkImage(mediaLink)),
-
+          //Display media (Video)
+          if(type == UrlType.VIDEO)
           FutureBuilder(
             future: _initializeVideoPlayerFuture,
             builder: (context, snapshot) {
@@ -89,7 +108,6 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
               }
             },
           ),
-
           //Task details
           Text('Task info here',
               style: TextStyle(
