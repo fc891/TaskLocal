@@ -14,6 +14,7 @@ import 'package:tasklocal/screens/profiles/taskertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskeruploadedmedia.dart';
 import 'package:tasklocal/screens/profiles/taskertaskcategory.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
+import 'package:tasklocal/screens/profiles/settingspage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -41,7 +42,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   bool runOnce = true;
   int numMediaUploaded = 0;
   List<String> mediaList = [];
-  
+
   bool _taskCategoriesSelected = false;
   bool _uploadedMediaSelected = false;
   bool _taskHistorySelected = true;
@@ -153,13 +154,12 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TaskerEditProfile()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
               },
               icon: Icon(
-                Icons.edit_outlined,
+                //Icons.edit_outlined,
+                Icons.settings_outlined,
                 color: Colors.grey[300],
               ),
             ),
