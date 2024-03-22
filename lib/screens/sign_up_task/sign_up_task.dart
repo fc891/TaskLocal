@@ -25,6 +25,48 @@ class _SignUpTaskState extends State<SignUpTask> {
   String dropdownValue = 'Years'; 
   List<String> skills = []; // List to hold user's skills
 
+  void _submitTaskSignUp() {
+    String location = locationController.text;
+    String askingRate = askingRateController.text;
+    String experience = expController.text;
+
+    // Check if all required fields are filled in
+    if (location.isNotEmpty && askingRate.isNotEmpty && experience.isNotEmpty && skills.isNotEmpty) {
+      _firestore.collection('Signed Up Tasks').add({
+        'location': location,
+        'askingRate': askingRate,
+        'experience': experience,
+        'skills': skills,
+      }).then((value) {
+        print('Task added successfully!');
+        // Clear the text fields after adding the task
+        locationController.clear();
+        askingRateController.clear();
+        expController.clear();
+        setState(() {
+          skills.clear(); // Clear the skills list
+        });
+      }).catchError((error) {
+        print('Error adding task: $error');
+      });
+    } else {
+      // Display an error message indicating that all fields are required
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('Please fill in all required fields.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +100,7 @@ class _SignUpTaskState extends State<SignUpTask> {
                 child: TextField(
                   controller: locationController,
                   decoration: InputDecoration(
-                    hintText: 'Address, zip code, state',
+                    labelText: 'Address',
                     filled: true,
                     fillColor: Colors.grey[200],
                     // border is black by default and when click the text field, border is white
@@ -288,7 +330,7 @@ class _SignUpTaskState extends State<SignUpTask> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: _submitTaskSignUp,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[800],
                 ),
