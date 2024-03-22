@@ -25,45 +25,74 @@ class _SignUpTaskState extends State<SignUpTask> {
   String dropdownValue = 'Years'; 
   List<String> skills = []; // List to hold user's skills
 
-  void _submitTaskSignUp() {
-    String location = locationController.text;
-    String askingRate = askingRateController.text;
-    String experience = expController.text;
+  Future<Map<String, dynamic>?> getCurrTaskerData(String? email) async {
+    try {
+      DocumentSnapshot currTaskerDoc = await _firestore.collection('Customers').doc(email).get();
+      if (currTaskerDoc.exists) {
+        return currTaskerDoc.data() as Map<String, dynamic>;
+      } else {
+        print('Customer document does not exist');
+        return null;
+      }
+    } catch (error) {
+      print('Error fetching customer data: $error');
+      return null;
+    }
+  }
 
-    // Check if all required fields are filled in
-    if (location.isNotEmpty && askingRate.isNotEmpty && experience.isNotEmpty && skills.isNotEmpty) {
-      _firestore.collection('Signed Up Tasks').add({
-        'location': location,
-        'askingRate': askingRate,
-        'experience': experience,
-        'skills': skills,
-      }).then((value) {
-        print('Task added successfully!');
-        // Clear the text fields after adding the task
-        locationController.clear();
-        askingRateController.clear();
-        expController.clear();
-        setState(() {
-          skills.clear(); // Clear the skills list
+  void _submitTaskSignUp() async {
+    try {
+      // DocumentSnapshot currTaskerDoc = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
+      // Map<String, dynamic>? currTaskerData = currTaskerDoc.data() as Map<String, dynamic>;
+
+      String location = locationController.text;
+      String askingRate = askingRateController.text;
+      String experience = expController.text;
+
+      // Future<Map<String, dynamic>?> currTaskerData = getCurrTaskerData(_auth.currentUser!.email);
+          Map<String, dynamic>? currTaskerData = await getCurrTaskerData(_auth.currentUser!.email);
+
+
+      // Check if all required fields are filled in
+      if (location.isNotEmpty && askingRate.isNotEmpty && experience.isNotEmpty && skills.isNotEmpty) {
+        _firestore.collection('Signed Up Tasks').doc(widget.taskCategory.name).set({
+          'email': _auth.currentUser!.email,
+          'first name': currTaskerData?['first name'],
+          'last name': currTaskerData?['last name'],
+          'location': location,
+          'askingRate': askingRate,
+          'experience': experience,
+          'skills': skills,
+        }).then((value) {
+          print('Task added successfully!');
+          // Clear the text fields after adding the task
+          locationController.clear();
+          askingRateController.clear();
+          expController.clear();
+          setState(() {
+            skills.clear(); // Clear the skills list
+          });
+        }).catchError((error) {
+          print('Error adding task: $error');
         });
-      }).catchError((error) {
-        print('Error adding task: $error');
-      });
-    } else {
-      // Display an error message indicating that all fields are required
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Please fill in all required fields.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
+      } else {
+        // Display an error message indicating that all fields are required
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Please fill in all required fields.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch(error) {
+      print('Error submitting task: $error');
     }
   }
 
