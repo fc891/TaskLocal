@@ -25,6 +25,10 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
 
+  //Lists to store supported image/video extensions
+  List<String> imageExtensions = ["jpg", "jpeg", "png", "gif"];
+  List<String> videoExtensions = ["mp4", "mov"];
+
   @override
   void initState() {
     super.initState();
@@ -52,10 +56,10 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
   UrlType getUrlType(String url) {
     Uri uri = Uri.parse(url);
     String typeString = uri.path.substring(uri.path.length - 3).toLowerCase();
-    if (typeString == "jpg" || typeString == "png" || typeString == "gif") {
+    if (imageExtensions.contains(typeString)) {
       return UrlType.IMAGE;
     }
-    if (typeString == "mp4") {
+    if (videoExtensions.contains(typeString)) {
       return UrlType.VIDEO;
     } else {
       return UrlType.UNKNOWN;
@@ -82,32 +86,31 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
           child: Column(children: [
         Column(children: <Widget>[
           //Display media (Image)
-          if(type == UrlType.IMAGE)
-          Image(image: NetworkImage(mediaLink)),
+          if (type == UrlType.IMAGE) Image(image: NetworkImage(mediaLink)),
           //Display media (Video)
-          if(type == UrlType.VIDEO)
-          FutureBuilder(
-            future: _initializeVideoPlayerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the VideoPlayerController has finished initialization, use
-                // the data it provides to limit the aspect ratio of the video.
-                return AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  // Use the VideoPlayer widget to display the video.
-                  child: _controller.value.isInitialized
-                      ? VideoPlayer(_controller)
-                      : Container(),
-                );
-              } else {
-                // If the VideoPlayerController is still initializing, show a
-                // loading spinner.
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          ),
+          if (type == UrlType.VIDEO)
+            FutureBuilder(
+              future: _initializeVideoPlayerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // If the VideoPlayerController has finished initialization, use
+                  // the data it provides to limit the aspect ratio of the video.
+                  return AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    // Use the VideoPlayer widget to display the video.
+                    child: _controller.value.isInitialized
+                        ? VideoPlayer(_controller)
+                        : Container(),
+                  );
+                } else {
+                  // If the VideoPlayerController is still initializing, show a
+                  // loading spinner.
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
           //Task details
           Text('Task info here',
               style: TextStyle(

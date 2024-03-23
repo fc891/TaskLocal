@@ -145,11 +145,11 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     runGetters(); //Run all getter functions
     return Scaffold(
         //Background color of UI
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         appBar: AppBar(
           title: Text('${username}\'s profile page'),
           centerTitle: true,
-          backgroundColor: Colors.green[800],
+          //backgroundColor: Colors.green[800],
           elevation: 0.0,
           actions: [
             IconButton(
@@ -229,7 +229,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                     )),
               ]),
               Divider(
-                color: Colors.green[500],
+                //color: Colors.green[500],
                 height: 10.0,
               ),
               Row(children: <Widget>[
@@ -252,7 +252,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       },
                     )),
                 VerticalDivider(
-                  color: Colors.green[500],
+                  //color: Colors.green[500],
                   width: 30.0,
                 ),
                 Container(
@@ -274,7 +274,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       },
                     )),
                 VerticalDivider(
-                  color: Colors.green[500],
+                  //color: Colors.green[500],
                   width: 30.0,
                 ),
                 Container(
@@ -299,20 +299,20 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               //Divider (line)
               Divider(
                 height: 10.0,
-                color: Colors.grey[1500],
+                //color: Colors.grey[1500],
               ),
               //List task categories of tasker
               if (_taskCategoriesSelected)
                 Text('Task Categories',
                     style: TextStyle(
-                        color: Colors.white,
+                        //color: Colors.white,
                         letterSpacing: 1.3,
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold)),
               if (_taskCategoriesSelected)
                 Divider(
                   height: 10.0,
-                  color: Colors.grey[1500],
+                  //color: Colors.grey[1500],
                 ),
               //Task Categories Display
               if (_taskCategoriesSelected)
@@ -351,20 +351,20 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               if (_taskCategoriesSelected)
                 Divider(
                   height: 10.0,
-                  color: Colors.green[500],
+                  //color: Colors.green[500],
                 ),
               //List uploaded photos and videos by tasker
               if (_uploadedMediaSelected)
                 Text('Uploaded Photos and Videos($numMediaUploaded)',
                     style: TextStyle(
-                        color: Colors.white,
+                        //color: Colors.white,
                         letterSpacing: 1.3,
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold)),
               if (_uploadedMediaSelected)
                 Divider(
                   height: 10.0,
-                  color: Colors.grey[1500],
+                  //color: Colors.grey[1500],
                 ),
               //Uploaded Photos and Videos Display
               if (_uploadedMediaSelected)
@@ -415,20 +415,20 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               if (_uploadedMediaSelected)
                 Divider(
                   height: 10.0,
-                  color: Colors.green[500],
+                  //color: Colors.green[500],
                 ),
               //List history of tasks that tasker has completed
               if (_taskHistorySelected)
                 Text('Task History',
                     style: TextStyle(
-                        color: Colors.white,
+                        //color: Colors.white,
                         letterSpacing: 1.3,
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold)),
               if (_taskHistorySelected)
                 Divider(
                   height: 10.0,
-                  color: Colors.grey[1500],
+                  //color: Colors.grey[1500],
                 ),
               //Task history display
               if (_taskHistorySelected)
@@ -452,13 +452,13 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                               //Change to tasker specific later
                                               taskinfo: info)));
                                 },
-                                title: Text("test$index"),
+                                title: Text("test$index", style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
                               ));
                             }))),
               if (_taskHistorySelected)
                 Divider(
                   height: 20.0,
-                  color: Colors.green[500],
+                  //color: Colors.green[500],
                 ),
             ])));
   }

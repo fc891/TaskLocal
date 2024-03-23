@@ -1,5 +1,7 @@
 library globals;
 
+import 'package:flutter/material.dart';
+
 //Contributors: Bill
 
 bool checkProfilePictureCustomer =

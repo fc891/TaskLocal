@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasklocal/Screens/authorization/customerregistration.dart';
-import 'package:tasklocal/Screens/login_pages/loginpagecustomer.dart';
+import 'package:tasklocal/Screens/authorization/loginpagecustomer.dart';
 import 'package:tasklocal/Screens/authorization/tasker_registration.dart';
 import 'package:tasklocal/components/customer_register_button.dart';
 import 'package:tasklocal/components/tasker_register_button.dart';
@@ -12,9 +12,9 @@ class RegisterSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[500],
+      //backgroundColor: Colors.green[500],
       appBar: AppBar(
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
       ),
       body: SafeArea(
         child: Center(
@@ -31,7 +31,7 @@ class RegisterSelection extends StatelessWidget {
               Text(
                 'TaskLocal',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   fontSize: 32,
                 ),
               ),
