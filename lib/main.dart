@@ -9,6 +9,10 @@ import 'package:tasklocal/screens/notifications/notification_services.dart';
 import 'firebase_options.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tasklocal/Screens/app_theme/appthemecustomization.dart';
+import 'package:tasklocal/Screens/app_theme/app_themes.dart';
+import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
 
 //CUSTOMER IMPORTS
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
@@ -29,22 +33,19 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     TaskInfo defaultinfo = TaskInfo("Default", 0);
     return MaterialApp(
       title: 'TaskLocal',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        useMaterial3: true,
-      ),
+      theme: getAppTheme(context, ref.watch(appThemeProvider)),
       // Initial page that is shown when program is loaded up
       // >FOR TESTING: change initialRoute to an option from routing options below
       initialRoute: '/home',
@@ -58,8 +59,10 @@ class MyApp extends StatelessWidget {
         '/taskerhomepage': (context) => TaskerHomePage(),
         '/customerprofilepage': (context) => CustomerProfilePage(),
         '/taskerprofilepage': (context) => TaskerProfilePage(),
-        '/customertaskinfopage': (context) => CustomerTaskInfoPage(taskinfo:defaultinfo),
-        '/taskertaskinfopage': (context) => TaskerTaskInfoPage(taskinfo: defaultinfo),
+        '/customertaskinfopage': (context) =>
+            CustomerTaskInfoPage(taskinfo: defaultinfo),
+        '/taskertaskinfopage': (context) =>
+            TaskerTaskInfoPage(taskinfo: defaultinfo),
         '/messageshome': (context) => MessagesHome(),
       },
     );

@@ -1,112 +1,97 @@
-// Contributors: Richard N.
-
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tasklocal/screens/authorization/passwordresetpage.dart';
-import 'package:tasklocal/screens/home_pages/tasker_home.dart';
+import 'package:flutter/material.dart';
+import 'package:tasklocal/Screens/authorization/passwordresetpage.dart';
+import 'package:tasklocal/components/login_button_customer.dart';
+import 'package:tasklocal/components/user_pass_input.dart';
+import 'package:tasklocal/screens/home_pages/customer_home.dart';
 
 import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TaskerLogin extends ConsumerStatefulWidget {
+class LoginPageCustomer extends ConsumerStatefulWidget {
   // Richard's code
   // user can switch back and forth between login and register
   final Function()? onTap;
-  const TaskerLogin({Key? key, required this.onTap}) : super(key: key);
+  const LoginPageCustomer({Key? key, required this.onTap}) : super(key: key);
 
   @override
-  ConsumerState<TaskerLogin> createState() => _TaskerLogin();
+  ConsumerState<LoginPageCustomer> createState() => _LoginPageCustomer();
 }
 
-class _TaskerLogin extends ConsumerState<TaskerLogin> {
+class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
 
   @override
   void initState() {
     super.initState();
   }
 
-  // Richard's code
-  // created controllers for managing the info of user
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  // Richard's code for the userLogin function
-  // login method called on when press the login button
-  void userLogin() async {
-    // display a loading circle to give users idea of time
-    showDialog(
+// class LoginPageCustomer extends ConsumerStatefulWidget {
+//   LoginPageCustomer({Key? key}) : super(key: key);
+
+//   @override
+//   _LoginPageCustomerState createState() => _LoginPageCustomerState();
+// }
+
+// class _LoginPageCustomerState extends ConsumerState<LoginPageCustomer> {
+
+  // text controllers
+  final userController = TextEditingController();
+  final passController = TextEditingController();
+
+  Future<void> logUserIn() async {
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+        email: userController.text.trim(),
+        password: passController.text.trim(),
+      )
+          .then((_) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return CustomerHomePage();
+        }));
+      });
+    } catch (error) {
+      showDialog(
         context: context,
         builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return AlertDialog(
+            title: Text('Login Error'),
+            backgroundColor: Theme.of(context).primaryColor,
+            content: Text('Incorrect email or password. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
           );
-        });
-
-    try {
-      // verify whether the account is stored in the database and then sign in
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
+        },
       );
-      // potential alternate to match customer login
-      // .then((_) {
-      //   Navigator.pop(context);
-      //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      //     return TaskerHomePage();
-      //   }));
-      // });
-      // remove the loading circle after logging in
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      // get an idea of what the 'logging in' error is
-      print(e.code);
-      // Display the error message depending on the error code
-      if (e.code == 'invalid-email' || e.code == 'user-not-found') {
-        showErrorMessage('Incorrect Email');
-      } else if (e.code == 'wrong-password') {
-        showErrorMessage("Incorrect Password");
-      } else if (e.code == 'channel-error') {
-        showErrorMessage('Unable to process Email/Password');
-      }
     }
   }
 
-  // Richard's code
-  // convenient method to display error message
-  void showErrorMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Center(child: Text(message)),
-        );
-      },
-    );
+  @override
+  void dispose() {
+    userController.dispose();
+    passController.dispose();
+    super.dispose();
   }
 
-  // Richard's entire code for this Widget build
   @override
   Widget build(BuildContext context) {
     var isDarkMode = ref.watch(appThemeProvider);
     return Scaffold(
-      //backgroundColor: isDarkMode ? Colors.grey[500] : Colors.green[500],
       appBar: AppBar(
-        title: Text('Tasker Login',
+        title: Text('Customer Login',
             style: TextStyle(
-              color: Colors.white,
+              //color: Colors.white,
               fontWeight: FontWeight.w600,
             )),
         centerTitle: true,
         //backgroundColor: Colors.green[800],
-        // Richard's code
-        // Add a back button to the AppBar
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // Direct users to go back to the onboarding page
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: SafeArea(
         child: Center(
@@ -138,7 +123,7 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextField(
-                      controller: emailController,
+                      controller: userController,
                       decoration: InputDecoration(
                         labelText: "Email Address",
                         border: OutlineInputBorder(
@@ -154,7 +139,7 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextField(
-                      controller: passwordController,
+                      controller: passController,
                       decoration: InputDecoration(
                         labelText: "Password",
                         border: OutlineInputBorder(
@@ -195,7 +180,7 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
                 const SizedBox(height: 8),
                 Center(
                   child: ElevatedButton(
-                    onPressed: userLogin,
+                    onPressed: logUserIn,
                     style: ElevatedButton.styleFrom(
                       //backgroundColor: Colors.green[800],
                     ),
@@ -233,5 +218,99 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
         ),
       ),
     );
+
+    // Alex's old code
+    //   body: SafeArea(
+    //     child: SingleChildScrollView(
+    //       child: Center(
+    //         child: Column(
+    //           children: [
+    //             // Logo
+    //             Align(
+    //               alignment: Alignment.topCenter,
+    //               child: Image.asset('lib/images/tasklocaltransparent.png'),
+    //             ),
+    //             SizedBox(height: 16),
+
+    //             // Name
+    //             Text(
+    //               'TaskLocal',
+    //               style: TextStyle(
+    //                 //color: Colors.white,
+    //                 fontSize: 32,
+    //               ),
+    //             ),
+
+    //             SizedBox(height: 24),
+
+    //             // email
+    //             UserPassInput(
+    //               controller: userController,
+    //               hintText: 'Email',
+    //               obscureText: false,
+    //             ),
+
+    //             SizedBox(height: 8),
+
+    //             // password
+    //             UserPassInput(
+    //               controller: passController,
+    //               hintText: 'Password',
+    //               obscureText: true,
+    //             ),
+
+    //             SizedBox(height: 8),
+
+    //             // forgot password
+    //             Padding(
+    //               padding: const EdgeInsets.symmetric(horizontal: 24.0),
+    //               child: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.end,
+    //                 children: [
+    //                   GestureDetector(
+    //                     onTap: () {
+    //                       Navigator.push(context,
+    //                           MaterialPageRoute(builder: (context) {
+    //                         return PasswordResetPage();
+    //                       }));
+    //                     },
+    //                     child: Text(
+    //                       'Forgot Password?',
+    //                       style: TextStyle(
+    //                         color: Colors.yellow,
+    //                         fontWeight: FontWeight.bold,
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+
+    //             SizedBox(height: 12),
+
+    //             // sign in button
+    //             const SizedBox(height: 8),
+    //             Center(
+    //               child: ElevatedButton(
+    //                 onPressed: logUserIn,
+    //                 style: ElevatedButton.styleFrom(
+    //                   //backgroundColor: Colors.green[800],
+    //                 ),
+    //                 child: Padding(
+    //                   padding: const EdgeInsets.symmetric(
+    //                       horizontal: 30.0, vertical: 15),
+    //                   child:
+    //                       Text("Login", style: TextStyle(color: Theme.of(context).primaryColor)),
+    //                 ),
+    //               ),
+    //             ),
+
+    //             SizedBox(height: 28),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }

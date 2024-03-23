@@ -24,11 +24,13 @@ class _TaskerSearchTaskState extends State<TaskerSearchTask> {
 
   @override
   Widget build(BuildContext context) {
+    Color unselectedBorderColor = Theme.of(context).colorScheme.primary;
+    Color selectedBorderColor = Theme.of(context).colorScheme.secondary;
     return Scaffold(
-      backgroundColor: Colors.green,
+      //backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text('', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.green[800],
+        //title: Text('', style: TextStyle(color: Colors.white)),
+        //backgroundColor: Colors.green[800],
         elevation: 0.0,
       ),
       body: Column(
@@ -38,29 +40,29 @@ class _TaskerSearchTaskState extends State<TaskerSearchTask> {
             child: TextField(
               controller: searchController,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: 'Task Category Name',
-                filled: true,
-                fillColor: Colors.grey[250],
-                // Richard's code
-                // border is black by default and when click the search bar border is white
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                // Richard's code
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black), 
-                  borderRadius: BorderRadius.circular(10)
-                )
-              ),
+                  prefixIcon: Icon(Icons.search),
+                  hintText: 'Task Category Name',
+                  hintStyle:
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.tertiary,
+                  // Richard's code
+                  // border is black by default and when click the search bar border is white
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: selectedBorderColor),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  // Richard's code
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: unselectedBorderColor),
+                      borderRadius: BorderRadius.circular(10))),
               onChanged: searchTaskCategory,
             ),
           ),
           Expanded(
             child: ListView.builder(
               itemCount: taskList.length,
-              itemBuilder: (context, index) { 
+              itemBuilder: (context, index) {
                 final task = taskList[index];
                 return ListTile(
                   leading: Image.asset(
@@ -69,9 +71,14 @@ class _TaskerSearchTaskState extends State<TaskerSearchTask> {
                     task.imagePath,
                     fit: BoxFit.cover,
                   ),
-                  title: Text(task.name),
-                  onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TaskerCategoryInfo(taskCategory: task)),
+                  title: Text(task.name,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary)),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            TaskerCategoryInfo(taskCategory: task)),
                   ),
                 );
               },

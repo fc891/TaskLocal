@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tasklocal/Screens/app_theme/appthemecustomization.dart';
 import 'package:tasklocal/screens/profiles/taskereditprofile.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -70,18 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   style: TextStyle(fontSize: 20.0, color: Colors.white)),
               subtitle: Text("Tasker",
                   style: TextStyle(fontSize: 14.0, color: Colors.white)),
-              trailing: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TaskerEditProfile()));
-                  },
-                  icon: Icon(
-                    Icons.edit_outlined,
-                    color: Colors.white,
-                    size: 30.0,
-                  ))),
+              trailing: Text("")),
               //Divider (line)
           // Divider(
           //   height: 10.0,
@@ -99,127 +89,31 @@ class _SettingsPageState extends State<SettingsPage> {
           // ),
           //Tiles that represent each scrollable entry on the settings page, change onTap() function to redirect to different pages
           ListTile(
-            leading: Icon(Icons.edit),
+            leading: Icon(Icons.edit_outlined, color: Colors.white,),
+            title: Text("Manage Account", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+            subtitle: Text("Modify account details", style: TextStyle(fontSize: 12.0, color: Colors.white)),
+            trailing: Text(""),
+            onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TaskerEditProfile()));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.sunny_snowing, color: Colors.white,),
             title: Text("Customize App Theme", style: TextStyle(fontSize: 16.0, color: Colors.white)),
             subtitle: Text("Change the appearance of the app", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Icon(Icons.settings),
+            trailing: Text(""),
             onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AppThemeCustomization())); //Replace with actual screen name
             },
           ),
           ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
+            leading: Icon(Icons.settings, color: Colors.white,),
             title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
             subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
             trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),

@@ -106,11 +106,11 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     runGetters();
     return Scaffold(
         //Background color of UI
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         appBar: AppBar(
           title: Text('$username\'s profile page'),
           centerTitle: true,
-          backgroundColor: Colors.green[800],
+          //backgroundColor: Colors.green[800],
           elevation: 0.0,
           actions: [
             IconButton(

@@ -23,7 +23,7 @@ class _MessagesHomeState extends State<MessagesHome> {
       appBar: AppBar(
         title: Text('Messages', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
         elevation: 0.0,
         actions: [
           IconButton(
@@ -74,7 +74,7 @@ class _MessagesHomeState extends State<MessagesHome> {
         leading: CircleAvatar(
           child: Icon(Icons.account_circle),
         ),
-        title: Text("${data['first name']} ${data['last name']} @${data['username']}"),
+        title: Text("${data['first name']} ${data['last name']} @${data['username']}", style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
         trailing: IconButton(
           icon: Icon(Icons.clear),
           onPressed: () {

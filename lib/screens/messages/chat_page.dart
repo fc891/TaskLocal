@@ -13,8 +13,8 @@ class ChatPage extends StatefulWidget {
   final String receiverEmail;
   final String taskersOrCustomersCollection;
   const ChatPage({
-    super.key, 
-    required this.receiverFirstName, 
+    super.key,
+    required this.receiverFirstName,
     required this.receiverLastName,
     required this.receiverEmail,
     required this.taskersOrCustomersCollection,
@@ -25,7 +25,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  // 
+  //
   final TextEditingController _messageController = TextEditingController();
   final ChatFunctionality _chatFunctionality = ChatFunctionality();
   final ScrollController _scrollController = ScrollController();
@@ -39,15 +39,21 @@ class _ChatPageState extends State<ChatPage> {
 
     // if there is no message, then then a new message can be sent
     if (_messageController.text.isNotEmpty) {
-      await _chatFunctionality.sendMessage(widget.receiverEmail, _messageController.text, currUserData['first name'], currUserData['last name']);
+      await _chatFunctionality.sendMessage(
+          widget.receiverEmail,
+          _messageController.text,
+          currUserData['first name'],
+          currUserData['last name']);
       _messageController.clear();
     }
   }
 
   // retrieve info about the logged in user
   Future<List<DocumentSnapshot>> _retrieveSenderInfo() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection(widget.taskersOrCustomersCollection).get();
-    
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection(widget.taskersOrCustomersCollection)
+        .get();
+
     // Find the current user/sender's document and return it as a List
     List<DocumentSnapshot> currUserDoc = snapshot.docs.where((doc) {
       Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
@@ -60,11 +66,13 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "${widget.receiverFirstName} ${widget.receiverLastName}", 
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 25)),
+        title: Text("${widget.receiverFirstName} ${widget.receiverLastName}",
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.w700,
+                fontSize: 25)),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
         elevation: 0.0,
       ),
       body: Column(
@@ -84,20 +92,22 @@ class _ChatPageState extends State<ChatPage> {
                       // get the user's input for the message
                       decoration: InputDecoration(
                         hintText: 'Text Message',
+                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         contentPadding: EdgeInsets.symmetric(horizontal: 15),
                         // filled: true,
                         // fillColor: Colors.grey[250],
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black), 
-                          borderRadius: BorderRadius.circular(10)
-                        ),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
+                            borderRadius: BorderRadius.circular(10)),
                         // border is black by default and when click the search bar border is white
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade400),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         // submit the message to be displayed on screen
-                        suffixIcon: IconButton(onPressed: sendMessage, icon: Icon(Icons.arrow_upward, size: 30)),
+                        suffixIcon: IconButton(
+                            onPressed: sendMessage,
+                            icon: Icon(Icons.arrow_upward, size: 30), color: Theme.of(context).colorScheme.secondary,),
                       ),
                     ),
                   ),
@@ -126,7 +136,8 @@ class _ChatPageState extends State<ChatPage> {
         reverse: true, // show messages from bottom to top
         controller: _scrollController,
         child: StreamBuilder(
-          stream: _chatFunctionality.getMessages(widget.receiverEmail, _auth.currentUser!.email), 
+          stream: _chatFunctionality.getMessages(
+              widget.receiverEmail, _auth.currentUser!.email),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Text('Error${snapshot.error}');
@@ -135,14 +146,16 @@ class _ChatPageState extends State<ChatPage> {
               return Text('Loading...');
             }
             return Column(
-              children: snapshot.data!.docs.map(
-                (document) => _createMessageItem(document)).toList(),
+              children: snapshot.data!.docs
+                  .map((document) => _createMessageItem(document))
+                  .toList(),
             );
           },
         ),
       ),
     );
   }
+
   // prevent the keyboard from moving the screen to the top
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -155,21 +168,24 @@ class _ChatPageState extends State<ChatPage> {
   Widget _createMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     // align the messages to the right if sender, to the left if receiver
-    var alignment = (data['senderEmail'] == _auth.currentUser!.email) ? Alignment.centerRight : Alignment.centerLeft;
+    var alignment = (data['senderEmail'] == _auth.currentUser!.email)
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
     return Container(
       alignment: alignment,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Column(
-          crossAxisAlignment: (data['senderEmail'] == _auth.currentUser!.email) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: (data['senderEmail'] == _auth.currentUser!.email)
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           // display the name of sender with chat bubble's messages
           children: [
             Text("${data['senderFirstName']} ${data['senderLastName']}"),
             SizedBox(height: 5),
             Container(
-              constraints: BoxConstraints(maxWidth: 195),
-              child: ChatBubble(message: data['message'])
-            ),
+                constraints: BoxConstraints(maxWidth: 195),
+                child: ChatBubble(message: data['message'])),
           ],
         ),
       ),
