@@ -1,5 +1,6 @@
 // Contributors: Eric C.
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
@@ -75,17 +76,24 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
             List<DocumentSnapshot> taskers = snapshot.data!.docs;
 
             return ListView.builder(
-              itemCount: taskers.length,
-              itemBuilder: (BuildContext context, int index) {
-                // Access tasker data
-                var taskerData = taskers[index].data() as Map<String, dynamic>;
-                String username = taskerData['username'];
-                String firstName = taskerData['first name'];
-                String lastName = taskerData['last name'];
+  itemCount: taskers.length,
+  itemBuilder: (BuildContext context, int index) {
+    // Access tasker data
+    var taskerData = taskers[index].data() as Map<String, dynamic>;
+    String username = taskerData['username'];
+    String firstName = taskerData['first name'];
+    String lastName = taskerData['last name'];
 
                 return ListTile(
                   title: Text(username),
                   subtitle: Text('$firstName $lastName'),
+                  trailing: IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      // Add tasker to "My Taskers"
+                      _addTaskerToMyTaskers(taskerData);
+                    },
+                  ),
                   onTap: () {
                     // Navigate to tasker profile page
                     Navigator.push(
@@ -148,6 +156,48 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
         );
       },
     );
+  }
+
+  void _addTaskerToMyTaskers(Map<String, dynamic> taskerData) {
+    String email = taskerData['email']; // Assuming 'email' is a field in your tasker data
+
+    // Get the currently logged-in user's email
+    String currentUserEmail = FirebaseAuth.instance.currentUser!.email!;
+
+    // Check if the document for the logged-in customer exists in the "Customers" collection
+    FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).get().then((docSnapshot) {
+      // If the document exists, proceed to check if the "Selected Taskers" collection exists within it
+      if (docSnapshot.exists) {
+        FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').doc().get().then((collectionSnapshot) {
+          // If the collection doesn't exist, create it
+          if (!collectionSnapshot.exists) {
+            FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').doc();
+          }
+
+          // Add tasker data to Firestore under "Selected Taskers" collection within the customer's document
+          FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').doc(email).set({
+            'name': taskerData['username'],
+            'description': '${taskerData['first name']} ${taskerData['last name']}',
+            'email': email, // Include email in Firestore document
+            // Add other necessary tasker data fields
+          }).then((value) {
+            // Show success message or perform any other action upon successful addition
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Tasker added to My Taskers'),
+              ),
+            );
+          }).catchError((error) {
+            // Show error message or perform any other action upon error
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to add tasker to My Taskers'),
+              ),
+            );
+          });
+        });
+      }
+    });
   }
 
   // ! Work for Feb. 25 - Mar. 2

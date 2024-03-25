@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyTaskersPage extends StatefulWidget {
   @override
@@ -7,15 +8,18 @@ class MyTaskersPage extends StatefulWidget {
 }
 
 class _MyTaskersPageState extends State<MyTaskersPage> {
-  // fetch selected taskers data from Firestore
+  // Fetch selected taskers data from Firestore
   Future<List<Map<String, dynamic>>> fetchSelectedTaskers() async {
-    // replace 'selected_taskers' with the actual collection name where the selected taskers data is stored
-    // TODO: change collection name
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('selected_taskers').get();
+    // Get the currently logged-in user's email
+    String currentUserEmail = FirebaseAuth.instance.currentUser!.email!;
+  
+    // Query the "Selected Taskers" collection under the current customer's document
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').get();
+
     List<Map<String, dynamic>> selectedTaskers = [];
     querySnapshot.docs.forEach((doc) {
-      // ! COMMENTED OUT
-      // selectedTaskers.add(doc.data());
+      Map<String, dynamic> taskerData = doc.data() as Map<String, dynamic>;
+      selectedTaskers.add(taskerData);
     });
     return selectedTaskers;
   }
@@ -40,8 +44,8 @@ class _MyTaskersPageState extends State<MyTaskersPage> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(snapshot.data![index]['name']),
-                  subtitle: Text(snapshot.data![index]['description']),
+                  title: Text(snapshot.data![index]['name'] ?? ''),
+                  subtitle: Text(snapshot.data![index]['description'] ?? ''),
                   // You can customize the display of selected taskers data as per your UI requirements
                 );
               },
