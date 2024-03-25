@@ -6,6 +6,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
+import 'package:tasklocal/screens/customer_requests/my_taskers.dart';
 import 'package:tasklocal/screens/home_pages/customer_search_plus.dart';
 import 'package:tasklocal/screens/messages/messages_home.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
@@ -172,6 +173,10 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             label: 'Messages',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Taskers'
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
@@ -194,6 +199,13 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               );
               break;
             case 2:
+              // Redirect to tasker selection page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyTaskersPage()),
+              );
+              break;
+            case 3:
               // Redirect to tasker's profile
               Navigator.push(
                 context,
