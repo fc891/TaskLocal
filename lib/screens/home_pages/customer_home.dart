@@ -1,8 +1,6 @@
 // Customer Home Page UI/Screen
 // Contributors: Eric C.
 
-// TODO: add 'my tasks'
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
@@ -162,57 +160,48 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Taskers'
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        // Eric's code for redirects
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              // Redirects to calendar
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TaskerCalendar()),
-              );
-              break;
-            case 1:
-              // Redirect to messages
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MessagesHome()),
-              );
-              break;
-            case 2:
-              // Redirect to tasker selection page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyTaskersPage()),
-              );
-              break;
-            case 3:
-              // Redirect to tasker's profile
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CustomerProfilePage()),
-              );
-          }
-        },
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.calendar_today),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TaskerCalendar()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.message),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MessagesHome()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.people),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyTaskersPage()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CustomerProfilePage()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -243,7 +232,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               borderRadius: BorderRadius.circular(15.0),
               child: Image.asset(
                 imagePath,
-                fit: BoxFit.cover,
+                                fit: BoxFit.cover,
               ),
             ),
           ),

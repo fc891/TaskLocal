@@ -1,8 +1,8 @@
 // Contributors: Eric C.
 
 import 'package:flutter/material.dart';
-// import 'package:tasklocal/Screens/customer_requests/address_input.dart';
-import 'package:tasklocal/Screens/profiles/taskerprofilepage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 
 class TaskerSelectionPage extends StatefulWidget {
   const TaskerSelectionPage({Key? key}) : super(key: key);
@@ -21,38 +21,8 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
     'Rating (Highest to Lowest)',
   ];
 
-  void _navigateToTaskerProfilePage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => TaskerProfilePage()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> taskers = [
-      {
-        "name": "Tasker 1",
-        "description":
-            "Join Date: 01-02-2023\nTasks Completed: 10\nRating: 4.5, \nBiography: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      },
-      {
-        "name": "Tasker 2",
-        "description":
-            "Join Date: 15-05-2022\nTasks Completed: 20\nRating: 4.8, \nBiography: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      },
-      {
-        "name": "Tasker 3",
-        "description":
-            "Join Date: 15-03-2019\nTasks Completed: 25\nRating: 4.3, \nBiography: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      },
-      {
-        "name": "Tasker 4",
-        "description":
-            "Join Date: 19-02-2024\nTasks Completed: 5\nRating: 4.0, \nBiography: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      },
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -86,16 +56,45 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
       ),
       body: Container(
         color: Colors.white,
-        child: ListView.builder(
-          itemCount: taskers.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              title: Text(taskers[index]["name"]),
-              subtitle: Text(taskers[index]["description"]),
-              leading: CircleAvatar(
-                child: Text('T${index + 1}'),
-              ),
-              onTap: _navigateToTaskerProfilePage,
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('Taskers').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            // Convert snapshot data to a list of taskers
+            List<DocumentSnapshot> taskers = snapshot.data!.docs;
+
+            return ListView.builder(
+              itemCount: taskers.length,
+              itemBuilder: (BuildContext context, int index) {
+                // Access tasker data
+                var taskerData = taskers[index].data() as Map<String, dynamic>;
+                String username = taskerData['username'];
+                String firstName = taskerData['first name'];
+                String lastName = taskerData['last name'];
+
+                return ListTile(
+                  title: Text(username),
+                  subtitle: Text('$firstName $lastName'),
+                  onTap: () {
+                    // Navigate to tasker profile page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => TaskerProfilePage()),
+                    );
+                  },
+                );
+              },
             );
           },
         ),
