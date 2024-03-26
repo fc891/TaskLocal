@@ -34,7 +34,7 @@ class _CalendarFrontState extends State<CalendarFront> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendar'),
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         centerTitle: true,
       ),
       body: Column(
@@ -80,12 +80,12 @@ class _CalendarFrontState extends State<CalendarFront> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                primary: Colors.green,
+                backgroundColor: Theme.of(context).colorScheme.tertiary,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
               ),
               child: Text(
                 'Add or View Upcoming Schedule',
-                style: TextStyle(fontSize: 14, color: Colors.white),
+                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.secondary),
               ),
             ),
           ),

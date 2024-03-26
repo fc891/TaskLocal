@@ -11,7 +11,8 @@ import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
+import 'package:tasklocal/screens/app_theme/theme_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -28,7 +29,6 @@ class _AppThemeCustomizationState extends ConsumerState<AppThemeCustomization> {
   //Bill's Settings Screen
   @override
   Widget build(BuildContext context) {
-    var isDarkMode = ref.watch(appThemeProvider);
     return Scaffold(
         //Background color of UI
         //backgroundColor: Colors.green[500],
@@ -61,29 +61,40 @@ class _AppThemeCustomizationState extends ConsumerState<AppThemeCustomization> {
           ListTile(
             leading: Icon(
               Icons.edit_outlined,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.secondary,
             ),
-            title: Text("Classic Theme",
-                style: TextStyle(fontSize: 16.0)),
+            title: Text("Classic Theme", style: TextStyle(fontSize: 16.0, color: Theme.of(context).colorScheme.secondary)),
             subtitle: Text("Green/white classic app theme",
-                style: TextStyle(fontSize: 12.0)),
+                style: TextStyle(fontSize: 12.0, color: Theme.of(context).colorScheme.secondary)),
             trailing: Text(""),
             onTap: () {
-              ref.read(appThemeProvider.notifier).state = false;
+              ref.read(isDarkProvider.notifier).toggleTheme(false);
+              // //Obtain shared preferences.
+              // final SharedPreferences prefs =
+              //     await SharedPreferences.getInstance();
+              // //Save bool value to 'darkTheme' key (false if this button, Classic Theme, is pressed).
+              // await prefs.setBool('darkTheme', false);
+              // print(await prefs.getBool('darkTheme'));
+              //ref.read(appThemeProvider.notifier).state = false;
             },
           ),
           ListTile(
             leading: Icon(
               Icons.sunny_snowing,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.secondary,
             ),
-            title: Text("Dark Theme",
-                style: TextStyle(fontSize: 16.0)),
+            title: Text("Dark Theme", style: TextStyle(fontSize: 16.0, color: Theme.of(context).colorScheme.secondary)),
             subtitle: Text("Black/grey dark app theme",
-                style: TextStyle(fontSize: 12.0)),
+                style: TextStyle(fontSize: 12.0, color: Theme.of(context).colorScheme.secondary)),
             trailing: Text(""),
             onTap: () {
-              ref.read(appThemeProvider.notifier).state = true;
+              ref.read(isDarkProvider.notifier).toggleTheme(true);
+              // //Obtain shared preferences.
+              // final SharedPreferences prefs =
+              //     await SharedPreferences.getInstance();
+              // //Save bool value to 'darkTheme' key (true if this button, Dark Theme, is pressed).
+              // await prefs.setBool('darkTheme', true);
+              //ref.read(appThemeProvider.notifier).state = true;
             },
           ),
           // ListTile(

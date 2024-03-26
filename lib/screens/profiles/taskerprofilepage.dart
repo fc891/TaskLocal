@@ -184,7 +184,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                             BoxShadow(
                                 spreadRadius: 2,
                                 blurRadius: 10,
-                                color: Colors.green)
+                                color: Theme.of(context).colorScheme.tertiary)
                           ],
                           shape: BoxShape.circle,
                           image: DecorationImage(
@@ -239,10 +239,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                     child: TextButton(
-                      child: Text("View Task Categories"),
+                      style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary),
+                      child: Text("View Task Categories",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = true;
@@ -261,10 +266,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                     child: TextButton(
-                      child: Text("View Uploaded Media"),
+                      style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary),
+                      child: Text("View Uploaded Media",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = false;
@@ -283,10 +293,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                     child: TextButton(
-                      child: Text("View Task History"),
+                      style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary),
+                      child: Text("View Task History",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = false;
@@ -344,7 +359,11 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                                 TaskerTaskCategory(
                                                     taskinfo: info)));
                                   },
-                                  title: Text("test$index"),
+                                  title: Text("test$index",
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary)),
                                 ))
                           ]));
                         })),
@@ -452,7 +471,11 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                               //Change to tasker specific later
                                               taskinfo: info)));
                                 },
-                                title: Text("test$index", style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
+                                title: Text("test$index",
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
                               ));
                             }))),
               if (_taskHistorySelected)

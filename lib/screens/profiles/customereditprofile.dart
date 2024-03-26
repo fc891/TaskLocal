@@ -129,12 +129,12 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     getProfilePicture(current.email!);
     return Scaffold(
         //Background color of UI
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
           title: Text('Edit Customer Profile Page'),
           centerTitle: true,
-          backgroundColor: Colors.green[800],
+          //backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
         //Customer profile picture

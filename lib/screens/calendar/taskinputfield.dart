@@ -30,8 +30,9 @@ class TaskInputField extends StatelessWidget {
             height: 52,
             margin: EdgeInsets.only(top: 8.0),
             decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.tertiary,
               border: Border.all(
-                color:Colors.grey,
+                color: Theme.of(context).colorScheme.tertiary,
                 width: 1.0,
               ),
               borderRadius: BorderRadius.circular(12),
@@ -46,10 +47,10 @@ class TaskInputField extends StatelessWidget {
                     style: subtitle,
                     decoration: InputDecoration(
                       hintText: hint,
-                      hintStyle: subtitle,
+                      hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.tertiary,
                           width: 0
                         ),
                       ),

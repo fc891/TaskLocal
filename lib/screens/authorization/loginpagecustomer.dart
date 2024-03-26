@@ -8,17 +8,17 @@ import 'package:tasklocal/screens/home_pages/customer_home.dart';
 import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginPageCustomer extends ConsumerStatefulWidget {
+class LoginPageCustomer extends StatefulWidget {
   // Richard's code
   // user can switch back and forth between login and register
   final Function()? onTap;
   const LoginPageCustomer({Key? key, required this.onTap}) : super(key: key);
 
   @override
-  ConsumerState<LoginPageCustomer> createState() => _LoginPageCustomer();
+  State<LoginPageCustomer> createState() => _LoginPageCustomer();
 }
 
-class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
+class _LoginPageCustomer extends State<LoginPageCustomer> {
 
   @override
   void initState() {
@@ -82,7 +82,6 @@ class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
 
   @override
   Widget build(BuildContext context) {
-    var isDarkMode = ref.watch(appThemeProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Customer Login',
@@ -188,7 +187,7 @@ class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 15),
                       child:
-                          Text("Login", style: TextStyle(color: Theme.of(context).primaryColor)),
+                          Text("Login", style: TextStyle(color: Colors.black)),
                     ),
                   ),
                 ),

@@ -73,12 +73,12 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
     UrlType type = getUrlType(mediaLink);
     return Scaffold(
       //Background color of UI
-      backgroundColor: Colors.green[500],
+      //backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
         title: Text('Uploaded Media#$tasknumber'),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
         elevation: 0.0,
       ),
       resizeToAvoidBottomInset: false,
@@ -105,8 +105,11 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
                 } else {
                   // If the VideoPlayerController is still initializing, show a
                   // loading spinner.
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.secondary,
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                    ),
                   );
                 }
               },
@@ -114,7 +117,7 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
           //Task details
           Text('Task info here',
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.secondary,
                 letterSpacing: 1.0,
                 fontSize: 16.0,
               )),
