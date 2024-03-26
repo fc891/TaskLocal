@@ -124,7 +124,7 @@ class _AddTaskState extends State<AddTask> {
                       .map<DropdownMenuItem<String>>((int value) {
                     return DropdownMenuItem<String>(
                       value: value.toString(),
-                      child: Text(value.toString()),
+                      child: Text(value.toString(), style: TextStyle(color: Theme.of(context).colorScheme.tertiary)),
                     );
                   }).toList(),
                 ),

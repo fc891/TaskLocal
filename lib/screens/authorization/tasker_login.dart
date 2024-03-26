@@ -8,17 +8,17 @@ import 'package:tasklocal/screens/home_pages/tasker_home.dart';
 import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TaskerLogin extends ConsumerStatefulWidget {
+class TaskerLogin extends StatefulWidget {
   // Richard's code
   // user can switch back and forth between login and register
   final Function()? onTap;
   const TaskerLogin({Key? key, required this.onTap}) : super(key: key);
 
   @override
-  ConsumerState<TaskerLogin> createState() => _TaskerLogin();
+  State<TaskerLogin> createState() => _TaskerLogin();
 }
 
-class _TaskerLogin extends ConsumerState<TaskerLogin> {
+class _TaskerLogin extends State<TaskerLogin> {
 
   @override
   void initState() {
@@ -87,7 +87,6 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
   // Richard's entire code for this Widget build
   @override
   Widget build(BuildContext context) {
-    var isDarkMode = ref.watch(appThemeProvider);
     return Scaffold(
       //backgroundColor: isDarkMode ? Colors.grey[500] : Colors.green[500],
       appBar: AppBar(
@@ -203,7 +202,7 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 15),
                       child:
-                          Text("Login", style: TextStyle(color: Theme.of(context).primaryColor)),
+                          Text("Login", style: TextStyle(color: Colors.black)),
                     ),
                   ),
                 ),

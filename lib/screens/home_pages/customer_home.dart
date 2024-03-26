@@ -56,17 +56,17 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Customer's Home Page"),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+       // backgroundColor: Colors.green[800],
         elevation: 0.0,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: logUserOut,
-            icon: Icon(Icons.logout, color: Colors.grey[300],),
+            icon: Icon(Icons.logout),
           ),
         ],
       ),
@@ -81,7 +81,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                 Text(
                   'Get something done!',
                   style: TextStyle(
-                    color: Colors.black,
+                    //color: Colors.black,
                     fontSize: 32,
                   ),
                 ),
@@ -98,12 +98,13 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                     enabled: false,
                     decoration: InputDecoration(
                       hintText: 'Looking for something else?',
+                      hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       filled: true,
-                      fillColor: Colors.white,
+                      //fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
                 ),
@@ -161,11 +162,12 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).colorScheme.tertiary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.calendar_today),
+              icon: Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.secondary),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -174,7 +176,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.message),
+              icon: Icon(Icons.message, color: Theme.of(context).colorScheme.secondary),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -183,7 +185,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.people),
+              icon: Icon(Icons.people, color: Theme.of(context).colorScheme.secondary),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -192,7 +194,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.person, color: Theme.of(context).colorScheme.secondary),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -241,7 +243,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             child: Text(
               label,
               style: TextStyle(
-                color: Colors.black,
+                //color: Colors.black,
                 fontSize: 14,
               ),
             ),

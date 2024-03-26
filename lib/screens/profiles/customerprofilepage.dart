@@ -146,7 +146,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                             BoxShadow(
                                 spreadRadius: 2,
                                 blurRadius: 10,
-                                color: Colors.green)
+                                color: Theme.of(context).colorScheme.tertiary)
                           ],
                           shape: BoxShape.circle,
                           image: DecorationImage(
@@ -164,7 +164,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                 //Username text
                 child: Text('$firstname $lastname',
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.secondary,
                         letterSpacing: 1.0,
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold)),
@@ -173,13 +173,13 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               Column(children: <Widget>[
                 Text('Join Date: $date',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.secondary,
                       letterSpacing: 1.0,
                       fontSize: 16.0,
                     )),
                 Text('Requested Tasks Completed: $requestscompleted',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.secondary,
                       letterSpacing: 1.0,
                       fontSize: 16.0,
                     )),
@@ -187,7 +187,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               //Divider (line)
               Divider(
                 height: 10.0,
-                color: Colors.grey[1500],
+                //color: Colors.grey[1500],
               ),
               //History of requested tasks
               Text('Request History',
@@ -198,7 +198,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                       fontWeight: FontWeight.bold)),
               Divider(
                 height: 10.0,
-                color: Colors.grey[1500],
+                //color: Colors.grey[1500],
               ),
               //Request history display
               Expanded(
@@ -218,12 +218,12 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                                             CustomerTaskInfoPage(
                                                 taskinfo: info)));
                               },
-                              title: Text("test$index"),
+                              title: Text("test$index", style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
                             ));
                           }))),
               Divider(
                 height: 20.0,
-                color: Colors.green[500],
+                //color: Colors.green[500],
               ),
             ])));
   }

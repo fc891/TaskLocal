@@ -16,11 +16,11 @@ class LoginButton extends StatelessWidget {
           color: Colors.black,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
             "Log In",
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),

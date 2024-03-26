@@ -31,12 +31,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         //Background color of UI
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
           title: Text('Settings'),
           centerTitle: true,
-          backgroundColor: Colors.green[800],
+          //backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
         resizeToAvoidBottomInset: false,
@@ -49,13 +49,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   decoration: BoxDecoration(
                       border: Border.all(
                         width: 2,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       boxShadow: [
                         BoxShadow(
                             spreadRadius: 1,
                             blurRadius: 10,
-                            color: Colors.green)
+                            color: Theme.of(context).colorScheme.secondary)
                       ],
                       shape: BoxShape.circle,
                       image: DecorationImage(
@@ -68,20 +68,26 @@ class _SettingsPageState extends State<SettingsPage> {
                         fit: BoxFit.cover,
                       ))),
               title: Text("Username",
-                  style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      color: Theme.of(context).colorScheme.secondary)),
               subtitle: Text("Tasker",
-                  style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                  style: TextStyle(
+                      fontSize: 14.0,
+                      color: Theme.of(context).colorScheme.secondary)),
               trailing: Text("")),
-              //Divider (line)
+          //Divider (line)
           // Divider(
           //   height: 10.0,
           //   color: Colors.grey[1500],
           // ),
           Padding(
-            padding: EdgeInsets.all(0.0),
-            child: const Column(
-              children: [
-                Text("Settings", style: TextStyle(fontSize: 30.0, color: Colors.white))
+              padding: EdgeInsets.all(0.0),
+              child: Column(children: [
+                Text("Settings",
+                    style: TextStyle(
+                        fontSize: 30.0,
+                        color: Theme.of(context).colorScheme.secondary))
               ])),
           // Divider(
           //   height: 10.0,
@@ -89,35 +95,50 @@ class _SettingsPageState extends State<SettingsPage> {
           // ),
           //Tiles that represent each scrollable entry on the settings page, change onTap() function to redirect to different pages
           ListTile(
-            leading: Icon(Icons.edit_outlined, color: Colors.white,),
-            title: Text("Manage Account", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("Modify account details", style: TextStyle(fontSize: 12.0, color: Colors.white)),
+            leading: Icon(
+              Icons.edit_outlined,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            title: Text("Manage Account",
+                style: TextStyle(fontSize: 16.0, color: Theme.of(context).colorScheme.secondary)),
+            subtitle: Text("Modify account details",
+                style: TextStyle(fontSize: 12.0, color: Theme.of(context).colorScheme.secondary)),
             trailing: Text(""),
-            onTap: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TaskerEditProfile()));
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TaskerEditProfile()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.sunny_snowing, color: Colors.white,),
-            title: Text("Customize App Theme", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("Change the appearance of the app", style: TextStyle(fontSize: 12.0, color: Colors.white)),
+            leading: Icon(
+              Icons.sunny_snowing,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            title: Text("Customize App Theme",
+                style: TextStyle(fontSize: 16.0, color: Theme.of(context).colorScheme.secondary)),
+            subtitle: Text("Change the appearance of the app",
+                style: TextStyle(fontSize: 12.0, color: Theme.of(context).colorScheme.secondary)),
             trailing: Text(""),
-            onTap: (){
+            onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AppThemeCustomization())); //Replace with actual screen name
+                      builder: (context) =>
+                          AppThemeCustomization())); //Replace with actual screen name
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings, color: Colors.white,),
-            title: Text("settings option", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-            subtitle: Text("settings option description", style: TextStyle(fontSize: 12.0, color: Colors.white)),
-            trailing: Text("trailing option", style: TextStyle(fontSize: 8.0, color: Colors.white)),
-            onTap: (){
+            leading: Icon(
+              Icons.settings,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            title: Text("settings option",
+                style: TextStyle(fontSize: 16.0, color: Theme.of(context).colorScheme.secondary)),
+            subtitle: Text("settings option description",
+                style: TextStyle(fontSize: 12.0, color: Theme.of(context).colorScheme.secondary)),
+            trailing: Text("trailing option",
+                style: TextStyle(fontSize: 8.0, color: Theme.of(context).colorScheme.secondary)),
+            onTap: () {
               // Navigator.push(
               //     context,
               //     MaterialPageRoute(

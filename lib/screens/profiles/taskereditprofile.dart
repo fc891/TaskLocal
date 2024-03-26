@@ -130,12 +130,12 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
     getProfilePicture(current.email!);
     return Scaffold(
         //Background color of UI
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
           title: Text('Edit Tasker Profile Page'),
           centerTitle: true,
-          backgroundColor: Colors.green[800],
+          //backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
         //Tasker profile picture
@@ -161,7 +161,7 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
                           BoxShadow(
                               spreadRadius: 2,
                               blurRadius: 10,
-                              color: Colors.green)
+                              color: Theme.of(context).colorScheme.tertiary)
                         ],
                         shape: BoxShape.circle,
                         image: DecorationImage(

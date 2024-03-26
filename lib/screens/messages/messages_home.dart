@@ -21,9 +21,9 @@ class _MessagesHomeState extends State<MessagesHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),),
+        title: Text('Messages', style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold,),),
         centerTitle: true,
-        //backgroundColor: Colors.green[800],
+        //backgroundColor: Theme.of(context).colorScheme.tertiary,
         elevation: 0.0,
         actions: [
           IconButton(

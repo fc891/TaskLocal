@@ -20,14 +20,14 @@ class ViewScheduleButton extends StatelessWidget {
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color:Colors.green,
+          color:Theme.of(context).colorScheme.tertiary,
         ),
         alignment: Alignment.center,
         child:Text(
           label,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color:Colors.white,
+            color: Theme.of(context).colorScheme.secondary,
           )
         )
       ),

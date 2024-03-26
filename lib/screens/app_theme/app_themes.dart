@@ -5,14 +5,14 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
       primaryColor: isDarkTheme ? Colors.black : Colors.white,
       colorScheme: Theme.of(context).colorScheme.copyWith(
         primary: isDarkTheme ? Colors.black : Colors.white,
-        secondary: isDarkTheme ? Colors.white : Colors.black,
-        tertiary: isDarkTheme ? Colors.grey[800] : Colors.white,),
+        secondary: isDarkTheme ? Colors.white : Colors.white,
+        tertiary: isDarkTheme ? Colors.grey[800] : Colors.green[800],),
       cardTheme: CardTheme(
-          color: isDarkTheme ? Colors.grey[800] : Colors.white,
+          color: isDarkTheme ? Colors.grey[800] : Colors.green[800],
           surfaceTintColor: isDarkTheme ? Colors.white : Colors.white),
       scaffoldBackgroundColor: isDarkTheme ? Colors.black : Colors.green[500],
       textTheme: Theme.of(context).textTheme.apply(
-            bodyColor: isDarkTheme ? Colors.white : Colors.white,
+            bodyColor: isDarkTheme ? Colors.white : Colors.white, //Controls text color generally (and in text)
             displayColor: isDarkTheme ? Colors.white : Colors.white,
           ),
       // textTheme: Theme.of(context)
@@ -46,7 +46,7 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
         selectedLabelStyle: TextStyle(
           color: Colors.white
         ),
-        unselectedItemColor: isDarkTheme ? Colors.white : Colors.black,
+        unselectedItemColor: isDarkTheme ? Colors.white : Colors.white,
         selectedItemColor: isDarkTheme ? Colors.grey : Colors.grey,
       ),
       buttonTheme: ButtonThemeData(
@@ -66,17 +66,17 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
         backgroundColor: isDarkTheme ? Colors.white : Colors.black54,
       ),
       inputDecorationTheme: InputDecorationTheme(
-        fillColor: isDarkTheme ? Colors.grey[800] : Colors.white,
+        fillColor: isDarkTheme ? Colors.grey[800] : Colors.green[800],
         labelStyle: TextStyle(
-          color: isDarkTheme ? Colors.white : Colors.black,
+          color: isDarkTheme ? Colors.white : Colors.white,
           fontSize: 16,
         ),
         floatingLabelStyle: TextStyle(
-          color: isDarkTheme ? Colors.white : Colors.black,
+          color: isDarkTheme ? Colors.white : Colors.white,
           fontSize: 16,
         ),
         helperStyle: TextStyle(
-          color: isDarkTheme ? Colors.white : Colors.black,
+          color: isDarkTheme ? Colors.white : Colors.white,
           fontSize: 16,
         ),
       ),

@@ -11,14 +11,12 @@ import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 //import 'package:tasklocal/components/tasker_selection_button.dart';
 
-class OnboardingPage extends ConsumerWidget {
+class OnboardingPage extends StatelessWidget {
   OnboardingPage({Key? key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var isDarkMode = ref.watch(appThemeProvider);
+  Widget build(BuildContext context) {
     return Scaffold(
-      
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(

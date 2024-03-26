@@ -19,12 +19,12 @@ class TaskerTaskInfoPage extends StatelessWidget {
     int tasknumber = taskinfo.taskNumber;
     return Scaffold(
       //Background color of UI
-      backgroundColor: Colors.green[500],
+      //backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
         title: Text('$info# $tasknumber'),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
         elevation: 0.0,
       ),
       resizeToAvoidBottomInset: false,
@@ -33,49 +33,49 @@ class TaskerTaskInfoPage extends StatelessWidget {
           Column(children: <Widget>[
             Text('Task Completed Date:',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   letterSpacing: 1.0,
                   fontSize: 26.0,
                 )),
             Text('testcompleteddate',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   letterSpacing: 1.0,
                   fontSize: 16.0,
                 )),
             Text('Tasks Completed For User:',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   letterSpacing: 1.0,
                   fontSize: 26.0,
                 )),
             Text('customername',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   letterSpacing: 1.0,
                   fontSize: 16.0,
                 )),
             Text('Task Duration:',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   letterSpacing: 1.0,
                   fontSize: 26.0,
                 )),
             Text('testduration',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   letterSpacing: 1.0,
                   fontSize: 16.0,
                 )),
             Text('Earnings:',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   letterSpacing: 1.0,
                   fontSize: 26.0,
                 )),
             Text('20',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   letterSpacing: 1.0,
                   fontSize: 16.0,
                 )),

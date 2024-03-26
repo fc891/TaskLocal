@@ -18,11 +18,11 @@ class _TaskerMsgListToAddState extends State<TaskerMsgListToAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
+      //backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text('Add Customer to Message', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+        title: Text('Add Customer to Message', style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold, fontSize: 20)),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
       ),
       body: StreamBuilder<QuerySnapshot>(
         // taskers can only chat with customers that were initiated by them
@@ -43,14 +43,14 @@ class _TaskerMsgListToAddState extends State<TaskerMsgListToAdd> {
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.tertiary,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
                   children: [
                     Text(
                       '${customerData['first name']} ${customerData['last name']}\n@${customerData['username']}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
                     ),
                     Spacer(),
                      Container(
