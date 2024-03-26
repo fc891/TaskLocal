@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tasklocal/screens/sign_up_task/edit_remove_sign_up_task.dart';
+import 'package:tasklocal/screens/sign_up_task/store_completed_task.dart';
 
 class StoreSignUpAndCompTask extends StatefulWidget {
   const StoreSignUpAndCompTask({super.key});
@@ -15,12 +17,14 @@ class _StoreSignUpAndCompTaskState extends State<StoreSignUpAndCompTask> {
       child: Scaffold(
         // backgroundColor: Colors.green[800],
         appBar: AppBar(
-          title: Text('My Tasks', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 32)),
+          title: Text('My Tasks', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26)),
           centerTitle: true,
           backgroundColor: Colors.green[800],
-          bottom: const TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.phone_android)),
+          bottom: TabBar(
+            unselectedLabelColor: Colors.grey[400],
+            labelColor: Colors.green[300],
+            tabs: const [
+              Tab(icon: Icon(Icons.edit)),
               Tab(icon: Icon(Icons.tablet_android)),
               Tab(icon: Icon(Icons.laptop_windows)),
             ],
@@ -28,8 +32,8 @@ class _StoreSignUpAndCompTaskState extends State<StoreSignUpAndCompTask> {
         ),
         body: const TabBarView(
           children: [
-            Icon(Icons.directions_car),
-            Icon(Icons.directions_transit),
+            EditRemoveSignUpTask(),
+            StoreCompletedTask(),
             Icon(Icons.directions_bike),
           ],
         ),
