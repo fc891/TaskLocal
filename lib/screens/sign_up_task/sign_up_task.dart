@@ -27,7 +27,7 @@ class _SignUpTaskState extends State<SignUpTask> {
 
   Future<Map<String, dynamic>?> getCurrTaskerData(String? email) async {
     try {
-      DocumentSnapshot currTaskerDoc = await _firestore.collection('Customers').doc(email).get();
+      DocumentSnapshot currTaskerDoc = await _firestore.collection('Taskers').doc(email).get();
       if (currTaskerDoc.exists) {
         return currTaskerDoc.data() as Map<String, dynamic>;
       } else {
@@ -39,8 +39,10 @@ class _SignUpTaskState extends State<SignUpTask> {
       return null;
     }
   }
-
+  
   void _submitTaskSignUp() async {
+    BuildContext? dialogContext;
+    
     try {
       // DocumentSnapshot currTaskerDoc = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
       // Map<String, dynamic>? currTaskerData = currTaskerDoc.data() as Map<String, dynamic>;
@@ -50,12 +52,24 @@ class _SignUpTaskState extends State<SignUpTask> {
       String experience = expController.text;
 
       // Future<Map<String, dynamic>?> currTaskerData = getCurrTaskerData(_auth.currentUser!.email);
-          Map<String, dynamic>? currTaskerData = await getCurrTaskerData(_auth.currentUser!.email);
+      Map<String, dynamic>? currTaskerData = await getCurrTaskerData(_auth.currentUser!.email);
 
+      final taskCategoryDocRef = _firestore.collection('Task Categories').doc(widget.taskCategory.name);
+      taskCategoryDocRef.set({'dummy': 'dummy'});
+      final taskerDocRef = taskCategoryDocRef.collection('Signed Up Taskers').doc(_auth.currentUser!.email);
+
+      // Check if the document exists
+      // final taskerDocSnapshot = await taskerDocRef.get();
+      // if (!taskerDocSnapshot.exists) {
+      //   // Document doesn't exist, create it
+      //   await taskerDocRef.set({});
+      //   print("created document");
+      // }
 
       // Check if all required fields are filled in
       if (location.isNotEmpty && askingRate.isNotEmpty && experience.isNotEmpty && skills.isNotEmpty) {
-        _firestore.collection('Signed Up Tasks').doc(widget.taskCategory.name).set({
+        // await _firestore.collection('Task Categories').doc(widget.taskCategory.name).collection('Signed Up Taskers').doc(_auth.currentUser!.email).set({
+        await taskerDocRef.set({
           'email': _auth.currentUser!.email,
           'first name': currTaskerData?['first name'],
           'last name': currTaskerData?['last name'],
@@ -74,11 +88,24 @@ class _SignUpTaskState extends State<SignUpTask> {
           });
         }).catchError((error) {
           print('Error adding task: $error');
+          showDialog(
+            context: dialogContext!,
+            builder: (context) => AlertDialog(
+              title: Text('Error'),
+              content: Text('An error occurred while adding the task: $error'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
         });
       } else {
         // Display an error message indicating that all fields are required
         showDialog(
-          context: context,
+          context: dialogContext ?? context,
           builder: (context) => AlertDialog(
             title: Text('Error'),
             content: Text('Please fill in all required fields.'),
@@ -91,10 +118,11 @@ class _SignUpTaskState extends State<SignUpTask> {
           ),
         );
       }
-    } catch(error) {
+    } catch (error) {
       print('Error submitting task: $error');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
