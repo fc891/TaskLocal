@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:tasklocal/Screens/authorization/tasker_auth.dart';
-import 'package:tasklocal/Screens/home_pages/customer_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:tasklocal/Screens/authorization/onboardingpage.dart';
-import 'package:tasklocal/screens/messages/messages_home.dart';
-import 'package:tasklocal/screens/calendar/calendarfront.dart';
-import 'package:tasklocal/screens/notifications/notification_services.dart';
 import 'firebase_options.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tasklocal/Screens/app_theme/appthemecustomization.dart';
+
+// import 'package:tasklocal/screens/calendar/calendarfront.dart';
+// import 'package:tasklocal/screens/notifications/notification_services.dart';
+//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+//AUTHORIZATION-RELATED IMPORTS
+import 'package:tasklocal/Screens/authorization/onboardingpage.dart';
+
+//THEME-RELATED IMPORTS
 import 'package:tasklocal/Screens/app_theme/app_themes.dart';
-import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
+import 'package:tasklocal/Screens/app_theme/appthemecustomization.dart';
+import 'package:tasklocal/screens/app_theme/theme_provider.dart';
+
+//MESSAGES-RELATED IMPORTS
+import 'package:tasklocal/screens/messages/messages_home.dart';
 
 //CUSTOMER IMPORTS
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
@@ -29,11 +34,15 @@ import 'package:tasklocal/Screens/profiles/taskertaskinfopage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final sharedPreferences = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(overrides: [
+    sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+  ], child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -42,10 +51,11 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     TaskInfo defaultinfo = TaskInfo("Default", 0);
+    final isDarkMode = ref.watch(isDarkProvider);
     return MaterialApp(
       title: 'TaskLocal',
       debugShowCheckedModeBanner: false,
-      theme: getAppTheme(context, ref.watch(appThemeProvider)),
+      theme: getAppTheme(context, isDarkMode),
       // Initial page that is shown when program is loaded up
       // >FOR TESTING: change initialRoute to an option from routing options below
       initialRoute: '/home',
@@ -53,7 +63,7 @@ class MyApp extends ConsumerWidget {
       routes: {
         //'/': (context) => LoadScreen(), //loading screen (WIP)
         '/home': (context) => OnboardingPage(),
-        '/customerregistration': (context) => CustomerRegistration(),
+        '/customerregistration': (context) => CustomerRegistration(onTap: (){}),
         '/taskerregistration': (context) => TaskerRegistration(onTap: () {}),
         '/customerhomepage': (context) => CustomerHomePage(),
         '/taskerhomepage': (context) => TaskerHomePage(),

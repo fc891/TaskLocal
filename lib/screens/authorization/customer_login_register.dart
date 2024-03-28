@@ -7,8 +7,8 @@ import 'customerregistration.dart';
 // Richard's code for this entire class
 class CustomerLoginRegisterPage extends StatefulWidget {
   // variable used to either go to login or register page
-  final bool showLoginPage;
-  const CustomerLoginRegisterPage({super.key, required this.showLoginPage});
+  final bool showLoginPageCust;
+  const CustomerLoginRegisterPage({super.key, required this.showLoginPageCust});
 
   @override
   State<CustomerLoginRegisterPage> createState() => _CustomerLoginRegisterPageState();
@@ -21,7 +21,7 @@ class _CustomerLoginRegisterPageState extends State<CustomerLoginRegisterPage> {
   @override
   void initState() {
     super.initState();
-    _showLoginPage = widget.showLoginPage;
+    _showLoginPage = widget.showLoginPageCust;
   }
   // have the local variable change its value to either true/false
   void togglePages() {
@@ -35,7 +35,7 @@ class _CustomerLoginRegisterPageState extends State<CustomerLoginRegisterPage> {
     if (_showLoginPage) {
       return LoginPageCustomer(onTap: togglePages,);
     } else {
-      return CustomerRegistration();
+      return CustomerRegistration(onTap: togglePages,);
     }
   }
 }

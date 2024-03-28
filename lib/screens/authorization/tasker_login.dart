@@ -8,23 +8,23 @@ import 'package:tasklocal/screens/home_pages/tasker_home.dart';
 import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TaskerLogin extends ConsumerStatefulWidget {
+class TaskerLogin extends StatefulWidget {
   // Richard's code
   // user can switch back and forth between login and register
   final Function()? onTap;
   const TaskerLogin({Key? key, required this.onTap}) : super(key: key);
 
   @override
-  ConsumerState<TaskerLogin> createState() => _TaskerLogin();
+  State<TaskerLogin> createState() => _TaskerLogin();
 }
 
-class _TaskerLogin extends ConsumerState<TaskerLogin> {
-
+class _TaskerLogin extends State<TaskerLogin> {
   @override
   void initState() {
     super.initState();
   }
 
+  String errorCode = "";
   // Richard's code
   // created controllers for managing the info of user
   final emailController = TextEditingController();
@@ -62,12 +62,33 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
       print(e.code);
       // Display the error message depending on the error code
       if (e.code == 'invalid-email' || e.code == 'user-not-found') {
-        showErrorMessage('Incorrect Email');
+        //showErrorMessage('Incorrect Email');
+        errorCode = "Incorrect Email";
       } else if (e.code == 'wrong-password') {
-        showErrorMessage("Incorrect Password");
+        //showErrorMessage("Incorrect Password");
+        errorCode = "Incorrect Password";
       } else if (e.code == 'channel-error') {
-        showErrorMessage('Unable to process Email/Password');
+        //showErrorMessage('Unable to process Email/Password');
+        errorCode = "Unable to process Email/Password";
       }
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Login Error'),
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            content: Text(errorCode),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK', style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -87,7 +108,6 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
   // Richard's entire code for this Widget build
   @override
   Widget build(BuildContext context) {
-    var isDarkMode = ref.watch(appThemeProvider);
     return Scaffold(
       //backgroundColor: isDarkMode ? Colors.grey[500] : Colors.green[500],
       appBar: AppBar(
@@ -197,13 +217,13 @@ class _TaskerLogin extends ConsumerState<TaskerLogin> {
                   child: ElevatedButton(
                     onPressed: userLogin,
                     style: ElevatedButton.styleFrom(
-                      //backgroundColor: Colors.green[800],
-                    ),
+                        //backgroundColor: Colors.green[800],
+                        ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 15),
                       child:
-                          Text("Login", style: TextStyle(color: Theme.of(context).primaryColor)),
+                          Text("Login", style: TextStyle(color: Colors.black)),
                     ),
                   ),
                 ),

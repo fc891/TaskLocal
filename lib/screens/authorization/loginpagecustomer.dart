@@ -8,18 +8,17 @@ import 'package:tasklocal/screens/home_pages/customer_home.dart';
 import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginPageCustomer extends ConsumerStatefulWidget {
+class LoginPageCustomer extends StatefulWidget {
   // Richard's code
   // user can switch back and forth between login and register
   final Function()? onTap;
   const LoginPageCustomer({Key? key, required this.onTap}) : super(key: key);
 
   @override
-  ConsumerState<LoginPageCustomer> createState() => _LoginPageCustomer();
+  State<LoginPageCustomer> createState() => _LoginPageCustomer();
 }
 
-class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
-
+class _LoginPageCustomer extends State<LoginPageCustomer> {
   @override
   void initState() {
     super.initState();
@@ -34,6 +33,7 @@ class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
 
 // class _LoginPageCustomerState extends ConsumerState<LoginPageCustomer> {
 
+  String errorCode = "";
   // text controllers
   final userController = TextEditingController();
   final passController = TextEditingController();
@@ -51,20 +51,30 @@ class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
           return CustomerHomePage();
         }));
       });
-    } catch (error) {
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email' || e.code == 'user-not-found') {
+        //showErrorMessage('Incorrect Email');
+        errorCode = "Incorrect Email";
+      } else if (e.code == 'wrong-password') {
+        //showErrorMessage("Incorrect Password");
+        errorCode = "Incorrect Password";
+      } else if (e.code == 'channel-error') {
+        //showErrorMessage('Unable to process Email/Password');
+        errorCode = "Unable to process Email/Password";
+      }
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text('Login Error'),
-            backgroundColor: Theme.of(context).primaryColor,
-            content: Text('Incorrect email or password. Please try again.'),
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            content: Text(errorCode),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('OK'),
+                child: Text('OK', style: TextStyle(color: Colors.black)),
               ),
             ],
           );
@@ -82,7 +92,6 @@ class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
 
   @override
   Widget build(BuildContext context) {
-    var isDarkMode = ref.watch(appThemeProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Customer Login',
@@ -182,13 +191,13 @@ class _LoginPageCustomer extends ConsumerState<LoginPageCustomer> {
                   child: ElevatedButton(
                     onPressed: logUserIn,
                     style: ElevatedButton.styleFrom(
-                      //backgroundColor: Colors.green[800],
-                    ),
+                        //backgroundColor: Colors.green[800],
+                        ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 15),
                       child:
-                          Text("Login", style: TextStyle(color: Theme.of(context).primaryColor)),
+                          Text("Login", style: TextStyle(color: Colors.black)),
                     ),
                   ),
                 ),

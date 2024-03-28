@@ -81,9 +81,20 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   //WIP
   //Bill's get user's join date using id
   void getJoinDate(String id) async {
-    DateFormat joindateformat = DateFormat('MM-dd-yyyy');
-    DateTime joindate = DateTime(2024, 2, 12);
-    date = joindateformat.format(joindate);
+    var collection = FirebaseFirestore.instance.collection('Taskers');
+    var docSnapshot = await collection.doc(id).get();
+    Map<String, dynamic> data = docSnapshot.data()!;
+    try {
+      if (data['joindate'] != null) {
+        date = data['joindate'];
+      } else if (data['joindate'] == null) {
+        DateFormat joindateformat = DateFormat('MM-dd-yyyy');
+        DateTime joindate = DateTime(2024, 2, 15);
+        date = joindateformat.format(joindate);
+      }
+    } catch (err) {
+      date = "error";
+    }
   }
 
   //WIP
@@ -154,8 +165,11 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SettingsPage(userType: "Taskers")));
               },
               icon: Icon(
                 //Icons.edit_outlined,
@@ -178,13 +192,13 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       decoration: BoxDecoration(
                           border: Border.all(
                             width: 4,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.tertiary,
                           ),
                           boxShadow: [
                             BoxShadow(
                                 spreadRadius: 2,
                                 blurRadius: 10,
-                                color: Colors.green)
+                                color: Theme.of(context).colorScheme.secondary)
                           ],
                           shape: BoxShape.circle,
                           image: DecorationImage(
@@ -239,10 +253,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                     child: TextButton(
-                      child: Text("View Task Categories"),
+                      style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary),
+                      child: Text("View Task Categories",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = true;
@@ -261,10 +280,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                     child: TextButton(
-                      child: Text("View Uploaded Media"),
+                      style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary),
+                      child: Text("View Uploaded Media",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = false;
@@ -283,10 +307,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                     child: TextButton(
-                      child: Text("View Task History"),
+                      style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary),
+                      child: Text("View Task History",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = false;
@@ -344,7 +373,11 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                                 TaskerTaskCategory(
                                                     taskinfo: info)));
                                   },
-                                  title: Text("test$index"),
+                                  title: Text("test$index",
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary)),
                                 ))
                           ]));
                         })),
@@ -452,7 +485,11 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                               //Change to tasker specific later
                                               taskinfo: info)));
                                 },
-                                title: Text("test$index", style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
+                                title: Text("test$index",
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
                               ));
                             }))),
               if (_taskHistorySelected)

@@ -45,8 +45,9 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         title: Text('Reset Password'),
+        centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -58,7 +59,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Lock icon
-          Icon(Icons.lock, size: 64, color: Colors.green[500]), // Adjust icon size and color as needed
+          Icon(Icons.lock, size: 64, color: Theme.of(context).colorScheme.tertiary), // Adjust icon size and color as needed
 
           SizedBox(height: 24),
 
@@ -68,7 +69,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
 
@@ -80,16 +81,16 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
             child: TextField(
               controller: emailController,
               decoration: InputDecoration(
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey.shade400),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary),
                 ),
-                fillColor: Colors.grey.shade200,
+                fillColor: Theme.of(context).colorScheme.tertiary,
                 filled: true,
                 hintText: 'Email',
-                hintStyle: TextStyle(color: Colors.grey[500]),
+                hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
             ),
           ),

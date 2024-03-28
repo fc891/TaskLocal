@@ -1,11 +1,10 @@
 // Customer Home Page UI/Screen
 // Contributors: Eric C.
 
-// TODO: add 'my tasks'
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
+import 'package:tasklocal/screens/customer_requests/my_taskers.dart';
 import 'package:tasklocal/screens/home_pages/customer_search_plus.dart';
 import 'package:tasklocal/screens/messages/messages_home.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
@@ -57,17 +56,17 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Customer's Home Page"),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+       // backgroundColor: Colors.green[800],
         elevation: 0.0,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: logUserOut,
-            icon: Icon(Icons.logout, color: Colors.grey[300],),
+            icon: Icon(Icons.logout),
           ),
         ],
       ),
@@ -82,7 +81,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                 Text(
                   'Get something done!',
                   style: TextStyle(
-                    color: Colors.black,
+                    //color: Colors.black,
                     fontSize: 32,
                   ),
                 ),
@@ -99,12 +98,13 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                     enabled: false,
                     decoration: InputDecoration(
                       hintText: 'Looking for something else?',
+                      hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       filled: true,
-                      fillColor: Colors.white,
+                      //fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
                 ),
@@ -161,46 +161,49 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        // Eric's code for redirects
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              // Redirects to calendar
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TaskerCalendar()),
-              );
-              break;
-            case 1:
-              // Redirect to messages
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MessagesHome()),
-              );
-              break;
-            case 2:
-              // Redirect to tasker's profile
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CustomerProfilePage()),
-              );
-          }
-        },
+      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).colorScheme.tertiary,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.secondary),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TaskerCalendar()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.message, color: Theme.of(context).colorScheme.secondary),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MessagesHome()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.people, color: Theme.of(context).colorScheme.secondary),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyTaskersPage()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.person, color: Theme.of(context).colorScheme.secondary),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CustomerProfilePage()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -231,7 +234,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               borderRadius: BorderRadius.circular(15.0),
               child: Image.asset(
                 imagePath,
-                fit: BoxFit.cover,
+                                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -240,7 +243,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             child: Text(
               label,
               style: TextStyle(
-                color: Colors.black,
+                //color: Colors.black,
                 fontSize: 14,
               ),
             ),

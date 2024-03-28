@@ -38,7 +38,7 @@ TextStyle get subtitle {
     textStyle: TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.bold,
-      color: Colors.grey
+      //color: Colors.grey
     )
   );
 }
