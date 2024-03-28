@@ -5,9 +5,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class CustomerRegistration extends StatefulWidget {
-  const CustomerRegistration({super.key});
+  // Richard's code for onTap where user can switch back and forth between login and register
+  final Function()? onTap;
+  const CustomerRegistration({super.key, this.onTap});
+
   @override
   State<CustomerRegistration> createState() => _CustomerRegistrationState();
 }
@@ -23,6 +27,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   var confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+
+  String errorCode = "";
 
   // Richard's code for the signUserUp function
   void signUserUp() async {
@@ -44,15 +50,22 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
           password: passwordController.text,
         );
         Navigator.pop(context);
+
+        //Get the date of registration to save to database (join date)
+        var now = new DateTime.now();
+        var formatter = new DateFormat('MM-dd-yyyy');
+        String formattedDate = formatter.format(now);
+
         // Create a document in the Cloud Firestore to store the user info
         await FirebaseFirestore.instance
             .collection("Customers")
             .doc(userCredential.user!.email)
             .set({
-              'email' : userCredential.user!.email,
+          'email': userCredential.user!.email,
           'first name': fnameController.text,
           'last name': lnameController.text,
           'username': usernameController.text,
+          'joindate': formattedDate,
         });
         _clearAll(); //Clear text fields
       } else {
@@ -60,11 +73,18 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
         showErrorMessage("Passwords don't match!");
       }
     } on FirebaseAuthException catch (e) {
-      // any error besides password goes through here
       Navigator.pop(context);
-      showErrorMessage(e.code);
+      // get an idea of what the 'logging in' error is
+      print(e.code);
+      // Display the error message depending on the error code
+      if (e.code == 'email-already-in-use') {
+        //showErrorMessage('Incorrect Email');
+        errorCode = "Email already in use!";
+        showErrorMessage(errorCode);
+      }
     }
   }
+
   // Richard's code
   // Display error message to user
   void showErrorMessage(String message) {
@@ -72,7 +92,17 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Center(child: Text(message)),
+          title: Text('Login Error'),
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK', style: TextStyle(color: Colors.black)),
+            ),
+          ],
         );
       },
     );
@@ -83,12 +113,16 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   Widget build(BuildContext context) {
     return Scaffold(
         //Background color of UI
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
-          title: Text('Customer Account Registration'),
+          title: Text('Customer Account Registration',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 22.0)),
           centerTitle: true,
-          backgroundColor: Colors.green[800],
+          //backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
         resizeToAvoidBottomInset: false,
@@ -182,7 +216,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     labelText: "Password",
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                        _obscurePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.grey[300],
                       ),
                       onPressed: () {
@@ -190,8 +226,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           _obscurePassword = !_obscurePassword;
                         });
                       },
+                    ),
                   ),
-                ),
                 ),
               ),
             ),
@@ -210,7 +246,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     labelText: "Confirm Password",
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                        _obscureConfirmPassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.grey[300],
                       ),
                       onPressed: () {
@@ -218,34 +256,45 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           _obscureConfirmPassword = !_obscureConfirmPassword;
                         });
                       },
+                    ),
                   ),
-                ),
                 ),
               ),
             ),
             //Register account button
-            const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: () {
-                signUserUp();
-              },
-              child: const Text("Register Account"),
+            const SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                // Richard's code for button's background color
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.tertiary,
+                ),
+                onPressed: signUserUp,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text("Register Account",
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ),
             ),
-            // const SizedBox(height: 50),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       _insertData(
-            //           fnameController.text,
-            //           lnameController.text,
-            //           usernameController.text,
-            //           emailController.text,
-            //           passwordController.text);
-            //     },
-            //     child: const Text("Register Account"))
+            SizedBox(height: 15),
+            // Richard's code where it allows users to go back to login page
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Already have an account? ',
+                    style: TextStyle(color: Colors.white)),
+                GestureDetector(
+                    onTap: widget.onTap,
+                    child: const Text('Login Now',
+                        style: TextStyle(
+                            color: Colors.yellow,
+                            fontWeight: FontWeight.bold))),
+              ],
+            ),
+            SizedBox(height: 15),
           ],
-        )
-      )
-    );
+        )));
   }
 
   //Function to clear all text fields

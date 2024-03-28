@@ -186,6 +186,7 @@ class _ChatPageState extends State<ChatPage> {
             Container(
                 constraints: BoxConstraints(maxWidth: 195),
                 child: ChatBubble(message: data['message'])),
+                
           ],
         ),
       ),

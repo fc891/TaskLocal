@@ -62,7 +62,7 @@ class OnboardingPage extends StatelessWidget {
                       MaterialPageRoute(
                           //builder: (context) => LoginPageCustomer()),
                           builder: (context) => 
-                            CustomerAuthPage(showLoginPage: true)),
+                            CustomerAuthPage(showLoginPageCust: true)),
                     );
                   },
                 ),

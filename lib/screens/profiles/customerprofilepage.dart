@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/profiles/customertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/profiles/customereditprofile.dart';
+import 'package:tasklocal/screens/profiles/settingspage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -27,7 +28,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   String username = "TaskLocalCustomer";
   String firstname = "First";
   String lastname = "Last";
-  String date = 'dd-MM-yyyy';
+  String date = 'MM-dd-yyyy';
   int requestscompleted = 0;
   final dB = FirebaseStorage.instance;
   String defaultProfilePictureURL =
@@ -52,9 +53,20 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   //WIP
   //Bill's get user's join date using id
   void getJoinDate(String id) async {
-    DateFormat joindateformat = DateFormat('MM-dd-yyyy');
-    DateTime joindate = DateTime(2024, 2, 15);
-    date = joindateformat.format(joindate);
+    var collection = FirebaseFirestore.instance.collection('Customers');
+    var docSnapshot = await collection.doc(id).get();
+    Map<String, dynamic> data = docSnapshot.data()!;
+    try {
+      if (data['joindate'] != null) {
+        date = data['joindate'];
+      } else if (data['joindate'] == null) {
+        DateFormat joindateformat = DateFormat('MM-dd-yyyy');
+        DateTime joindate = DateTime(2024, 2, 15);
+        date = joindateformat.format(joindate);
+      }
+    } catch (err) {
+      date = "error";
+    }
   }
 
   //WIP
@@ -100,7 +112,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   @override
   Widget build(BuildContext context) {
     if (runOnce) {
-      globals.checkProfilePictureCustomer = true; //Check once in case user has a profile page set but did not set a new one
+      globals.checkProfilePictureCustomer =
+          true; //Check once in case user has a profile page set but did not set a new one
       runOnce = false;
     }
     runGetters();
@@ -118,11 +131,12 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CustomerEditProfile()));
+                        builder: (context) =>
+                            SettingsPage(userType: "Customers")));
               },
               icon: Icon(
-                Icons.edit_outlined,
-                color: Colors.grey[300],
+                Icons.settings_outlined,
+                //color: Colors.grey[300],
               ),
             ),
           ],
@@ -140,13 +154,13 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                       decoration: BoxDecoration(
                           border: Border.all(
                             width: 4,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.tertiary,
                           ),
                           boxShadow: [
                             BoxShadow(
                                 spreadRadius: 2,
                                 blurRadius: 10,
-                                color: Theme.of(context).colorScheme.tertiary)
+                                color: Theme.of(context).colorScheme.secondary)
                           ],
                           shape: BoxShape.circle,
                           image: DecorationImage(
@@ -218,7 +232,11 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                                             CustomerTaskInfoPage(
                                                 taskinfo: info)));
                               },
-                              title: Text("test$index", style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
+                              title: Text("test$index",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary)),
                             ));
                           }))),
               Divider(

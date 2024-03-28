@@ -81,9 +81,20 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   //WIP
   //Bill's get user's join date using id
   void getJoinDate(String id) async {
-    DateFormat joindateformat = DateFormat('MM-dd-yyyy');
-    DateTime joindate = DateTime(2024, 2, 12);
-    date = joindateformat.format(joindate);
+    var collection = FirebaseFirestore.instance.collection('Taskers');
+    var docSnapshot = await collection.doc(id).get();
+    Map<String, dynamic> data = docSnapshot.data()!;
+    try {
+      if (data['joindate'] != null) {
+        date = data['joindate'];
+      } else if (data['joindate'] == null) {
+        DateFormat joindateformat = DateFormat('MM-dd-yyyy');
+        DateTime joindate = DateTime(2024, 2, 15);
+        date = joindateformat.format(joindate);
+      }
+    } catch (err) {
+      date = "error";
+    }
   }
 
   //WIP
@@ -154,8 +165,11 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SettingsPage(userType: "Taskers")));
               },
               icon: Icon(
                 //Icons.edit_outlined,
@@ -178,13 +192,13 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       decoration: BoxDecoration(
                           border: Border.all(
                             width: 4,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.tertiary,
                           ),
                           boxShadow: [
                             BoxShadow(
                                 spreadRadius: 2,
                                 blurRadius: 10,
-                                color: Theme.of(context).colorScheme.tertiary)
+                                color: Theme.of(context).colorScheme.secondary)
                           ],
                           shape: BoxShape.circle,
                           image: DecorationImage(
