@@ -1,5 +1,9 @@
 // Contributors: Eric C.
 
+// TODO: Change the collection taskers are pulled from ("Signed Up Tasks" collection)
+
+// TODO: After, display the tasker's information (Task Categories -> docs -> Signed Up Tasks -> tasker emails -> fields)
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,7 +62,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
       body: Container(
         color: Colors.white,
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Taskers').snapshots(),
+          stream: FirebaseFirestore.instance.collection('Task Categories').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -200,11 +204,8 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
     });
   }
 
-  // ! Work for Feb. 25 - Mar. 2
   void _applyFilters() {
   // Implement filter/sort functionality based on selected filter (_selectedFilter)
-  // ! Retrieve real tasker data from the database and apply filters
-  
     switch (_selectedFilter) {
       case 'Years of Experience':
         // taskers.sort((a, b) => a.experience.compareTo(b.experience));
