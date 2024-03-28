@@ -62,7 +62,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
       body: Container(
         color: Colors.white,
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Taskers').snapshots(),
+          stream: FirebaseFirestore.instance.collection('Task Categories').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
