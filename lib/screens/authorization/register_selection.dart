@@ -5,6 +5,7 @@ import 'package:tasklocal/Screens/authorization/tasker_registration.dart';
 import 'package:tasklocal/components/customer_register_button.dart';
 import 'package:tasklocal/components/tasker_register_button.dart';
 import 'package:tasklocal/screens/authorization/tasker_auth.dart';
+import 'package:tasklocal/screens/authorization/customer_auth.dart';
 
 class RegisterSelection extends StatelessWidget {
   RegisterSelection({Key? key});
@@ -55,7 +56,7 @@ class RegisterSelection extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CustomerRegistration()),
+                    MaterialPageRoute(builder: (context) => CustomerAuthPage(showLoginPageCust: false)),
                   );
                 },
               ),

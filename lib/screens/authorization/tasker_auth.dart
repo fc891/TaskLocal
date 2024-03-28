@@ -14,21 +14,19 @@ class TaskerAuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: StreamBuilder<User?>(
-        // detects the info of the user whether logged in or not
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          // user is logged in so directs user to the home page
-          if (snapshot.hasData) {
-            return TaskerHomePage();
-          }
-          // user is not logged in so direct user to a page where users can either go to login or register page
-          else {
-            return TaskerLoginRegisterPage(showLoginPage: showLoginPage);
-          }
-        }
-      )
-    );
+        resizeToAvoidBottomInset: false,
+        body: StreamBuilder<User?>(
+            // detects the info of the user whether logged in or not
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              // user is logged in so directs user to the home page
+              if (snapshot.hasData) {
+                return TaskerHomePage();
+              }
+              // user is not logged in so direct user to a page where users can either go to login or register page
+              else {
+                return TaskerLoginRegisterPage(showLoginPage: showLoginPage);
+              }
+            }));
   }
 }

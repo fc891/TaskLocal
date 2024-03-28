@@ -19,7 +19,6 @@ class LoginPageCustomer extends StatefulWidget {
 }
 
 class _LoginPageCustomer extends State<LoginPageCustomer> {
-
   @override
   void initState() {
     super.initState();
@@ -34,6 +33,7 @@ class _LoginPageCustomer extends State<LoginPageCustomer> {
 
 // class _LoginPageCustomerState extends ConsumerState<LoginPageCustomer> {
 
+  String errorCode = "";
   // text controllers
   final userController = TextEditingController();
   final passController = TextEditingController();
@@ -51,20 +51,30 @@ class _LoginPageCustomer extends State<LoginPageCustomer> {
           return CustomerHomePage();
         }));
       });
-    } catch (error) {
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email' || e.code == 'user-not-found') {
+        //showErrorMessage('Incorrect Email');
+        errorCode = "Incorrect Email";
+      } else if (e.code == 'wrong-password') {
+        //showErrorMessage("Incorrect Password");
+        errorCode = "Incorrect Password";
+      } else if (e.code == 'channel-error') {
+        //showErrorMessage('Unable to process Email/Password');
+        errorCode = "Unable to process Email/Password";
+      }
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text('Login Error'),
-            backgroundColor: Theme.of(context).primaryColor,
-            content: Text('Incorrect email or password. Please try again.'),
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            content: Text(errorCode),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('OK'),
+                child: Text('OK', style: TextStyle(color: Colors.black)),
               ),
             ],
           );
@@ -181,8 +191,8 @@ class _LoginPageCustomer extends State<LoginPageCustomer> {
                   child: ElevatedButton(
                     onPressed: logUserIn,
                     style: ElevatedButton.styleFrom(
-                      //backgroundColor: Colors.green[800],
-                    ),
+                        //backgroundColor: Colors.green[800],
+                        ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 15),

@@ -154,13 +154,13 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                     decoration: BoxDecoration(
                         border: Border.all(
                           width: 4,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                         boxShadow: [
                           BoxShadow(
                               spreadRadius: 2,
                               blurRadius: 10,
-                              color: Colors.green)
+                              color: Theme.of(context).colorScheme.secondary)
                         ],
                         shape: BoxShape.circle,
                         image: DecorationImage(
@@ -181,11 +181,11 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                         width: 40.0,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(width: 1, color: Colors.white),
-                          color: Colors.white,
+                          border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondary),
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                         child: IconButton(
-                          icon: Icon(Icons.edit, color: Colors.grey),
+                          icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.secondary),
                           onPressed: () {
                             selectImage(); //Call selectImage() function once pressed, allow user to browse their device's gallery
                           },
@@ -322,7 +322,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                 confirmChanges();
                 Navigator.pop(context);
               },
-              child: const Text("Confirm Changes"),
+              child: Text("Confirm Changes", style: TextStyle(color: Colors.black)),
             ),
           ],
         )));

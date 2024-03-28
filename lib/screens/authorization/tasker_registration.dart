@@ -4,11 +4,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tasklocal/screens/home_pages/tasker_home.dart';
+import 'package:intl/intl.dart';
 
 class TaskerRegistration extends StatefulWidget {
   // Richard's code for onTap where user can switch back and forth between login and register
-  final Function()? onTap;  
+  final Function()? onTap;
   const TaskerRegistration({super.key, this.onTap});
 
   @override
@@ -26,45 +26,62 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
+  String errorCode = "";
+
   // Richard's code for the signUserUp function
   void signUserUp() async {
     // Display loading circle
     showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-    );
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
     // Eric's code for routing
     try {
       // Creates the tasker user and directs them to TaskerHomePage
       if (passwordController.text == confirmPasswordController.text) {
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
         );
         Navigator.pop(context);
+
+        //Get the date of registration to save to database (join date)
+        var now = new DateTime.now();
+        var formatter = new DateFormat('MM-dd-yyyy');
+        String formattedDate = formatter.format(now);
+
         // Create a document in the Cloud Firestore to store the user info
-        await FirebaseFirestore.instance.collection("Taskers").doc(userCredential.user!.email).set(
-          {
-            'email' : userCredential.user!.email,
-            'first name' : fnameController.text,
-            'last name' : lnameController.text,
-            'username' : usernameController.text
-          }
-        );
+        await FirebaseFirestore.instance
+            .collection("Taskers")
+            .doc(userCredential.user!.email)
+            .set({
+          'email': userCredential.user!.email,
+          'first name': fnameController.text,
+          'last name': lnameController.text,
+          'username': usernameController.text,
+          'joindate': formattedDate,
+        });
       } else {
         Navigator.pop(context);
         showErrorMessage("Passwords don't match!");
       }
     } on FirebaseAuthException catch (e) {
-      // any error besides password goes through here
       Navigator.pop(context);
-      showErrorMessage(e.code);
+      // get an idea of what the 'logging in' error is
+      print(e.code);
+      // Display the error message depending on the error code
+      if (e.code == 'email-already-in-use') {
+        //showErrorMessage('Incorrect Email');
+        errorCode = "Email already in use!";
+        showErrorMessage(errorCode);
+      }
     }
   }
+
   // Richard's code
   // Display error message to user
   void showErrorMessage(String message) {
@@ -72,7 +89,17 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Center(child: Text(message)),
+          title: Text('Login Error'),
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK', style: TextStyle(color: Colors.black)),
+            ),
+          ],
         );
       },
     );
@@ -82,11 +109,15 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
+      //backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text('Tasker Account Registration', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        title: Text('Tasker Account Registration',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 22.0)),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
         elevation: 0.0,
         // automaticallyImplyLeading: false,
       ),
@@ -171,7 +202,9 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                     fillColor: Colors.grey[250],
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.grey[500],
                       ),
                       onPressed: () {
@@ -198,12 +231,15 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                     fillColor: Colors.grey[250],
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isConfirmPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.grey[500],
                       ),
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                     ),
@@ -215,38 +251,36 @@ class _TaskerRegistrationState extends State<TaskerRegistration> {
                 child: ElevatedButton(
                   // Richard's code for button's background color
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[800],
+                    backgroundColor: Theme.of(context).colorScheme.tertiary,
                   ),
                   onPressed: signUserUp,
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
-                    child: Text("Register Account", style: TextStyle(color: Colors.white)),
+                    child: Text("Register Account",
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ),
               SizedBox(height: 15),
               // Richard's code where it allows users to go back to login page
-              Row (
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Already have an account? ', style: TextStyle(color: Colors.white)),
+                  const Text('Already have an account? ',
+                      style: TextStyle(color: Colors.white)),
                   GestureDetector(
-                    onTap: widget.onTap,
-                    child: const Text(
-                      'Login Now', 
-                      style: TextStyle(
-                        color: Colors.yellow, 
-                        fontWeight: FontWeight.bold
-                      )
-                    )
-                  ),
+                      onTap: widget.onTap,
+                      child: const Text('Login Now',
+                          style: TextStyle(
+                              color: Colors.yellow,
+                              fontWeight: FontWeight.bold))),
                 ],
               ),
               SizedBox(
                 height: 15,
                 child: Container(
-                  // color: Colors.blue, // Set the color here
-                ),
+                    // color: Colors.blue, // Set the color here
+                    ),
               ),
             ],
           ),
