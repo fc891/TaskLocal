@@ -56,20 +56,14 @@ class _SignUpTaskState extends State<SignUpTask> {
 
       final taskCategoryDocRef = _firestore.collection('Task Categories').doc(widget.taskCategory.name);
       taskCategoryDocRef.set({'dummy': 'dummy'});
-      final taskerDocRef = taskCategoryDocRef.collection('Signed Up Taskers').doc(_auth.currentUser!.email);
+      final taskerDocFromTaskCategegoryRef = taskCategoryDocRef.collection('Signed Up Taskers').doc(_auth.currentUser!.email);
 
-      // Check if the document exists
-      // final taskerDocSnapshot = await taskerDocRef.get();
-      // if (!taskerDocSnapshot.exists) {
-      //   // Document doesn't exist, create it
-      //   await taskerDocRef.set({});
-      //   print("created document");
-      // }
+      final taskerDocRef = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Signed Up Tasks').doc(widget.taskCategory.name);
 
       // Check if all required fields are filled in
       if (location.isNotEmpty && askingRate.isNotEmpty && experience.isNotEmpty && skills.isNotEmpty) {
         // await _firestore.collection('Task Categories').doc(widget.taskCategory.name).collection('Signed Up Taskers').doc(_auth.currentUser!.email).set({
-        await taskerDocRef.set({
+        await taskerDocFromTaskCategegoryRef.set({
           'email': _auth.currentUser!.email,
           'first name': currTaskerData?['first name'],
           'last name': currTaskerData?['last name'],
@@ -77,30 +71,17 @@ class _SignUpTaskState extends State<SignUpTask> {
           'askingRate': askingRate,
           'experience': experience,
           'skills': skills,
-        }).then((value) {
-          print('Task added successfully!');
-          // Clear the text fields after adding the task
-          locationController.clear();
-          askingRateController.clear();
-          expController.clear();
-          setState(() {
-            skills.clear(); // Clear the skills list
-          });
-        }).catchError((error) {
-          print('Error adding task: $error');
-          showDialog(
-            context: dialogContext!,
-            builder: (context) => AlertDialog(
-              title: Text('Error'),
-              content: Text('An error occurred while adding the task: $error'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('OK'),
-                ),
-              ],
-            ),
-          );
+        });
+        await taskerDocRef.set({
+          'task category': widget.taskCategory.name,
+        });
+        print('Task added successfully!');
+        // Clear the text fields after adding the task
+        locationController.clear();
+        askingRateController.clear();
+        expController.clear();
+        setState(() {
+          skills.clear(); // Clear the skills list
         });
       } else {
         // Display an error message indicating that all fields are required
@@ -118,8 +99,22 @@ class _SignUpTaskState extends State<SignUpTask> {
           ),
         );
       }
-    } catch (error) {
-      print('Error submitting task: $error');
+    } catch(error) {
+      print('Error adding task: $error');
+      // Display an error message indicating that an error occurred while adding the task
+      showDialog(
+        context: dialogContext ?? context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('An error occurred while adding the task: $error'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
