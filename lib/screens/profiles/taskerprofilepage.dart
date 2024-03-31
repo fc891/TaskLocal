@@ -17,7 +17,8 @@ import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/profiles/settingspage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
-FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
 //Bill's Tasker Profile Page Screen
 class TaskerProfilePage extends StatefulWidget {
@@ -41,7 +42,9 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   bool _hasProfilePicture = false;
   bool runOnce = true;
   int numMediaUploaded = 0;
+  int taskCategories = 0;
   List<String> mediaList = [];
+  List<String> taskCategoryList = [];
 
   bool _taskCategoriesSelected = false;
   bool _uploadedMediaSelected = false;
@@ -78,7 +81,6 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     }
   }
 
-  //WIP
   //Bill's get user's join date using id
   void getJoinDate(String id) async {
     var collection = FirebaseFirestore.instance.collection('Taskers');
@@ -102,6 +104,44 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   void getTasksCompleted(String id) async {
     taskscompleted = 10;
   }
+
+  //Bill's get user's task categories using id
+  void getTaskCategories(String id) async {
+    taskCategories = 0;
+    globals.checkCategories = false;
+
+    //Getting instance of tasker doc
+    //Get all task categories tasker instance is signed up for and insert to taskCategoryList list
+    await firebaseFirestore
+        .collection("Taskers")
+        .doc(id)
+        .collection("Signed Up Tasks")
+        .get()
+        .then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          String taskCat = docSnapshot.id;
+          taskCategoryList.add(taskCat);
+          taskCategories += 1;
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+    //print(taskCategoryList);
+  }
+
+  //Get all task categories tasker instance is signed up for and insert to taskCategoryList list
+  //   taskerDocRef.collection("Signed Up Tasks").get().then(
+  //     (querySnapshot) {
+  //       print("Successfully completed");
+  //       for (var docSnapshot in querySnapshot.docs) {
+  //         taskCategoryList.add(docSnapshot.id);
+  //       }
+  //     },
+  //     onError: (e) => print("Error completing: $e"),
+  //   );
+  //   print(taskCategoryList);
+  // }
 
   //Bill's get links of tasker's uploaded media using id
   void getUploadedMedia(String id) async {
@@ -139,6 +179,9 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     getUserInfo(testid);
     getJoinDate(testid);
     getTasksCompleted(testid);
+    if (globals.checkCategories) {
+      getTaskCategories(testid);
+    }
     if (globals.checkMedia) {
       getUploadedMedia(testid);
     }
@@ -150,6 +193,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     if (runOnce) {
       globals.checkProfilePictureTasker =
           true; //Check once in case user has a profile page set but did not set a new one
+      globals.checkCategories = true;
       globals.checkMedia = true;
       runOnce = false;
     }
@@ -332,7 +376,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               ),
               //List task categories of tasker
               if (_taskCategoriesSelected)
-                Text('Task Categories',
+                Text('Task Categories($taskCategories)',
                     style: TextStyle(
                         //color: Colors.white,
                         letterSpacing: 1.3,
@@ -345,42 +389,32 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 ),
               //Task Categories Display
               if (_taskCategoriesSelected)
-                SizedBox(
-                    height: 330.0,
-                    width: 400.0,
-                    child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.2,
-                        ), //Using GridView to display media in grid manner (instead of list)
-                        //crossAxisCount: 3 means there are 3 media in a row (3 boxes)
-                        scrollDirection: Axis.vertical,
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          return Card(
-                              child: Wrap(children: <Widget>[
-                            SizedBox(
-                                width: 108.0,
-                                height: 108.0,
-                                child: ListTile(
-                                  onTap: () {
-                                    TaskInfo info =
-                                        TaskInfo("Task Category", index);
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TaskerTaskCategory(
-                                                    taskinfo: info)));
-                                  },
-                                  title: Text("test$index",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary)),
-                                ))
-                          ]));
-                        })),
+                Flexible(
+                    flex: 2,
+                    fit: FlexFit.tight,
+                    child: SizedBox(
+                        //height: 100.0,
+                        child: ListView.builder(
+                            itemCount: taskCategories,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                  child: ListTile(
+                                onTap: () {
+                                  TaskInfo info = TaskInfo(
+                                      taskCategoryList[index], index);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => TaskerTaskCategory(
+                                              taskinfo: info)));
+                                },
+                                title: Text(taskCategoryList[index],
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                              ));
+                            }))),
               if (_taskCategoriesSelected)
                 Divider(
                   height: 10.0,

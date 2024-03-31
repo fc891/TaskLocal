@@ -22,7 +22,7 @@ class TaskerTaskCategory extends StatelessWidget {
       //backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
-        title: Text('$taskcategory# $tasknumber'),
+        title: Text(taskcategory),
         centerTitle: true,
         //backgroundColor: Colors.green[800],
         elevation: 0.0,
