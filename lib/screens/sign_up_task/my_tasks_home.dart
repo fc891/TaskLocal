@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/sign_up_task/edit_remove_sign_up_task.dart';
 import 'package:tasklocal/screens/sign_up_task/completed_task.dart';
 
-class MyTaskHome extends StatefulWidget {
-  const MyTaskHome({super.key});
+class MyTasksHome extends StatefulWidget {
+  const MyTasksHome({super.key});
 
   @override
-  State<MyTaskHome> createState() => _MyTaskHomeState();
+  State<MyTasksHome> createState() => _MyTasksHomeState();
 }
 
-class _MyTaskHomeState extends State<MyTaskHome> {
+class _MyTasksHomeState extends State<MyTasksHome> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

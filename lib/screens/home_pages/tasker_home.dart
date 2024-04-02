@@ -9,7 +9,7 @@ import 'package:tasklocal/screens/home_pages/tasker_search_task.dart';
 import 'package:tasklocal/screens/messages/tasker_messages_home.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/calendar/calendarfront.dart';
-import 'package:tasklocal/screens/sign_up_task/my_task_home.dart';
+import 'package:tasklocal/screens/sign_up_task/my_tasks_home.dart';
 import 'package:tasklocal/screens/sign_up_task/sign_up_for_task_home.dart';
 
 
@@ -276,7 +276,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               // navigates to tasker's list of tasks that they have to complete
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyTaskHome()),
+                MaterialPageRoute(builder: (context) => MyTasksHome()),
               );
               break;
             case 2:
