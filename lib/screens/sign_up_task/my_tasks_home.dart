@@ -39,7 +39,7 @@ class _MyTasksHomeState extends State<MyTasksHome> {
         ),
         body: const TabBarView(
           children: [
-            SignedUpTask(),
+            EditRemoveSignUpTask(),
             Icon(Icons.directions_bike),
             CompletedTask(),
           ],
