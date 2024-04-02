@@ -1,15 +1,17 @@
+// Contributors: Richard N.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class EditRemoveSignUpTask extends StatefulWidget {
-  const EditRemoveSignUpTask({super.key});
+class SignedUpTask extends StatefulWidget {
+  const SignedUpTask({super.key});
 
   @override
-  State<EditRemoveSignUpTask> createState() => _EditRemoveSignUpTaskState();
+  State<SignedUpTask> createState() => _SignedUpTaskState();
 }
 
-class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
+class _SignedUpTaskState extends State<SignedUpTask> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

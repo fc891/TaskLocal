@@ -1,13 +1,15 @@
+// Contributors: Richard N.
+
 import 'package:flutter/material.dart';
 
-class StoreCompletedTask extends StatefulWidget {
-  const StoreCompletedTask({super.key});
+class CompletedTask extends StatefulWidget {
+  const CompletedTask({super.key});
 
   @override
-  State<StoreCompletedTask> createState() => _StoreCompletedTaskState();
+  State<CompletedTask> createState() => _CompletedTaskState();
 }
 
-class _StoreCompletedTaskState extends State<StoreCompletedTask> {
+class _CompletedTaskState extends State<CompletedTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

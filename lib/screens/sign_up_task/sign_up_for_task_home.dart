@@ -6,15 +6,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
-class SignUpTask extends StatefulWidget {
+class SignUpForTaskHome extends StatefulWidget {
   final TaskCategory taskCategory;
-  const SignUpTask({super.key, required this.taskCategory});
+  const SignUpForTaskHome({super.key, required this.taskCategory});
 
   @override
-  State<SignUpTask> createState() => _SignUpTaskState();
+  State<SignUpForTaskHome> createState() => _SignUpForTaskHomeState();
 }
 
-class _SignUpTaskState extends State<SignUpTask> {
+class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

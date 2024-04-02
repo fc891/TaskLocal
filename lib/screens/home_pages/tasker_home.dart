@@ -9,8 +9,9 @@ import 'package:tasklocal/screens/home_pages/tasker_search_task.dart';
 import 'package:tasklocal/screens/messages/tasker_messages_home.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/calendar/calendarfront.dart';
-import 'package:tasklocal/screens/sign_up_task/sign_up_task.dart';
-import 'package:tasklocal/screens/sign_up_task/store_signup_and_comp_task.dart';
+import 'package:tasklocal/screens/sign_up_task/my_task_home.dart';
+import 'package:tasklocal/screens/sign_up_task/sign_up_for_task_home.dart';
+
 
 class TaskerHomePage extends StatefulWidget {
   const TaskerHomePage({super.key});
@@ -65,7 +66,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
   // direct user to a page for more info about each task category
   void navigateToTaskerCategoryInfo(int index, List listRow) {
     Navigator.push(context,
-      MaterialPageRoute(builder: (context) => SignUpTask(taskCategory: listRow[index],)),
+      MaterialPageRoute(builder: (context) => SignUpForTaskHome(taskCategory: listRow[index],)),
     );
   }
 
@@ -275,7 +276,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               // navigates to tasker's list of tasks that they have to complete
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => StoreSignUpAndCompTask()),
+                MaterialPageRoute(builder: (context) => MyTaskHome()),
               );
               break;
             case 2:
