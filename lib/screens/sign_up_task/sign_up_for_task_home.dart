@@ -21,6 +21,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
   final locationController = TextEditingController();
   final askingRateController = TextEditingController();
   final expController = TextEditingController();
+  final expController2 = TextEditingController();
   // initalize variables for getting user data
   String typeOfLength = 'Years'; 
   List<String> skills = [];
@@ -52,6 +53,8 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
       String location = locationController.text;
       String askingRate = askingRateController.text;
       String experience = expController.text;
+      // stores the amount of experience with the type of length, so it doesn't get displayed in the UI
+      String experience2 = expController2.text;
 
       Map<String, dynamic>? currTaskerData = await getTaskerData(_auth.currentUser!.email);
 
@@ -74,7 +77,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
           'last name': currTaskerData?['last name'],
           'location': location,
           'askingRate': askingRate,
-          'experience': experience,
+          'experience': experience2,
           'skills': skills,
         });
         // store only the task category name since tasker can retrieve the data in Task Categories collection
@@ -125,8 +128,6 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
     }
   }
 
-  // STOPPED HERE
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,7 +141,8 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // get the user's address info
+              // Address section
+              // instructions for the user to enter their address
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                 child: Align(
@@ -155,6 +157,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                   ),
                 ),
               ),
+              // get the user's address info
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: TextField(
@@ -176,6 +179,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                 ),
               ),
               SizedBox(height: 15),
+              // Asking Rate section
               // ask the user for the asking rate
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
@@ -191,6 +195,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                   ),
                 ),
               ),
+              // retrieve the amount that was inputted
               Row(
                 children: [
                   SizedBox(
@@ -219,7 +224,8 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                 ],
               ),
               SizedBox(height: 10),
-              // Ask and retrieve the user's experience
+              // Experience section
+              // Ask the user's experience
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                 child: Align(
@@ -234,6 +240,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                   ),
                 ),
               ),
+              // retrieve the amount of experience that was inputted
               Row(
                 children: [
                   SizedBox(
@@ -265,6 +272,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
                     child: DropdownButtonHideUnderline(
+                      // user can select the type of length that corresponds to their amount of experience
                       child: DropdownButton<String>(
                         value: typeOfLength,
                         icon: Icon(Icons.arrow_drop_down, color: Colors.black,),
@@ -275,25 +283,27 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                         onChanged: (String? newValue) {
                           setState(() {
                             typeOfLength = newValue!;
+                            // store the amount of experience with typeOfLength
+                            expController2.text = '${expController.text} $typeOfLength';
                           });
                         },
                         items: <String>['Years', 'Months', 'Weeks']
-                        .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(value, style: TextStyle(color: Colors.black)),
-                            ),
-                          );
-                        }).toList(),
+                          .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(value, style: TextStyle(color: Colors.black)),
+                              ),
+                            );
+                          }).toList(),
                       ),
                     ),
                   ),
                 ],
               ),
               SizedBox(height: 10),
-              // skills section where users can input their skills
+              // Skills section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Align(
@@ -301,6 +311,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // label allowing users to know what it is
                       Text(
                         "Skills:",
                         style: TextStyle(
@@ -310,23 +321,23 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                         ),
                       ),
                       SizedBox(height: 10),
+                      // starting point where user can input their skills
                       Container(
                         height: 300,
                         width: 300,
                         decoration: BoxDecoration(color: Colors.green[400], borderRadius: BorderRadius.circular(10)),
-                        // color: Colors.green[400],
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 20,top: 0,),
+                          padding: const EdgeInsets.only(left: 20, top: 0,),
                           child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: skills.length + 1, // +1 for the initial empty text field
+                            itemCount: skills.length + 1, // allow user to use the add button
                             itemBuilder: (context, index) {
                               if (index == skills.length) {
-                                // Add button to add more skills
                                 return Column(
                                   children: [
                                     SizedBox(
                                       width: 50,
+                                      // Add button to add additional form to enter skills
                                       child: IconButton(
                                         icon: Icon(Icons.add_circle),
                                         color: Colors.white,
@@ -345,6 +356,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.all(0.0),
+                                      // user can type in the skills in the form
                                       child: TextFormField(
                                         style: TextStyle(color: Colors.black),
                                         decoration: InputDecoration(
@@ -362,6 +374,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                                           ),
                                         ),
                                         onChanged: (value) {
+                                          // store the skill in the list of skills
                                           setState(() {
                                             skills[index] = value;
                                           });
@@ -369,6 +382,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                                       ),
                                     ),
                                   ),
+                                  // user can remove the skill
                                   IconButton(
                                     icon: Icon(Icons.remove_circle),
                                     color: Colors.white,
@@ -389,6 +403,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                 ),
               ),
               SizedBox(height: 20),
+              // user submits the info they inputted
               ElevatedButton(
                 onPressed: _submitTaskSignUp,
                 style: ElevatedButton.styleFrom(
