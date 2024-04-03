@@ -17,53 +17,58 @@ class SignUpForTaskHome extends StatefulWidget {
 class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  // controllers for getting the input of the user
   final locationController = TextEditingController();
   final askingRateController = TextEditingController();
   final expController = TextEditingController();
+  // initalize variables for getting user data
+  String typeOfLength = 'Years'; 
+  List<String> skills = [];
 
-  String dropdownValue = 'Years'; 
-  List<String> skills = []; // List to hold user's skills
-
-  Future<Map<String, dynamic>?> getCurrTaskerData(String? email) async {
+  // retrieve the data of the current signed user
+  Future<Map<String, dynamic>?> getTaskerData(String? email) async {
     try {
-      DocumentSnapshot currTaskerDoc = await _firestore.collection('Taskers').doc(email).get();
-      if (currTaskerDoc.exists) {
-        return currTaskerDoc.data() as Map<String, dynamic>;
+      DocumentSnapshot taskerDoc = await _firestore.collection('Taskers').doc(email).get();
+      // checks to see if the tasker is stored in collection Taskers
+      if (taskerDoc.exists) {
+        return taskerDoc.data() as Map<String, dynamic>;
       } else {
-        print('Customer document does not exist');
+        // print('The tasker does not exist');
         return null;
       }
-    } catch (error) {
-      print('Error fetching customer data: $error');
+    } catch (e) {
+      // any conflicts with retrieving data goes here
+      // print('There was an error retrieving data: $e');
       return null;
     }
   }
   
+  // when user presses the submit button, stores all the inputs of the user to the db
   void _submitTaskSignUp() async {
+    // provide some dialog when user hasn't enter any info
     BuildContext? dialogContext;
-    
     try {
-      // DocumentSnapshot currTaskerDoc = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
-      // Map<String, dynamic>? currTaskerData = currTaskerDoc.data() as Map<String, dynamic>;
-
+      // store user's input into the variables
       String location = locationController.text;
       String askingRate = askingRateController.text;
       String experience = expController.text;
 
-      // Future<Map<String, dynamic>?> currTaskerData = getCurrTaskerData(_auth.currentUser!.email);
-      Map<String, dynamic>? currTaskerData = await getCurrTaskerData(_auth.currentUser!.email);
+      Map<String, dynamic>? currTaskerData = await getTaskerData(_auth.currentUser!.email);
 
-      final taskCategoryDocRef = _firestore.collection('Task Categories').doc(widget.taskCategory.name);
-      taskCategoryDocRef.set({'dummy': 'dummy'});
-      final taskerDocFromTaskCategegoryRef = taskCategoryDocRef.collection('Signed Up Taskers').doc(_auth.currentUser!.email);
-
-      final taskerDocRef = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Signed Up Tasks').doc(widget.taskCategory.name);
+      final taskCategoryDoc = _firestore.collection('Task Categories').doc(widget.taskCategory.name);
+      // create dummy values so document is actually created and stored in db
+      taskCategoryDoc.set({'dummy': 'dummy'});
+      // retrieve the doc for the tasker in the Task Categories collection
+      // for public knowledge when customer wants to hire tasker
+      final currTaskerDoc = taskCategoryDoc.collection('Signed Up Taskers').doc(_auth.currentUser!.email);
+      // retrieve the doc for the tasker in the Taskers collection
+      // for individual purposes
+      final currTaskerDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Signed Up Tasks').doc(widget.taskCategory.name);
 
       // Check if all required fields are filled in
       if (location.isNotEmpty && askingRate.isNotEmpty && experience.isNotEmpty && skills.isNotEmpty) {
-        // await _firestore.collection('Task Categories').doc(widget.taskCategory.name).collection('Signed Up Taskers').doc(_auth.currentUser!.email).set({
-        await taskerDocFromTaskCategegoryRef.set({
+        // store all info in the Task Categories collection
+        await currTaskerDoc.set({
           'email': _auth.currentUser!.email,
           'first name': currTaskerData?['first name'],
           'last name': currTaskerData?['last name'],
@@ -72,19 +77,21 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
           'experience': experience,
           'skills': skills,
         });
-        await taskerDocRef.set({
+        // store only the task category name since tasker can retrieve the data in Task Categories collection
+        // and they sign up once for each Task Category
+        await currTaskerDoc2.set({
           'task category': widget.taskCategory.name,
         });
-        print('Task added successfully!');
-        // Clear the text fields after adding the task
+        // print('Task added successfully!');
+        // Remove the user's input after submitting
         locationController.clear();
         askingRateController.clear();
         expController.clear();
         setState(() {
-          skills.clear(); // Clear the skills list
+          skills.clear();
         });
       } else {
-        // Display an error message indicating that all fields are required
+        // Show an error message requiring user to fill in the fields 
         showDialog(
           context: dialogContext ?? context,
           builder: (context) => AlertDialog(
@@ -100,13 +107,13 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
         );
       }
     } catch(error) {
-      print('Error adding task: $error');
-      // Display an error message indicating that an error occurred while adding the task
+      // print('Error adding task: $error');
+      // Any error that occurs while inputting info is displayed in a dialog box to the user
       showDialog(
         context: dialogContext ?? context,
         builder: (context) => AlertDialog(
           title: Text('Error'),
-          content: Text('An error occurred while adding the task: $error'),
+          content: Text('There was an error when inputting info: $error'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -118,6 +125,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
     }
   }
 
+  // STOPPED HERE
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +266,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                     decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        value: dropdownValue,
+                        value: typeOfLength,
                         icon: Icon(Icons.arrow_drop_down, color: Colors.black,),
                         iconSize: 30,
                         elevation: 16,
@@ -266,7 +274,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                         dropdownColor: Colors.white,
                         onChanged: (String? newValue) {
                           setState(() {
-                            dropdownValue = newValue!;
+                            typeOfLength = newValue!;
                           });
                         },
                         items: <String>['Years', 'Months', 'Weeks']
