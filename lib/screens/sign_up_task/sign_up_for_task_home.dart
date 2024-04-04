@@ -61,10 +61,8 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
       final taskCategoryDoc = _firestore.collection('Task Categories').doc(widget.taskCategory.name);
       // create dummy values so document is actually created and stored in db
       taskCategoryDoc.set({'dummy': 'dummy'});
-      // retrieve the doc for the tasker in the Task Categories collection
       // for public knowledge when customer wants to hire tasker
       final currTaskerDoc = taskCategoryDoc.collection('Signed Up Taskers').doc(_auth.currentUser!.email);
-      // retrieve the doc for the tasker in the Taskers collection
       // for individual purposes
       final currTaskerDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Signed Up Tasks').doc(widget.taskCategory.name);
 

@@ -65,7 +65,7 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                               minVerticalPadding: 0,
                               contentPadding: EdgeInsets.all(0),
                               title: Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
+                                padding: const EdgeInsets.only(left: 20.0),
                                 child: Text(
                                   categoryName, 
                                   style: TextStyle(
@@ -75,7 +75,7 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                 ),
                               ),
                               subtitle: Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
+                                padding: const EdgeInsets.only(left: 20.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
