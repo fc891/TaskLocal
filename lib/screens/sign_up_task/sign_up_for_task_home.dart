@@ -129,6 +129,27 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // listens to any changes to the expController values
+    expController.addListener(_updateExpController2);
+  }
+
+  @override
+  void dispose() {
+    // prevents memory leaks by removing the listener and controller
+    expController.removeListener(_updateExpController2);
+    super.dispose();
+  }
+
+  // update the expController2 
+  void _updateExpController2() {
+    setState(() {
+      expController2.text = '${expController.text} $typeOfLength';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green,

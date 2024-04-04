@@ -16,8 +16,9 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    Future<void> _handleEditTaskResult(bool dataChanged) async {
-    if (dataChanged) {
+    // update the UI, so it reflects the changes to the task info made by the user
+    Future<void> _updateTaskInformation(bool updatedData) async {
+    if (updatedData) {
       setState(() {});
     }
   }
@@ -26,7 +27,7 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<Map<String, List<DocumentSnapshot>>>(
-        future: _fetchSignedUpTasks(),
+        future: _getSignedUpTasks(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -37,33 +38,26 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
               child: Text('Error: ${snapshot.error}'),
             );
           } else {
-            final Map<String, List<DocumentSnapshot>> tasksByCategory = snapshot.data!;
+            // a list contianing a list of the task categories from the user
+            final Map<String, List<DocumentSnapshot>> signedUpTasks = snapshot.data!;
             return ListView.builder(
-              itemCount: tasksByCategory.length,
+              itemCount: signedUpTasks.length,
               itemBuilder: (context, index) {
-                final categoryName = tasksByCategory.keys.toList()[index];
-                final taskDocs = tasksByCategory[categoryName]!;
+                final categoryName = signedUpTasks.keys.toList()[index];
+                // access the list of signed up task by using the category name
+                final taskCategory = signedUpTasks[categoryName]!;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                    //   child: Text(
-                    //     categoryName,
-                    //     style: TextStyle(
-                    //       fontWeight: FontWeight.bold,
-                    //       fontSize: 24,
-                    //     ),
-                    //   ),
-                    // ),
                     ListView.builder(
                       shrinkWrap: true,
                       // physics: NeverScrollableScrollPhysics(),
-                      itemCount: taskDocs.length,
+                      itemCount: taskCategory.length,
                       itemBuilder: (context, index) {
-                        final taskData = taskDocs[index];
+                        final taskData = taskCategory[index];
                         return Padding(
                           padding: const EdgeInsets.only(top: 8.0),
+                          // display the information of the signed up task in a ListTile
                           child: Container(
                             // color: Colors.blue,
                             child: ListTile(
@@ -72,7 +66,13 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                               contentPadding: EdgeInsets.all(0),
                               title: Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
-                                child: Text(categoryName, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,)),
+                                child: Text(
+                                  categoryName, 
+                                  style: TextStyle(
+                                    fontSize: 18, 
+                                    fontWeight: FontWeight.bold,
+                                  )
+                                ),
                               ),
                               subtitle: Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
@@ -82,15 +82,17 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                     Text('Location: ${taskData['location']}', style: TextStyle(fontSize: 16)),
                                     Text('Asking Rate: ${taskData['askingRate']}', style: TextStyle(fontSize: 16)),
                                     Text('Experience: ${taskData['experience']}', style: TextStyle(fontSize: 16)),
-                                    Text('Skills: ${taskData['skills']}', style: TextStyle(fontSize: 16)),
+                                    Text('Skills: ${taskData['skills'].join(', ')}', style: TextStyle(fontSize: 16)),
                                   ],
                                 ),
                               ),
+                              // buttons for the user to edit and remove the signed up task
                               trailing: Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    // allow user to edit the task
                                     IconButton(
                                       icon: Icon(Icons.edit),
                                       onPressed: () {
@@ -100,68 +102,64 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                             builder: (context) => EditSignUpPage(taskData: taskData, categoryName: categoryName),
                                           ),
                                           // receive the result from the EditSignUpPage to see if any changes occurred
-                                        ).then((dataChanged) {
+                                        ).then((updatedData) {
                                           // Handle the result when returning from EditSignUpPage
-                                          _handleEditTaskResult(dataChanged);
+                                          _updateTaskInformation(updatedData);
                                         });
-                                        // // Handle the result when returning from EditSignUpPage
-                                        // _handleEditTaskResult(true);
                                       },
                                     ),
+                                    // allow user to remove the task
                                     IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () async {
-                bool confirmed = await showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Confirm Deletion'),
-                    content: Text('Are you sure you want to delete this task?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: Text('Delete'),
-                      ),
-                    ],
-                  ),
-                );
-                if (confirmed == true) {
-                  try {
-                    final taskDocRef = _firestore.collection('Taskers')
-                                                    .doc(_auth.currentUser!.email)
-                                                    .collection('Signed Up Tasks')
-                                                    .doc(categoryName);
-                    final taskCategoryDocRef = _firestore.collection('Task Categories')
-                                                            .doc(categoryName)
-                                                            .collection('Signed Up Taskers')
-                                                            .doc(_auth.currentUser!.email);
-                    await taskDocRef.delete();
-                    await taskCategoryDocRef.delete();
-
-                    // Update UI
-                    setState(() {
-                      taskDocs.removeAt(index);
-                    });
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Task deleted successfully.'),
-                      ),
-                    );
-                  } catch (error) {
-                    print('Error deleting document: $error');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('An error occurred while deleting the task.'),
-                      ),
-                    );
-                  }
-                }
-              },
-            ),
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () async {
+                                        // give user a warning if they really want to delete the task category
+                                        bool confirmed = await showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: Text('Confirm Deletion'),
+                                            content: Text('Are you sure you want to remove your signed up task category?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.of(context).pop(true),
+                                                child: Text('Delete'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.of(context).pop(false),
+                                                child: Text('Cancel'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                        // proceed with the removal process if true
+                                        if (confirmed == true) {
+                                          try {
+                                            // removing from two collection, one is stored for the public and the other for the user 
+                                            final signedUpGeneral = _firestore.collection('Taskers').doc(_auth.currentUser!.email)
+                                                              .collection('Signed Up Tasks').doc(categoryName);
+                                            final signedUpIndividual = _firestore.collection('Task Categories').doc(categoryName)
+                                                                      .collection('Signed Up Taskers').doc(_auth.currentUser!.email);
+                                            await signedUpGeneral.delete();
+                                            await signedUpIndividual.delete();
+                                            // update the UI
+                                            setState(() {
+                                              taskCategory.removeAt(index);
+                                            });
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('Signed up task removed successfully.'),
+                                              ),
+                                            );
+                                          } catch (error) {
+                                            // print('There was an error deleting the signed up task: $error');
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('An error occurred while removing the task.'),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
                                   ],
                                 ),
                               ),
@@ -180,27 +178,26 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
     );
   }
 
-  Future<Map<String, List<DocumentSnapshot>>> _fetchSignedUpTasks() async {
+  // retrieves the task categories that the user signed up for
+  Future<Map<String, List<DocumentSnapshot>>> _getSignedUpTasks() async {
+    // access the collection that stores user's signed up tasks
     final taskerSignedUpTask = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Signed Up Tasks').get();
+    final taskCategoryList = <String, List<DocumentSnapshot>>{};
 
-    final tasksByCategory = <String, List<DocumentSnapshot>>{};
-
-    for (final taskCategoryDoc in taskerSignedUpTask.docs) {
-      final taskData = taskCategoryDoc.data();
+    // go through the collection of signed up task to view each task document
+    for (final taskCategory in taskerSignedUpTask.docs) {
+      final taskData = taskCategory.data();
       final categoryName = taskData['task category'];
       // go to task category doc in Task Categories collection
-      final taskCategoryDocRef = _firestore.collection('Task Categories').doc(categoryName);
+      final taskCategory2 = _firestore.collection('Task Categories').doc(categoryName);
       // go to the Signed Up Taskers collection (from Task Categories Collection) which stores info of taskers sign up
-      final taskDocs = await taskCategoryDocRef.collection('Signed Up Taskers')
-                                              .where('email', isEqualTo: _auth.currentUser!.email)
-                                              .get();
+      final tasker = await taskCategory2.collection('Signed Up Taskers').where('email', isEqualTo: _auth.currentUser!.email).get();
       // if categroy name is not stored in list, then create the key and assign it an empty list.
-      if (!tasksByCategory.containsKey(categoryName)) {
-        tasksByCategory[categoryName] = [];
+      if (!taskCategoryList.containsKey(categoryName)) {
+        taskCategoryList[categoryName] = [];
       }
-      tasksByCategory[categoryName]!.addAll(taskDocs.docs);
+      taskCategoryList[categoryName]!.addAll(tasker.docs);
     }
-
-    return tasksByCategory;
+    return taskCategoryList;
   }
 }
