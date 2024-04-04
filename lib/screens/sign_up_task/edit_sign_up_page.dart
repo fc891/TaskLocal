@@ -18,23 +18,27 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _askingRateController = TextEditingController();
-  final TextEditingController _experienceController = TextEditingController();
-  List<TextEditingController> _skillControllers = []; // List to hold skill controllers
+  final locationController = TextEditingController();
+  final askingRateController = TextEditingController();
+  final expController = TextEditingController();
+  final List<TextEditingController> skillControllers = [];
+  String typeOfLength = 'Years'; 
 
   @override
   void initState() {
     super.initState();
-    // Initialize the text controllers with the task data
-    _locationController.text = widget.taskData['location'];
-    _askingRateController.text = widget.taskData['askingRate'];
-    _experienceController.text = widget.taskData['experience'];
+    // Initialize the required fields with data
+    locationController.text = widget.taskData['location'];
+    askingRateController.text = widget.taskData['askingRate'];
     
-    // Initialize the skill controllers with the skills from the task data
+    // Split the experience data into amount and typeOfLength
+    List<String> experienceParts = widget.taskData['experience'].split(' ');
+    expController.text = experienceParts[0]; // Set the amount
+    typeOfLength = experienceParts[1]; // Set the typeOfLength
+    
     List<dynamic> skills = widget.taskData['skills'];
     for (var skill in skills) {
-      _skillControllers.add(TextEditingController(text: skill));
+      skillControllers.add(TextEditingController(text: skill));
     }
   }
 
@@ -42,37 +46,101 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Task'),
+        title: Text("Edit ${widget.categoryName}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+        centerTitle: true,
+        backgroundColor: Colors.green[800],
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
+        // display all the required fields that was stored in the db
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextFormField(
-              controller: _locationController,
-              decoration: InputDecoration(labelText: 'Location'),
-            ),
-            TextFormField(
-              controller: _askingRateController,
-              decoration: InputDecoration(labelText: 'Asking Rate'),
-            ),
-            TextFormField(
-              controller: _experienceController,
-              decoration: InputDecoration(labelText: 'Experience'),
-            ),
             SizedBox(height: 10),
+            TextFormField(
+              controller: locationController,
+              decoration: InputDecoration(
+                labelText: 'Location',
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            SizedBox(
+              width: 180,
+              child: TextFormField(
+                controller: askingRateController,
+                decoration: InputDecoration(
+                  labelText: 'Asking Rate',
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                SizedBox(
+                  width: 180,
+                  child: TextFormField(
+                    controller: expController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Experience',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
+                  child: DropdownButton<String>(
+                    value: typeOfLength,
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+                    iconSize: 30,
+                    elevation: 16,
+                    style: TextStyle(color: Colors.black),
+                    dropdownColor: Colors.white,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        typeOfLength = newValue!;
+                      });
+                    },
+                    items: <String>['Years', 'Months', 'Weeks']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(value, style: TextStyle(color: Colors.black)),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
             Text('Skills', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 5),
+            SizedBox(height: 15),
             Expanded(
-              child: ListView.builder(
-                itemCount: _skillControllers.length,
-                itemBuilder: (context, index) {
-                  return TextFormField(
-                    controller: _skillControllers[index],
-                    decoration: InputDecoration(labelText: 'Skill ${index + 1}'),
-                  );
-                },
+              child: SizedBox(
+                width: 300,
+                child: ListView.builder(
+                  itemCount: skillControllers.length,
+                  itemBuilder: (context, index) {
+                    return TextFormField(
+                      controller: skillControllers[index],
+                      decoration: InputDecoration(
+                        labelText: 'Skill ${index + 1}',
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                        border: OutlineInputBorder(),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             SizedBox(height: 10),
@@ -88,20 +156,19 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
     );
   }
 
+  // submits the changes the user made to the db
   void _updateTaskInformation() {
-    // Extract the skills from the controllers
     List<String> updatedSkills = [];
-    for (var controller in _skillControllers) {
+    for (var controller in skillControllers) {
       updatedSkills.add(controller.text);
     }
 
     _firestore.collection('Task Categories').doc(widget.categoryName)
-        .collection('Signed Up Taskers')
-        .doc(_auth.currentUser!.email)
+        .collection('Signed Up Taskers').doc(_auth.currentUser!.email)
         .update({
-      'location': _locationController.text,
-      'askingRate': _askingRateController.text,
-      'experience': _experienceController.text,
+      'location': locationController.text,
+      'askingRate': askingRateController.text,
+      'experience': expController.text,
       'skills': updatedSkills,
     }).then((_) {
       Navigator.pop(context, true);
