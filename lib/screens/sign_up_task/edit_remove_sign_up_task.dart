@@ -79,7 +79,8 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Location: ${taskData['location']}', style: TextStyle(fontSize: 16)),
+                                    Text('Location:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                    Text('${taskData['location']}', style: TextStyle(fontSize: 16)),
                                     Text('Asking Rate: ${taskData['askingRate']}', style: TextStyle(fontSize: 16)),
                                     Text('Experience: ${taskData['experience']}', style: TextStyle(fontSize: 16)),
                                     Text('Skills: ${taskData['skills'].join(', ')}', style: TextStyle(fontSize: 16)),
