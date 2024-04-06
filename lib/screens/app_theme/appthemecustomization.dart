@@ -42,22 +42,8 @@ class _AppThemeCustomizationState extends ConsumerState<AppThemeCustomization> {
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
             child: Column(children: [
-          //Divider (line)
-          // Divider(
-          //   height: 10.0,
-          //   color: Colors.grey[1500],
-          // ),
-          // Padding(
-          //     padding: EdgeInsets.all(0.0),
-          //     child: const Column(children: [
-          //       Text("App Theme Customization",
-          //           style: TextStyle(fontSize: 30.0, color: Colors.white))
-          //     ])),
-          // Divider(
-          //   height: 10.0,
-          //   color: Colors.grey[1500],
-          // ),
           //Tiles that represent each scrollable entry on the settings page, change onTap() function to redirect to different pages
+          //Classic theme button
           ListTile(
             leading: Icon(
               Icons.edit_outlined,
@@ -69,15 +55,9 @@ class _AppThemeCustomizationState extends ConsumerState<AppThemeCustomization> {
             trailing: Text(""),
             onTap: () {
               ref.read(isDarkProvider.notifier).toggleTheme(false);
-              // //Obtain shared preferences.
-              // final SharedPreferences prefs =
-              //     await SharedPreferences.getInstance();
-              // //Save bool value to 'darkTheme' key (false if this button, Classic Theme, is pressed).
-              // await prefs.setBool('darkTheme', false);
-              // print(await prefs.getBool('darkTheme'));
-              //ref.read(appThemeProvider.notifier).state = false;
             },
           ),
+          //Dark theme button
           ListTile(
             leading: Icon(
               Icons.sunny_snowing,
@@ -89,12 +69,6 @@ class _AppThemeCustomizationState extends ConsumerState<AppThemeCustomization> {
             trailing: Text(""),
             onTap: () {
               ref.read(isDarkProvider.notifier).toggleTheme(true);
-              // //Obtain shared preferences.
-              // final SharedPreferences prefs =
-              //     await SharedPreferences.getInstance();
-              // //Save bool value to 'darkTheme' key (true if this button, Dark Theme, is pressed).
-              // await prefs.setBool('darkTheme', true);
-              //ref.read(appThemeProvider.notifier).state = true;
             },
           ),
           // ListTile(

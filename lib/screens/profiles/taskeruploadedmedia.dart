@@ -13,8 +13,7 @@ class TaskerUploadedMedia extends StatefulWidget {
   const TaskerUploadedMedia({super.key, required this.taskinfo});
   State<TaskerUploadedMedia> createState() => _TaskerUploadedMediaState();
 
-  final TaskInfo
-      taskinfo; //WIP: convert this to some sort of image/video once implemented in the future
+  final TaskInfo taskinfo; 
 }
 
 enum UrlType { IMAGE, VIDEO, UNKNOWN }
@@ -53,6 +52,7 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
     super.dispose();
   }
 
+  //Get file type of URL based on extension
   UrlType getUrlType(String url) {
     Uri uri = Uri.parse(url);
     String typeString = uri.path.substring(uri.path.length - 3).toLowerCase();
@@ -71,6 +71,7 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
     String mediaLink = widget.taskinfo.taskInfo;
     int tasknumber = widget.taskinfo.taskNumber + 1;
     UrlType type = getUrlType(mediaLink);
+    print(mediaLink);
     return Scaffold(
       //Background color of UI
       //backgroundColor: Colors.green[500],
@@ -84,9 +85,17 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
       resizeToAvoidBottomInset: false,
       body: Center(
           child: Column(children: [
-        Column(children: <Widget>[
           //Display media (Image)
-          if (type == UrlType.IMAGE) Image(image: NetworkImage(mediaLink)),
+          if (type == UrlType.IMAGE || type == UrlType.UNKNOWN)
+            Flexible(
+                child: Container(
+                    color: Theme.of(context).colorScheme.tertiary,
+                    child: Image.network(
+                      mediaLink,
+                      width: 500.0,
+                      height: 500.0,
+                      fit: BoxFit.cover,
+                    ))),
           //Display media (Video)
           if (type == UrlType.VIDEO)
             FutureBuilder(
@@ -121,7 +130,6 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
                 letterSpacing: 1.0,
                 fontSize: 16.0,
               )),
-        ]),
       ])),
     );
   }

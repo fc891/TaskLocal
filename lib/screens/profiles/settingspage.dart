@@ -155,6 +155,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Icons.edit_outlined,
               color: Theme.of(context).colorScheme.secondary,
             ),
+            //Manage account button (manage display name, username, etc.)
             title: Text("Manage Account",
                 style: TextStyle(
                     fontSize: 16.0,
@@ -179,6 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
               }
             },
           ),
+          //Manage app theme (dark/classic mode)
           ListTile(
             leading: Icon(
               Icons.sunny_snowing,
@@ -201,6 +203,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           AppThemeCustomization())); //Replace with actual screen name
             },
           ),
+          //Manage notifications (turn on/off)
           ListTile(
             leading: Icon(
               Icons.notifications_active_outlined,

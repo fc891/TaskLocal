@@ -4,6 +4,7 @@
 
 import 'dart:ffi';
 import 'dart:convert';
+import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,9 +17,14 @@ import 'package:tasklocal/screens/profiles/taskertaskcategory.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/profiles/settingspage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
+import 'package:tasklocal/screens/profiles/uploadmediapage.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:path_provider/path_provider.dart';
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
 //Bill's Tasker Profile Page Screen
 class TaskerProfilePage extends StatefulWidget {
@@ -26,6 +32,8 @@ class TaskerProfilePage extends StatefulWidget {
   @override
   State<TaskerProfilePage> createState() => _TaskerProfilePageState();
 }
+
+enum UrlType { IMAGE, VIDEO, UNKNOWN }
 
 //Bill's Tasker Profile Page Screen
 class _TaskerProfilePageState extends State<TaskerProfilePage> {
@@ -49,6 +57,16 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   bool _taskCategoriesSelected = false;
   bool _uploadedMediaSelected = false;
   bool _taskHistorySelected = true;
+
+  //Lists to store supported image/video extensions
+  List<String> imageExtensions = ["jpg", "jpeg", "png", "gif"];
+  List<String> videoExtensions = ["mp4", "mov"];
+  File? videoThumbnail;
+
+  //List to store all media as File type
+  List<File> mediaFileList = [];
+
+  PlatformFile? selected;
 
   //WIP
   //Bill's get user's info using testid (username right now)
@@ -130,21 +148,10 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     //print(taskCategoryList);
   }
 
-  //Get all task categories tasker instance is signed up for and insert to taskCategoryList list
-  //   taskerDocRef.collection("Signed Up Tasks").get().then(
-  //     (querySnapshot) {
-  //       print("Successfully completed");
-  //       for (var docSnapshot in querySnapshot.docs) {
-  //         taskCategoryList.add(docSnapshot.id);
-  //       }
-  //     },
-  //     onError: (e) => print("Error completing: $e"),
-  //   );
-  //   print(taskCategoryList);
-  // }
-
   //Bill's get links of tasker's uploaded media using id
   void getUploadedMedia(String id) async {
+    mediaList = [];
+    mediaFileList = [];
     numMediaUploaded = 0;
     globals.checkMedia =
         false; //Set to false after checking media so that app does not continuously check (set to True after tasker uploads new media)
@@ -163,8 +170,51 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
         mediaList.add(
             url); //All files under folder are converted to link and added to mediaList array for later use
       });
-      numMediaUploaded +=
-          1; //Counter to keep track of number of files in folder
+
+      var type = getUrlType(url); //Get file type via extension
+      if (type == UrlType.IMAGE || type == UrlType.UNKNOWN) {
+        //Adding images as files to list (not used)
+        File addToList = File(url);
+        setState(() {
+          mediaFileList.add(addToList);
+          numMediaUploaded += 1;
+        });
+      } else if (type == UrlType.VIDEO) {
+        //Adding video thumbnails as files to list (used)
+        File addToList = await getVideoThumbnail(
+            url); //Calling function to convert link to a file to display video thumbnail
+        setState(() {
+          mediaFileList.add(addToList);
+          numMediaUploaded += 1;
+        });
+      }
+    }
+  }
+
+  //Generate thumbnail for video, return video thumbnail as File
+  Future<File> getVideoThumbnail(String path) async {
+    final fileName = await VideoThumbnail.thumbnailFile(
+      video: path,
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.PNG,
+      maxHeight: 100,
+      quality: 25,
+    );
+    File file = File(fileName!);
+    return file;
+  }
+
+  //Get URL type of file
+  UrlType getUrlType(String url) {
+    Uri uri = Uri.parse(url);
+    String typeString = uri.path.substring(uri.path.length - 3).toLowerCase();
+    if (imageExtensions.contains(typeString)) {
+      return UrlType.IMAGE;
+    }
+    if (videoExtensions.contains(typeString)) {
+      return UrlType.VIDEO;
+    } else {
+      return UrlType.UNKNOWN;
     }
   }
 
@@ -195,6 +245,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
           true; //Check once in case user has a profile page set but did not set a new one
       globals.checkCategories = true;
       globals.checkMedia = true;
+
       runOnce = false;
     }
     runGetters(); //Run all getter functions
@@ -330,7 +381,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       style: TextButton.styleFrom(
                           backgroundColor:
                               Theme.of(context).colorScheme.tertiary),
-                      child: Text("View Uploaded Media",
+                      child: Text("View and Upload Media",
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () {
@@ -400,13 +451,14 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                               return Card(
                                   child: ListTile(
                                 onTap: () {
-                                  TaskInfo info = TaskInfo(
-                                      taskCategoryList[index], index);
+                                  TaskInfo info =
+                                      TaskInfo(taskCategoryList[index], index);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => TaskerTaskCategory(
-                                              taskinfo: info)));
+                                          builder: (context) =>
+                                              TaskerTaskCategory(
+                                                  taskinfo: info)));
                                 },
                                 title: Text(taskCategoryList[index],
                                     style: TextStyle(
@@ -445,39 +497,116 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                         ), //Using GridView to display media in grid manner (instead of list)
                         //crossAxisCount: 3 means there are 3 media in a row (3 boxes)
                         scrollDirection: Axis.vertical,
-                        itemCount: numMediaUploaded,
+                        itemCount: numMediaUploaded + 1,
                         itemBuilder: (context, index) {
-                          return Card(
-                              child: Wrap(children: <Widget>[
-                            Container(
-                                height: 108.0,
-                                width: 108.0,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(mediaList[index]),
-                                    fit: BoxFit.cover,
+                          late UrlType
+                              type; //Storing file type to differentiate between image/gif and video
+                          if (index > 0) {
+                            //Getting file type using url extension
+                            type = getUrlType(mediaList[index - 1]);
+                          }
+                          if (index == 0) {
+                            //Upload media card will always be displayed first
+                            return Card(
+                                child: Wrap(children: <Widget>[
+                              Container(
+                                  height: 108.0,
+                                  width: 108.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.rectangle,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color:
+                                        Theme.of(context).colorScheme.tertiary,
                                   ),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  color: Colors.white,
-                                ),
-                                child: IconButton(
-                                  icon: Icon(Icons.camera,
-                                      color: Colors.green.withOpacity(
-                                          0)), //Transparent icon to put button over image without covering it
-                                  onPressed: () {
-                                    TaskInfo info =
-                                        TaskInfo(mediaList[index], index);
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TaskerUploadedMedia(
-                                                    taskinfo: info)));
-                                  },
-                                )),
-                          ]));
+                                  child: IconButton(
+                                      icon: Icon(
+                                        Icons.add,
+                                        color: Colors.white.withOpacity(1),
+                                        size: 60.0,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    UploadMediaPage()));
+                                      })),
+                            ]));
+                          } else if (index != 0 && //Images, GIFs, and other
+                              (type == UrlType.IMAGE ||
+                                  type == UrlType.UNKNOWN)) {
+                            return Card(
+                                child: Wrap(children: <Widget>[
+                              Container(
+                                  height: 108.0,
+                                  width: 108.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(mediaList[index - 1]),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color: Colors.white,
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(Icons.camera,
+                                        color: Colors.green.withOpacity(
+                                            0)), //Transparent icon to put button over image without covering it
+                                    onPressed: () {
+                                      TaskInfo info = TaskInfo(
+                                          mediaList[index - 1], index - 1);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TaskerUploadedMedia(
+                                                      taskinfo: info)));
+                                    },
+                                  )),
+                            ]));
+                          } else if (index != 0 && type == UrlType.VIDEO) {
+                            //Videos (displaying as a thumbnail with play button over it)
+                            return Card(
+                                child: Wrap(children: <Widget>[
+                              Container(
+                                  height: 108.0,
+                                  width: 108.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image:
+                                          FileImage(mediaFileList[index - 1]),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color: Colors.white,
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.play_arrow_rounded,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary
+                                          .withOpacity(1),
+                                      size: 80.0,
+                                    ), //Play icon to show video
+                                    onPressed: () {
+                                      TaskInfo info = TaskInfo(
+                                          mediaList[index - 1], index - 1);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TaskerUploadedMedia(
+                                                      taskinfo: info)));
+                                    },
+                                  )),
+                            ]));
+                          }
                         })),
               if (_uploadedMediaSelected)
                 Divider(
