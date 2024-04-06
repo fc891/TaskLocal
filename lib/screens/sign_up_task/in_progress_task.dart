@@ -56,150 +56,263 @@ class _InProgressTaskState extends State<InProgressTask> {
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     // display the information of the signed up task in a ListTile
-                                    child: Container(
-                                      // color: Colors.blue,
-                                      child: ListTile(
-                                        // default padding
-                                        minVerticalPadding: 0,
-                                        contentPadding: EdgeInsets.all(0),
-                                        title: Padding(
-                                          padding: const EdgeInsets.only(left: 20.0),
-                                          child: Text(
-                                            categoryName, 
-                                            style: TextStyle(
-                                              fontSize: 18, 
-                                              fontWeight: FontWeight.bold,
-                                            )
+                                    child: Column(
+                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        ListTile(
+                                          // default padding
+                                          minVerticalPadding: 0,
+                                          contentPadding: EdgeInsets.all(0),
+                                          title: Padding(
+                                            padding: const EdgeInsets.only(left: 20.0),
+                                            child: Text(
+                                              categoryName, 
+                                              style: TextStyle(
+                                                fontSize: 18, 
+                                                fontWeight: FontWeight.bold,
+                                              )
+                                            ),
                                           ),
-                                        ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.only(left: 20.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text('Customer Name: ${taskData['customer first name']} ${taskData['customer last name']}', style: TextStyle(fontSize: 16,)),
-                                              Text('Description: \n${taskData['description']}', style: TextStyle(fontSize: 16,)),
-                                              Text('Location: ${taskData['location']}', style: TextStyle(fontSize: 16,)),
-                                              Text('Pay Rate: \$${taskData['pay rate']}', style: TextStyle(fontSize: 16,)),
-                                              Text('Start Date: ${taskData['start date']}', style: TextStyle(fontSize: 16,)),
-                                            ],
+                                          subtitle: Padding(
+                                            padding: const EdgeInsets.only(left: 20.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('Customer Name: ${taskData['customer first name']} ${taskData['customer last name']}', style: TextStyle(fontSize: 16,)),
+                                                Text('Description: \n${taskData['description']}', style: TextStyle(fontSize: 16,)),
+                                                // Text('Location: ${taskData['location']}', style: TextStyle(fontSize: 16,)),
+                                                // Text('Pay Rate: \$${taskData['pay rate']}', style: TextStyle(fontSize: 16,)),
+                                                // Text('Start Date: ${taskData['start date']}', style: TextStyle(fontSize: 16,)),
+                                              ],
+                                            ),
                                           ),
+                                          // buttons for the user to edit and remove the signed up task
+                                          // trailing: Padding(
+                                          //   padding: const EdgeInsets.only(right: 8.0),
+                                          //   child: Row(
+                                          //     mainAxisSize: MainAxisSize.min,
+                                          //     children: [
+                                          //       // allow user to edit the task
+                                          //       SizedBox(
+                                          //         height: 50,
+                                          //         child: IconButton(
+                                          //           icon: Icon(Icons.check_circle,  color: Colors.green,),
+                                          //           // padding: EdgeInsets.zero,
+                                          //           onPressed: () async {
+                                          //             // give user a warning if they really want to delete the task category
+                                          //             bool confirmed = await showDialog(
+                                          //               context: context,
+                                          //               builder: (context) => AlertDialog(
+                                          //                 title: Text('Confirm Accept'),
+                                          //                 content: Text('Are you sure you want to accept this offer?'),
+                                          //                 actions: [
+                                          //                   TextButton(
+                                          //                     onPressed: () => Navigator.of(context).pop(true),
+                                          //                     child: Text('Accept'),
+                                          //                   ),
+                                          //                   TextButton(
+                                          //                     onPressed: () => Navigator.of(context).pop(false),
+                                          //                     child: Text('Cancel'),
+                                          //                   ),
+                                          //                 ],
+                                          //               ),
+                                          //             );
+                                          //             // proceed with the removal process if true
+                                          //             if (confirmed == true) {
+                                          //               try {
+                                          //                 // update the UI
+                                          //                 setState(() {
+                                          //                   taskCategory.removeAt(index);
+                                          //                 });
+                                          //                 ScaffoldMessenger.of(context).showSnackBar(
+                                          //                   SnackBar(
+                                          //                     content: Text('Accepting offer successful.'),
+                                          //                   ),
+                                          //                 );
+                                          //               } catch (error) {
+                                          //                 // print('There was an error deleting the signed up task: $error');
+                                          //                 ScaffoldMessenger.of(context).showSnackBar(
+                                          //                   SnackBar(
+                                          //                     content: Text('An error occurred while accepting the offer.'),
+                                          //                   ),
+                                          //                 );
+                                          //               }
+                                          //             }
+                                          //           },
+                                          //         ),
+                                          //       ),
+                                          //       // Container(color: Colors.blue, width: 30, height: 50),
+                                          //       // SizedBox(height: 50),
+                                          //       // allow user to remove the task
+                                          //       SizedBox(
+                                          //         height: 50,
+                                          //         child: IconButton(
+                                          //           icon: Icon(Icons.cancel, color: Colors.red,),
+                                          //           padding: EdgeInsets.zero,
+                                          //           onPressed: () async {
+                                          //             // give user a warning if they really want to delete the task category
+                                          //             bool confirmed = await showDialog(
+                                          //               context: context,
+                                          //               builder: (context) => AlertDialog(
+                                          //                 title: Text('Confirm Decline'),
+                                          //                 content: Text('Are you sure you want to decline this offer?'),
+                                          //                 actions: [
+                                          //                   TextButton(
+                                          //                     onPressed: () => Navigator.of(context).pop(true),
+                                          //                     child: Text('Decline'),
+                                          //                   ),
+                                          //                   TextButton(
+                                          //                     onPressed: () => Navigator.of(context).pop(false),
+                                          //                     child: Text('Cancel'),
+                                          //                   ),
+                                          //                 ],
+                                          //               ),
+                                          //             );
+                                          //             // proceed with the removal process if true
+                                          //             if (confirmed == true) {
+                                          //               try {
+                                          //                 // removing from the collection
+                                          //                 final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                          //                                           .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                          //                                           .collection('In Progress Tasks').doc(taskData['customer email']);
+                                          //                 await signedUpGeneral.delete();
+                                          //                 // update the UI
+                                          //                 setState(() {
+                                          //                   taskCategory.removeAt(index);
+                                          //                 });
+                                          //                 ScaffoldMessenger.of(context).showSnackBar(
+                                          //                   SnackBar(
+                                          //                     content: Text('Declining offer successful.'),
+                                          //                   ),
+                                          //                 );
+                                          //               } catch (error) {
+                                          //                 // print('There was an error deleting the signed up task: $error');
+                                          //                 ScaffoldMessenger.of(context).showSnackBar(
+                                          //                   SnackBar(
+                                          //                     content: Text('An error occurred while declining the offer.'),
+                                          //                   ),
+                                          //                 );
+                                          //               }
+                                          //             }
+                                          //           },
+                                          //         ),
+                                          //       ),
+                                          //     ],
+                                          //   ),
+                                          // ),
                                         ),
-                                        // buttons for the user to edit and remove the signed up task
-                                        trailing: Padding(
-                                          padding: const EdgeInsets.only(right: 8.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              // allow user to edit the task
-                                              SizedBox(
-                                                height: 50,
-                                                child: IconButton(
-                                                  icon: Icon(Icons.check_circle,  color: Colors.green,),
-                                                  // padding: EdgeInsets.zero,
-                                                  onPressed: () async {
-                                                    // give user a warning if they really want to delete the task category
-                                                    bool confirmed = await showDialog(
-                                                      context: context,
-                                                      builder: (context) => AlertDialog(
-                                                        title: Text('Confirm Accept'),
-                                                        content: Text('Are you sure you want to accept this offer?'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () => Navigator.of(context).pop(true),
-                                                            child: Text('Accept'),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () => Navigator.of(context).pop(false),
-                                                            child: Text('Cancel'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                    // proceed with the removal process if true
-                                                    if (confirmed == true) {
-                                                      try {
-                                                        // update the UI
-                                                        setState(() {
-                                                          taskCategory.removeAt(index);
-                                                        });
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text('Accepting offer successful.'),
-                                                          ),
-                                                        );
-                                                      } catch (error) {
-                                                        // print('There was an error deleting the signed up task: $error');
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text('An error occurred while accepting the offer.'),
-                                                          ),
-                                                        );
+                                        Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                // allow user to edit the task
+                                                SizedBox(
+                                                  height: 50,
+                                                  child: IconButton(
+                                                    icon: Icon(Icons.check_circle,  color: Colors.green,),
+                                                    // padding: EdgeInsets.zero,
+                                                    onPressed: () async {
+                                                      // give user a warning if they really want to delete the task category
+                                                      bool confirmed = await showDialog(
+                                                        context: context,
+                                                        builder: (context) => AlertDialog(
+                                                          title: Text('Confirm Accept'),
+                                                          content: Text('Are you sure you want to accept this offer?'),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(true),
+                                                              child: Text('Accept'),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(false),
+                                                              child: Text('Cancel'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                      // proceed with the removal process if true
+                                                      if (confirmed == true) {
+                                                        try {
+                                                          // update the UI
+                                                          setState(() {
+                                                            taskCategory.removeAt(index);
+                                                          });
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('Accepting offer successful.'),
+                                                            ),
+                                                          );
+                                                        } catch (error) {
+                                                          // print('There was an error deleting the signed up task: $error');
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('An error occurred while accepting the offer.'),
+                                                            ),
+                                                          );
+                                                        }
                                                       }
-                                                    }
-                                                  },
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
-                                              // Container(color: Colors.blue, width: 30, height: 50),
-                                              // SizedBox(height: 50),
-                                              // allow user to remove the task
-                                              SizedBox(
-                                                height: 50,
-                                                child: IconButton(
-                                                  icon: Icon(Icons.cancel, color: Colors.red,),
-                                                  padding: EdgeInsets.zero,
-                                                  onPressed: () async {
-                                                    // give user a warning if they really want to delete the task category
-                                                    bool confirmed = await showDialog(
-                                                      context: context,
-                                                      builder: (context) => AlertDialog(
-                                                        title: Text('Confirm Decline'),
-                                                        content: Text('Are you sure you want to decline this offer?'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () => Navigator.of(context).pop(true),
-                                                            child: Text('Decline'),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () => Navigator.of(context).pop(false),
-                                                            child: Text('Cancel'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                    // proceed with the removal process if true
-                                                    if (confirmed == true) {
-                                                      try {
-                                                        // removing from the collection
-                                                        final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                                                                  .collection('Hired Taskers').doc(_auth.currentUser!.email);
-                                                        await signedUpGeneral.delete();
-                                                        // update the UI
-                                                        setState(() {
-                                                          taskCategory.removeAt(index);
-                                                        });
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text('Declining offer successful.'),
-                                                          ),
-                                                        );
-                                                      } catch (error) {
-                                                        // print('There was an error deleting the signed up task: $error');
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text('An error occurred while declining the offer.'),
-                                                          ),
-                                                        );
+                                                // Container(color: Colors.blue, width: 30, height: 50),
+                                                // SizedBox(height: 50),
+                                                // allow user to remove the task
+                                                SizedBox(
+                                                  height: 50,
+                                                  child: IconButton(
+                                                    icon: Icon(Icons.cancel, color: Colors.red,),
+                                                    padding: EdgeInsets.zero,
+                                                    onPressed: () async {
+                                                      // give user a warning if they really want to delete the task category
+                                                      bool confirmed = await showDialog(
+                                                        context: context,
+                                                        builder: (context) => AlertDialog(
+                                                          title: Text('Confirm Decline'),
+                                                          content: Text('Are you sure you want to decline this offer?'),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(true),
+                                                              child: Text('Decline'),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(false),
+                                                              child: Text('Cancel'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                      // proceed with the removal process if true
+                                                      if (confirmed == true) {
+                                                        try {
+                                                          // removing from the collection
+                                                          final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                                                                    .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                                                    .collection('In Progress Tasks').doc(taskData['customer email']);
+                                                          await signedUpGeneral.delete();
+                                                          // update the UI
+                                                          setState(() {
+                                                            taskCategory.removeAt(index);
+                                                          });
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('Declining offer successful.'),
+                                                            ),
+                                                          );
+                                                        } catch (error) {
+                                                          // print('There was an error deleting the signed up task: $error');
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('An error occurred while declining the offer.'),
+                                                            ),
+                                                          );
+                                                        }
                                                       }
-                                                    }
-                                                  },
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
-                                        ],
-                                      ),
+                                              ],
+                                            ),
+                                      ],
                                     ),
-                                  ),
-                                ),
                               );
                             },
                           ),
@@ -423,14 +536,14 @@ class _InProgressTaskState extends State<InProgressTask> {
       // go to task category doc in Task Categories collection
       final taskCategory2 = _firestore.collection('Task Categories').doc(categoryName);
       // go to the Signed Up Taskers collection (from Task Categories Collection) which stores info of taskers sign up
-      final tasker = await taskCategory2.collection('Hired Taskers').where('email', isEqualTo: _auth.currentUser!.email).get();
+      final tasker = taskCategory2.collection('Hired Taskers').doc(_auth.currentUser!.email);
+      final inProgressTaskDoc = await tasker.collection('In Progress Tasks').where('customer email', isNotEqualTo: _auth.currentUser!.email).get();
 
       // if categroy name is not stored in list, then create the key and assign it an empty list.
       if (!taskCategoryList.containsKey(categoryName)) {
         taskCategoryList[categoryName] = [];
       }
-      
-      taskCategoryList[categoryName]!.addAll(tasker.docs);
+      taskCategoryList[categoryName]!.addAll(inProgressTaskDoc.docs);
     }
     return taskCategoryList;
   }
