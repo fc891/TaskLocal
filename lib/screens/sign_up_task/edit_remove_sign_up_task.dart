@@ -55,16 +55,6 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Padding(
-                              //   padding: const EdgeInsets.all(8.0),
-                              //   child: Text(
-                              //     categoryName,
-                              //     style: TextStyle(
-                              //       fontSize: 18,
-                              //       fontWeight: FontWeight.bold,
-                              //     ),
-                              //   ),
-                              // ),
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
