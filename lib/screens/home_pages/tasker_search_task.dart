@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/home_pages/task_category.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_category_info.dart';
+import 'package:tasklocal/screens/sign_up_task/sign_up_for_task_home.dart';
 
 class TaskerSearchTask extends StatefulWidget {
   final List<TaskCategory> taskList;
@@ -71,7 +72,7 @@ class _TaskerSearchTaskState extends State<TaskerSearchTask> {
                   ),
                   title: Text(task.name),
                   onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TaskerCategoryInfo(taskCategory: task)),
+                    MaterialPageRoute(builder: (context) => SignUpForTaskHome(taskCategory: task,)),
                   ),
                 );
               },
