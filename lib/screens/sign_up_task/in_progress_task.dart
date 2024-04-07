@@ -93,7 +93,8 @@ class _InProgressTaskState extends State<InProgressTask> {
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            YOUR_SPECIFIC_INDEX != index ? Row(
+                                            if (!taskData['task accepted'])
+                                              Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 IconButton(
@@ -122,10 +123,21 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     if (confirmed == true) {
                                                       try {
                                                         // update the UI
-                                                        setState(() {
-                                                          YOUR_SPECIFIC_INDEX = index;
-                                                        });
+                                                        // setState(() {
+                                                        //   YOUR_SPECIFIC_INDEX = index;
+                                                        // });
+                                                        // Update database to mark task as accepted
+                                                        // await _firestore.collection('Task Categories').doc(categoryName)
+                                                        //   .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                        //   .collection('In Progress Tasks').doc(taskData['customer email'])
+                                                        //   .update({'task accepted': true});
 
+                                                        setState(() {
+                                                          _firestore.collection('Task Categories').doc(categoryName)
+                                                          .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                          .collection('In Progress Tasks').doc(taskData['customer email'])
+                                                          .update({'task accepted': true});
+                                                        });
                                                         ScaffoldMessenger.of(context).showSnackBar(
                                                           SnackBar(
                                                             content: Text('Accepting request successful.'),
@@ -194,11 +206,17 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   },
                                                 ),
                                               ],
-                                            ) : showStartButton ? ElevatedButton(
+                                            ) else if (taskData['task accepted'] && !taskData['task started']) ElevatedButton(
                                               onPressed: () {
+                                                // setState(() {
+                                                //   showStartButton = false;
+                                                // });
                                                 setState(() {
-                                                  showStartButton = false;
-                                                });
+                                                          _firestore.collection('Task Categories').doc(categoryName)
+                                                          .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                          .collection('In Progress Tasks').doc(taskData['customer email'])
+                                                          .update({'task started': true});
+                                                        });
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.green[800],
@@ -207,7 +225,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                 padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
                                                 child: Text("Start", style: TextStyle(color: Colors.white, fontSize: 14)),
                                               ),
-                                            ) : ElevatedButton(
+                                            ) else ElevatedButton(
                                               onPressed: () async {
                                                 // give user a warning if they really want to delete the task category
                                                 bool confirmed = await showDialog(
@@ -263,9 +281,67 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                 padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
                                                 child: Text("Complete", style: TextStyle(color: Colors.white, fontSize: 14)),
                                               ),
-                                            )
+                                            ),
                                           ],
                                         ),
+                                        
+                                        //  ElevatedButton(
+                                        //       onPressed: () async {
+                                        //         // give user a warning if they really want to delete the task category
+                                        //         bool confirmed = await showDialog(
+                                        //           context: context,
+                                        //           builder: (context) => AlertDialog(
+                                        //             title: Text('Confirm Completion'),
+                                        //             content: Text('Are you sure you are completed with the task?'),
+                                        //             actions: [
+                                        //               TextButton(
+                                        //                 onPressed: () => Navigator.of(context).pop(true),
+                                        //                 child: Text('Confirm'),
+                                        //               ),
+                                        //               TextButton(
+                                        //                 onPressed: () => Navigator.of(context).pop(false),
+                                        //                 child: Text('Cancel'),
+                                        //               ),
+                                        //             ],
+                                        //           ),
+                                        //         );
+                                        //         // proceed with the removal process if true
+                                        //         if (confirmed == true) {
+                                        //           try {
+                                        //                 // removing from the collection
+                                        //                 final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                        //                                           .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                        //                                           .collection('In Progress Tasks').doc(taskData['customer email']);
+                                        //                 await signedUpGeneral.delete();
+                                        //                 showStartButton = true;
+                                        //               YOUR_SPECIFIC_INDEX = -1;
+                                        //             // update the UI
+                                        //             setState(() {
+                                        //               taskCategory.removeAt(index);
+                                        //             });
+                                        //             ScaffoldMessenger.of(context).showSnackBar(
+                                        //               SnackBar(
+                                        //                 content: Text('Signed up task removed successfully.'),
+                                        //               ),
+                                        //             );
+                                        //           } catch (error) {
+                                        //             // print('There was an error deleting the signed up task: $error');
+                                        //             ScaffoldMessenger.of(context).showSnackBar(
+                                        //               SnackBar(
+                                        //                 content: Text('An error occurred while removing the task.'),
+                                        //               ),
+                                        //             );
+                                        //           }
+                                        //         }
+                                        //       },
+                                        //       style: ElevatedButton.styleFrom(
+                                        //         backgroundColor: Colors.green[800],
+                                        //       ),
+                                        //       child: Padding(
+                                        //         padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+                                        //         child: Text("Complete", style: TextStyle(color: Colors.white, fontSize: 14)),
+                                        //       ),
+                                        //     )
                                       ],
                                     ),
                                   );
