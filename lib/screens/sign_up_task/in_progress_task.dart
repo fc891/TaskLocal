@@ -14,6 +14,8 @@ class InProgressTask extends StatefulWidget {
 class _InProgressTaskState extends State<InProgressTask> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  int? YOUR_SPECIFIC_INDEX;
+  bool showStartButton = true;
 
   @override
   Widget build(BuildContext context) {
@@ -87,108 +89,136 @@ class _InProgressTaskState extends State<InProgressTask> {
                                             ),
                                           ),
                                         ),
+                                        
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            // allow user to edit the task
-                                            IconButton(
-                                              icon: Icon(Icons.check_circle,  color: Colors.green,),
-                                              // padding: EdgeInsets.zero,
-                                              onPressed: () async {
-                                                // give user a warning if they really want to delete the task category
-                                                bool confirmed = await showDialog(
-                                                  context: context,
-                                                  builder: (context) => AlertDialog(
-                                                    title: Text('Confirm Accept'),
-                                                    content: Text('Are you sure you want to accept this offer?'),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () => Navigator.of(context).pop(true),
-                                                        child: Text('Accept'),
+                                            YOUR_SPECIFIC_INDEX != index ? Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                IconButton(
+                                                  icon: Icon(Icons.check_circle,  color: Colors.green,),
+                                                  // padding: EdgeInsets.zero,
+                                                  onPressed: () async {
+                                                    // give user a warning if they really want to confirm the task
+                                                    bool confirmed = await showDialog(
+                                                      context: context,
+                                                      builder: (context) => AlertDialog(
+                                                        title: Text('Confirm Accept'),
+                                                        content: Text('Are you sure you want to accept this offer?'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () => Navigator.of(context).pop(true),
+                                                            child: Text('Accept'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () => Navigator.of(context).pop(false),
+                                                            child: Text('Cancel'),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      TextButton(
-                                                        onPressed: () => Navigator.of(context).pop(false),
-                                                        child: Text('Cancel'),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                                bool showButtons = true;
-                                                // proceed with the removal process if true
-                                                if (confirmed == true) {
-                                                  try {
-                                                    // update the UI
-                                                    setState(() {
-                                                      showButtons = false;
-                                                    });
+                                                    );
+                                                    // proceed with the accepting process if true
+                                                    if (confirmed == true) {
+                                                      try {
+                                                        // update the UI
+                                                        setState(() {
+                                                          YOUR_SPECIFIC_INDEX = index;
+                                                        });
 
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text('Accepting offer successful.'),
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text('Accepting offer successful.'),
+                                                          ),
+                                                        );
+                                                      } catch (error) {
+                                                        // print('There was an error deleting the signed up task: $error');
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text('An error occurred while accepting the offer.'),
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+                                                  },
+                                                ),
+                                                // allow user to decline the task
+                                                IconButton(
+                                                  icon: Icon(Icons.cancel, color: Colors.red,),
+                                                  padding: EdgeInsets.zero,
+                                                  onPressed: () async {
+                                                    // give user a warning if they want to declne the task
+                                                    bool confirmed = await showDialog(
+                                                      context: context,
+                                                      builder: (context) => AlertDialog(
+                                                        title: Text('Confirm Decline'),
+                                                        content: Text('Are you sure you want to decline this offer?'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () => Navigator.of(context).pop(true),
+                                                            child: Text('Decline'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () => Navigator.of(context).pop(false),
+                                                            child: Text('Cancel'),
+                                                          ),
+                                                        ],
                                                       ),
                                                     );
-                                                  } catch (error) {
-                                                    // print('There was an error deleting the signed up task: $error');
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text('An error occurred while accepting the offer.'),
-                                                      ),
-                                                    );
-                                                  }
-                                                }
+                                                    // proceed with the decline process if true
+                                                    if (confirmed == true) {
+                                                      try {
+                                                        // removing from the collection
+                                                        final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                                                                  .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                                                  .collection('In Progress Tasks').doc(taskData['customer email']);
+                                                        await signedUpGeneral.delete();
+                                                        // update the UI
+                                                        setState(() {
+                                                          taskCategory.removeAt(index);
+                                                        });
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text('Declining offer successful.'),
+                                                          ),
+                                                        );
+                                                      } catch (error) {
+                                                        // print('There was an error deleting the signed up task: $error');
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text('An error occurred while declining the offer.'),
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+                                                  },
+                                                ),
+                                              ],
+                                            ) : showStartButton ? ElevatedButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  showStartButton = false;
+                                                });
                                               },
-                                            ),
-                                            // allow user to remove the task
-                                            IconButton(
-                                              icon: Icon(Icons.cancel, color: Colors.red,),
-                                              padding: EdgeInsets.zero,
-                                              onPressed: () async {
-                                                // give user a warning if they want to declne the task
-                                                bool confirmed = await showDialog(
-                                                  context: context,
-                                                  builder: (context) => AlertDialog(
-                                                    title: Text('Confirm Decline'),
-                                                    content: Text('Are you sure you want to decline this offer?'),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () => Navigator.of(context).pop(true),
-                                                        child: Text('Decline'),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () => Navigator.of(context).pop(false),
-                                                        child: Text('Cancel'),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                                // proceed with the decline process if true
-                                                if (confirmed == true) {
-                                                  try {
-                                                    // removing from the collection
-                                                    final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                                                              .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                                              .collection('In Progress Tasks').doc(taskData['customer email']);
-                                                    await signedUpGeneral.delete();
-                                                    // update the UI
-                                                    setState(() {
-                                                      taskCategory.removeAt(index);
-                                                    });
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text('Declining offer successful.'),
-                                                      ),
-                                                    );
-                                                  } catch (error) {
-                                                    // print('There was an error deleting the signed up task: $error');
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text('An error occurred while declining the offer.'),
-                                                      ),
-                                                    );
-                                                  }
-                                                }
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green[800],
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+                                                child: Text("Start", style: TextStyle(color: Colors.white, fontSize: 14)),
+                                              ),
+                                            ) : ElevatedButton(
+                                              onPressed: () {
+                                                
                                               },
-                                            ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green[800],
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+                                                child: Text("Complete", style: TextStyle(color: Colors.white, fontSize: 14)),
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ],
