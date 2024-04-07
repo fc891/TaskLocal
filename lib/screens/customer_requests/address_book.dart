@@ -39,7 +39,7 @@ class _AddressBookState extends State<AddressBook> {
           // Address book document doesn't exist, initialize it
           await FirebaseFirestore.instance
               .collection('Customers')
-              .doc(user.email) // Use user's email as document ID
+              .doc(user.email) // Use user's email as document ID!!!
               .collection('AddressBook')
               .doc('addressBookList')
               .set({'addresses': []});
@@ -82,6 +82,31 @@ class _AddressBookState extends State<AddressBook> {
     }
   }
 
+  Future<void> _deleteAddress(int index) async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Reference to the "Address Book" document for the current user
+        DocumentReference addressBookRef = FirebaseFirestore.instance
+            .collection('Customers')
+            .doc(user.email) // Use user's email as document ID
+            .collection('AddressBook')
+            .doc('addressBookList');
+
+        // Remove the address from the list and update the document
+        _addresses.removeAt(index);
+        await addressBookRef.update({
+          'addresses': _addresses,
+        });
+      } else {
+        throw 'User not logged in.';
+      }
+    } catch (e) {
+      print('Error deleting address: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,12 +132,27 @@ class _AddressBookState extends State<AddressBook> {
             child: ListView.builder(
               itemCount: _addresses.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_addresses[index]),
-                  onTap: () {
-                    // Pass selected address back to previous screen
-                    Navigator.pop(context, _addresses[index]);
+                return Dismissible(
+                  key: Key(_addresses[index]),
+                  onDismissed: (direction) {
+                    _deleteAddress(index);
                   },
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20.0),
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
+                  child: ListTile(
+                    title: Text(_addresses[index]),
+                    onTap: () {
+                      // Pass selected address back to previous screen
+                      Navigator.pop(context, _addresses[index]);
+                    },
+                  ),
                 );
               },
             ),

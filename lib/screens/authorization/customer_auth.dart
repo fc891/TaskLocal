@@ -2,14 +2,14 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tasklocal/screens/home_pages/tasker_home.dart';
-import 'tasker_login_register.dart';
+import 'package:tasklocal/screens/authorization/customer_login_register.dart';
+import 'package:tasklocal/screens/home_pages/customer_home.dart';
 
 // Richard's code for this entire class
-class TaskerAuthPage extends StatelessWidget {
+class CustomerAuthPage extends StatelessWidget {
   // variable used to either go to login or register page
-  final bool showLoginPage;
-  const TaskerAuthPage({super.key, required this.showLoginPage});
+  final bool showLoginPageCust;
+  const CustomerAuthPage({super.key, required this.showLoginPageCust});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +21,11 @@ class TaskerAuthPage extends StatelessWidget {
             builder: (context, snapshot) {
               // user is logged in so directs user to the home page
               if (snapshot.hasData) {
-                return TaskerHomePage();
+                return CustomerHomePage();
               }
               // user is not logged in so direct user to a page where users can either go to login or register page
               else {
-                return TaskerLoginRegisterPage(showLoginPage: showLoginPage);
+                return CustomerLoginRegisterPage(showLoginPageCust: showLoginPageCust);
               }
             }));
   }

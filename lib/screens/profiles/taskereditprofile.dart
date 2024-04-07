@@ -130,12 +130,12 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
     getProfilePicture(current.email!);
     return Scaffold(
         //Background color of UI
-        backgroundColor: Colors.green[500],
+        //backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
           title: Text('Edit Tasker Profile Page'),
           centerTitle: true,
-          backgroundColor: Colors.green[800],
+          //backgroundColor: Colors.green[800],
           elevation: 0.0,
         ),
         //Tasker profile picture
@@ -155,13 +155,13 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
                     decoration: BoxDecoration(
                         border: Border.all(
                           width: 4,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                         boxShadow: [
                           BoxShadow(
                               spreadRadius: 2,
                               blurRadius: 10,
-                              color: Colors.green)
+                              color: Theme.of(context).colorScheme.secondary)
                         ],
                         shape: BoxShape.circle,
                         image: DecorationImage(
@@ -182,11 +182,11 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
                         width: 40.0,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(width: 1, color: Colors.white),
-                          color: Colors.white,
+                          border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondary),
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                         child: IconButton(
-                          icon: Icon(Icons.edit, color: Colors.grey),
+                          icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.secondary),
                           onPressed: () {
                             selectImage();
                           },
@@ -323,7 +323,7 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
                 confirmChanges();
                 Navigator.pop(context);
               },
-              child: const Text("Confirm Changes"),
+              child: Text("Confirm Changes", style: TextStyle(color: Colors.black)),
             ),
           ],
         )));

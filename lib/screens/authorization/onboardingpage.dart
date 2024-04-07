@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 //import 'package:tasklocal/Screens/loginpagetasker.dart';
-import 'package:tasklocal/Screens/login_pages/loginpagecustomer.dart';
+import 'package:tasklocal/Screens/authorization/loginpagecustomer.dart';
 import 'package:tasklocal/components/customer_selection_button.dart';
 import 'package:tasklocal/Screens/authorization/register_selection.dart';
 import 'package:tasklocal/components/tasker_selection_button.dart';
 import 'package:tasklocal/screens/authorization/tasker_auth.dart';
+import 'package:tasklocal/screens/authorization/customer_auth.dart';
+
+import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 //import 'package:tasklocal/components/tasker_selection_button.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -13,7 +17,6 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[500],
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -30,7 +33,7 @@ class OnboardingPage extends StatelessWidget {
                 Text(
                   'TaskLocal',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.secondary,
                     fontSize: 32,
                   ),
                 ),
@@ -42,7 +45,9 @@ class OnboardingPage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TaskerAuthPage(showLoginPage: true)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                            TaskerAuthPage(showLoginPage: true)),
                     );
                   },
                 ),
@@ -54,7 +59,10 @@ class OnboardingPage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPageCustomer()),
+                      MaterialPageRoute(
+                          //builder: (context) => LoginPageCustomer()),
+                          builder: (context) => 
+                            CustomerAuthPage(showLoginPageCust: true)),
                     );
                   },
                 ),
@@ -66,7 +74,8 @@ class OnboardingPage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegisterSelection()),
+                      MaterialPageRoute(
+                          builder: (context) => RegisterSelection()),
                     );
                   },
                   child: Row(

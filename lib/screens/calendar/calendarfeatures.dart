@@ -92,27 +92,27 @@ class _CalendarFeaturesState extends State<CalendarFeatures> {
               height: 100,
               width: 80,
               initialSelectedDate: DateTime.now(),
-              selectionColor: Colors.blue,
-              selectedTextColor: Colors.white,
+              selectionColor: Theme.of(context).colorScheme.tertiary,
+              selectedTextColor: Theme.of(context).colorScheme.secondary,
               dateTextStyle: GoogleFonts.lato(
                 textStyle: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  //color: Colors.grey,
                 ),
               ),
               dayTextStyle: GoogleFonts.lato(
                 textStyle: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  //color: Colors.grey,
                 ),
               ),
               monthTextStyle: GoogleFonts.lato(
                 textStyle: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  //color: Colors.grey,
                 ),
               ),
               onDateChange: (date) {
