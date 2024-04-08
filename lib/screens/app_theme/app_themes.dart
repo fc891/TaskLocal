@@ -83,9 +83,13 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (states) => (isDarkTheme ? Colors.white : Colors.white)),
+              (states) => (isDarkTheme ? Colors.white : Colors.green[500]!)),
           textStyle: MaterialStateProperty.resolveWith<TextStyle>((states) =>
               TextStyle(color: isDarkTheme ? Colors.black : Colors.black)),
         ),
-      ));
+      ),
+      dialogTheme: DialogTheme(
+        backgroundColor: Colors.green[200],
+      )
+  );
 }

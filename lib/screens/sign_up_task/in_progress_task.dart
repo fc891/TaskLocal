@@ -187,7 +187,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   IconButton(
-                                                    icon: Icon(Icons.check_circle,  color: Colors.green,),
+                                                    icon: Icon(Icons.check_circle,  color: Colors.green[800],),
                                                     // padding: EdgeInsets.zero,
                                                     onPressed: () async {
                                                       // give user a warning if they really want to confirm the task

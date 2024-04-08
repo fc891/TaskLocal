@@ -184,7 +184,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                 style: TextStyle(fontSize: 15),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  labelText: 'Address',
+                  hintText: 'Address',
                   filled: true,
                   fillColor: Colors.grey[200],
                   // border is black by default and when click the text field, border is white
