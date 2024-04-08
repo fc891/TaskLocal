@@ -14,8 +14,6 @@ class InProgressTask extends StatefulWidget {
 class _InProgressTaskState extends State<InProgressTask> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  int? YOUR_SPECIFIC_INDEX;
-  bool showStartButton = true;
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +195,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         context: context,
                                                         builder: (context) => AlertDialog(
                                                           title: Text('Confirm Accept'),
-                                                          content: Text('Are you sure you want to accept this offer?'),
+                                                          content: Text('Are you sure you want to accept this task request?'),
                                                           actions: [
                                                             TextButton(
                                                               onPressed: () => Navigator.of(context).pop(true),
@@ -222,14 +220,14 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           });
                                                           ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
-                                                              content: Text('Accepting request successful.'),
+                                                              content: Text('Successfully accepted task request.'),
                                                             ),
                                                           );
                                                         } catch (error) {
                                                           // print('There was an error deleting the signed up task: $error');
                                                           ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
-                                                              content: Text('An error occurred while accepting the offer.'),
+                                                              content: Text('An error occurred while accepting the task request.'),
                                                             ),
                                                           );
                                                         }
@@ -246,7 +244,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         context: context,
                                                         builder: (context) => AlertDialog(
                                                           title: Text('Confirm Decline'),
-                                                          content: Text('Are you sure you want to decline this offer?'),
+                                                          content: Text('Are you sure you want to decline this task request?'),
                                                           actions: [
                                                             TextButton(
                                                               onPressed: () => Navigator.of(context).pop(true),
@@ -273,14 +271,14 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           });
                                                           ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
-                                                              content: Text('Declining offer successful.'),
+                                                              content: Text('Successfully decline task request.'),
                                                             ),
                                                           );
                                                         } catch (error) {
                                                           // print('There was an error deleting the signed up task: $error');
                                                           ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
-                                                              content: Text('An error occurred while declining the offer.'),
+                                                              content: Text('An error occurred while declining the task request.'),
                                                             ),
                                                           );
                                                         }
@@ -319,7 +317,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       );
                                                       ScaffoldMessenger.of(context).showSnackBar(
                                                         SnackBar(
-                                                          content: Text('Starting task successful.'),
+                                                          content: Text('Successfully started task.'),
                                                         ),
                                                       );
                                                     } catch (error) {
@@ -361,27 +359,25 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   // proceed with the removal process if true
                                                   if (confirmed == true) {
                                                     try {
-                                                          // removing from the collection
-                                                          final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                                                                    .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                                                    .collection('In Progress Tasks').doc(taskData['customer email']);
-                                                          await signedUpGeneral.delete();
-                                                          showStartButton = true;
-                                                        YOUR_SPECIFIC_INDEX = -1;
+                                                      // removing from the collection
+                                                      final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                                                                .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                                                .collection('In Progress Tasks').doc(taskData['customer email']);
+                                                      await signedUpGeneral.delete();
                                                       // update the UI
                                                       setState(() {
                                                         taskCategory.removeAt(index);
                                                       });
                                                       ScaffoldMessenger.of(context).showSnackBar(
                                                         SnackBar(
-                                                          content: Text('Signed up task removed successfully.'),
+                                                          content: Text('Successfully compeleted task.'),
                                                         ),
                                                       );
                                                     } catch (error) {
                                                       // print('There was an error deleting the signed up task: $error');
                                                       ScaffoldMessenger.of(context).showSnackBar(
                                                         SnackBar(
-                                                          content: Text('An error occurred while removing the task.'),
+                                                          content: Text('An error occurred while completing task.'),
                                                         ),
                                                       );
                                                     }
@@ -429,7 +425,7 @@ class _InProgressTaskState extends State<InProgressTask> {
       final categoryName = taskData['task category'];
       // go to task category doc in Task Categories collection
       final taskCategory2 = _firestore.collection('Task Categories').doc(categoryName);
-      // go to the Signed Up Taskers collection (from Task Categories Collection) which stores info of taskers sign up
+      // go to the Hired Taskers collection (from Task Categories Collection) which stores info of taskers sign up
       final tasker = taskCategory2.collection('Hired Taskers').doc(_auth.currentUser!.email);
       final inProgressTaskDoc = await tasker.collection('In Progress Tasks').where('customer email', isNotEqualTo: _auth.currentUser!.email).get();
 

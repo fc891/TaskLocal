@@ -18,10 +18,10 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
 
     // update the UI, so it reflects the changes to the task info made by the user
     Future<void> _updateTaskInformation(bool updatedData) async {
-    if (updatedData) {
-      setState(() {});
+      if (updatedData) {
+        setState(() {});
+      }
     }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +85,82 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text('Location: ${taskData['location']}', style: TextStyle(fontSize: 16,)),
-                                              // Text('${taskData['location']}', style: TextStyle(fontSize: 16)),
-                                              Text('Asking Rate: ${taskData['askingRate']}', style: TextStyle(fontSize: 16)),
-                                              Text('Experience: ${taskData['experience']}', style: TextStyle(fontSize: 16)),
-                                              Text('Skills: ${taskData['skills'].join(', ')}', style: TextStyle(fontSize: 16)),
+                                              Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: 'Location: ',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: '${taskData['location']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: 'Asking Rate: ',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: '\$${taskData['askingRate']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: 'Experience: ',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: '${taskData['experience']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: 'Skills: ',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: '${taskData['skills'].join(', ')}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
