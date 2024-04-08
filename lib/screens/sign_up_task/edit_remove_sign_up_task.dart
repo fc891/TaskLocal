@@ -18,10 +18,10 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
 
     // update the UI, so it reflects the changes to the task info made by the user
     Future<void> _updateTaskInformation(bool updatedData) async {
-    if (updatedData) {
-      setState(() {});
+      if (updatedData) {
+        setState(() {});
+      }
     }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,19 +54,19 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                         final taskCategory = entry.value;
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: taskCategory.length,
-                                itemBuilder: (context, index) {
-                                  final taskData = taskCategory[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    // display the information of the signed up task in a ListTile
-                                    child: Container(
-                                      // color: Colors.blue,
-                                      child: ListTile(
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: taskCategory.length,
+                              itemBuilder: (context, index) {
+                                final taskData = taskCategory[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  // display the information of the signed up task in a ListTile
+                                  child: Column(
+                                    children: [
+                                      ListTile(
                                         // default padding
                                         minVerticalPadding: 0,
                                         contentPadding: EdgeInsets.all(0),
@@ -85,109 +85,181 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text('Location: ${taskData['location']}', style: TextStyle(fontSize: 16,)),
-                                              // Text('${taskData['location']}', style: TextStyle(fontSize: 16)),
-                                              Text('Asking Rate: ${taskData['askingRate']}', style: TextStyle(fontSize: 16)),
-                                              Text('Experience: ${taskData['experience']}', style: TextStyle(fontSize: 16)),
-                                              Text('Skills: ${taskData['skills'].join(', ')}', style: TextStyle(fontSize: 16)),
+                                              Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: 'Location: ',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: '${taskData['location']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: 'Asking Rate: ',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: '\$${taskData['askingRate']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: 'Experience: ',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: '${taskData['experience']}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: 'Skills: ',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: '${taskData['skills'].join(', ')}',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
-                                        // buttons for the user to edit and remove the signed up task
-                                        trailing: Padding(
-                                          padding: const EdgeInsets.only(right: 8.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              // allow user to edit the task
-                                              IconButton(
-                                                icon: Icon(Icons.edit),
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => EditSignUpPage(taskData: taskData, categoryName: categoryName),
-                                                    ),
-                                                    // receive the result from the EditSignUpPage to see if any changes occurred
-                                                  ).then((updatedData) {
-                                                    // Handle the result when returning from EditSignUpPage
-                                                    _updateTaskInformation(updatedData);
-                                                  });
-                                                },
-                                              ),
-                                              // allow user to remove the task
-                                              IconButton(
-                                                icon: Icon(Icons.delete),
-                                                onPressed: () async {
-                                                  // give user a warning if they really want to delete the task category
-                                                  bool confirmed = await showDialog(
-                                                    context: context,
-                                                    builder: (context) => AlertDialog(
-                                                      title: Text('Confirm Deletion'),
-                                                      content: Text('Are you sure you want to remove your signed up task category?'),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () => Navigator.of(context).pop(true),
-                                                          child: Text('Delete'),
-                                                        ),
-                                                        TextButton(
-                                                          onPressed: () => Navigator.of(context).pop(false),
-                                                          child: Text('Cancel'),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                  // proceed with the removal process if true
-                                                  if (confirmed == true) {
-                                                    try {
-                                                      // removing from two collection, one is stored for the public and the other for the user 
-                                                      final signedUpIndividual = _firestore.collection('Taskers').doc(_auth.currentUser!.email)
-                                                                        .collection('Signed Up Tasks').doc(categoryName);
-                                                      final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                                                                .collection('Signed Up Taskers').doc(_auth.currentUser!.email);
-                                                      await signedUpIndividual.delete();
-                                                      await signedUpGeneral.delete();
-                                                      // update the UI
-                                                      setState(() {
-                                                        taskCategory.removeAt(index);
-                                                      });
-                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                        SnackBar(
-                                                          content: Text('Signed up task removed successfully.'),
-                                                        ),
-                                                      );
-                                                    } catch (error) {
-                                                      // print('There was an error deleting the signed up task: $error');
-                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                        SnackBar(
-                                                          content: Text('An error occurred while removing the task.'),
-                                                        ),
-                                                  );
-                                                }
-                                              }
-                                            },
-                                          ),
-                                        ],
                                       ),
-                                    ),
+                                      // buttons for the user to edit and remove the signed up task
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            // allow user to edit the task
+                                            IconButton(
+                                              icon: Icon(Icons.edit),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => EditSignUpPage(taskData: taskData, categoryName: categoryName),
+                                                  ),
+                                                  // receive the result from the EditSignUpPage to see if any changes occurred
+                                                ).then((updatedData) {
+                                                  // Handle the result when returning from EditSignUpPage
+                                                  _updateTaskInformation(updatedData);
+                                                });
+                                              },
+                                            ),
+                                            // allow user to remove the task
+                                            IconButton(
+                                              icon: Icon(Icons.delete),
+                                              onPressed: () async {
+                                                // give user a warning if they really want to delete the task category
+                                                bool confirmed = await showDialog(
+                                                  context: context,
+                                                  builder: (context) => AlertDialog(
+                                                    title: Text('Confirm Deletion'),
+                                                    content: Text('Are you sure you want to remove your signed up task category?'),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () => Navigator.of(context).pop(true),
+                                                        child: Text('Delete'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () => Navigator.of(context).pop(false),
+                                                        child: Text('Cancel'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                                // proceed with the removal process if true
+                                                if (confirmed == true) {
+                                                  try {
+                                                    // removing from two collection, one is stored for the public and the other for the user 
+                                                    final signedUpIndividual = _firestore.collection('Taskers').doc(_auth.currentUser!.email)
+                                                                      .collection('Signed Up Tasks').doc(categoryName);
+                                                    final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                                                              .collection('Signed Up Taskers').doc(_auth.currentUser!.email);
+                                                    await signedUpIndividual.delete();
+                                                    await signedUpGeneral.delete();
+                                                    // update the UI
+                                                    setState(() {
+                                                      taskCategory.removeAt(index);
+                                                    });
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text('Signed up task removed successfully.'),
+                                                      ),
+                                                    );
+                                                  } catch (error) {
+                                                    // print('There was an error deleting the signed up task: $error');
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text('An error occurred while removing the task.'),
+                                                      ),
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  );
-                }
-              },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        );
-      },
-    ),
-  );
-}
+          );
+        },
+      ),
+    );
+  }
 
   // retrieves the task categories that the user signed up for
   Future<Map<String, List<DocumentSnapshot>>> _getSignedUpTasks() async {

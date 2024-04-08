@@ -14,8 +14,6 @@ class InProgressTask extends StatefulWidget {
 class _InProgressTaskState extends State<InProgressTask> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  int? YOUR_SPECIFIC_INDEX;
-  bool showStartButton = true;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +57,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                     padding: const EdgeInsets.only(top: 8.0),
                                     // display the information of the signed up task in a ListTile
                                     child: Column(
-                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         ListTile(
                                           // default padding
@@ -76,272 +74,326 @@ class _InProgressTaskState extends State<InProgressTask> {
                                             ),
                                           ),
                                           subtitle: Padding(
-                                            padding: const EdgeInsets.only(left: 20.0),
+                                            padding: const EdgeInsets.only(left: 20.0, right: 15),
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text('Customer Name: ${taskData['customer first name']} ${taskData['customer last name']}', style: TextStyle(fontSize: 16,)),
-                                                Text('Description: \n${taskData['description']}', style: TextStyle(fontSize: 16,)),
-                                                Text('Location: ${taskData['location']}', style: TextStyle(fontSize: 16,)),
-                                                Text('Pay Rate: \$${taskData['pay rate']}', style: TextStyle(fontSize: 16,)),
-                                                Text('Start Date: ${taskData['start date']}', style: TextStyle(fontSize: 16,)),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Customer Name: ',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: '${taskData['customer first name']} ${taskData['customer last name']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Description: ',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: '${taskData['description']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Location: ',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: '${taskData['location']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Pay Rate: ',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: '\$${taskData['pay rate']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Start Date: ',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: '${taskData['start date']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
                                         ),
                                         
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            if (!taskData['task accepted'])
-                                              Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                IconButton(
-                                                  icon: Icon(Icons.check_circle,  color: Colors.green,),
-                                                  // padding: EdgeInsets.zero,
-                                                  onPressed: () async {
-                                                    // give user a warning if they really want to confirm the task
-                                                    bool confirmed = await showDialog(
-                                                      context: context,
-                                                      builder: (context) => AlertDialog(
-                                                        title: Text('Confirm Accept'),
-                                                        content: Text('Are you sure you want to accept this offer?'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () => Navigator.of(context).pop(true),
-                                                            child: Text('Accept'),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () => Navigator.of(context).pop(false),
-                                                            child: Text('Cancel'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                    // proceed with the accepting process if true
-                                                    if (confirmed == true) {
-                                                      try {
-                                                        // update the UI
-                                                        // setState(() {
-                                                        //   YOUR_SPECIFIC_INDEX = index;
-                                                        // });
-                                                        // Update database to mark task as accepted
-                                                        // await _firestore.collection('Task Categories').doc(categoryName)
-                                                        //   .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                        //   .collection('In Progress Tasks').doc(taskData['customer email'])
-                                                        //   .update({'task accepted': true});
-
-                                                        setState(() {
-                                                          _firestore.collection('Task Categories').doc(categoryName)
-                                                          .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                          .collection('In Progress Tasks').doc(taskData['customer email'])
-                                                          .update({'task accepted': true});
-                                                        });
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text('Accepting request successful.'),
-                                                          ),
-                                                        );
-                                                      } catch (error) {
-                                                        // print('There was an error deleting the signed up task: $error');
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text('An error occurred while accepting the offer.'),
-                                                          ),
-                                                        );
+                                        Center(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (!taskData['task accepted'])
+                                                Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  IconButton(
+                                                    icon: Icon(Icons.check_circle,  color: Colors.green,),
+                                                    // padding: EdgeInsets.zero,
+                                                    onPressed: () async {
+                                                      // give user a warning if they really want to confirm the task
+                                                      bool confirmed = await showDialog(
+                                                        context: context,
+                                                        builder: (context) => AlertDialog(
+                                                          title: Text('Confirm Accept'),
+                                                          content: Text('Are you sure you want to accept this task request?'),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(true),
+                                                              child: Text('Accept'),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(false),
+                                                              child: Text('Cancel'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                      // proceed with the accepting process if true
+                                                      if (confirmed == true) {
+                                                        try {
+                                                          // Update database to mark task as accepted
+                                                          setState(() {
+                                                            _firestore.collection('Task Categories').doc(categoryName)
+                                                            .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                            .collection('In Progress Tasks').doc(taskData['customer email'])
+                                                            .update({'task accepted': true});
+                                                          });
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('Successfully accepted task request.'),
+                                                            ),
+                                                          );
+                                                        } catch (error) {
+                                                          // print('There was an error deleting the signed up task: $error');
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('An error occurred while accepting the task request.'),
+                                                            ),
+                                                          );
+                                                        }
                                                       }
-                                                    }
-                                                  },
-                                                ),
-                                                // allow user to decline the task
-                                                IconButton(
-                                                  icon: Icon(Icons.cancel, color: Colors.red,),
-                                                  padding: EdgeInsets.zero,
-                                                  onPressed: () async {
-                                                    // give user a warning if they want to declne the task
-                                                    bool confirmed = await showDialog(
-                                                      context: context,
-                                                      builder: (context) => AlertDialog(
-                                                        title: Text('Confirm Decline'),
-                                                        content: Text('Are you sure you want to decline this offer?'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () => Navigator.of(context).pop(true),
-                                                            child: Text('Decline'),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () => Navigator.of(context).pop(false),
-                                                            child: Text('Cancel'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                    // proceed with the decline process if true
-                                                    if (confirmed == true) {
-                                                      try {
-                                                        // removing from the collection
-                                                        final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                                                                  .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                                                  .collection('In Progress Tasks').doc(taskData['customer email']);
-                                                        await signedUpGeneral.delete();
-                                                        // update the UI
-                                                        setState(() {
-                                                          taskCategory.removeAt(index);
-                                                        });
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text('Declining offer successful.'),
-                                                          ),
-                                                        );
-                                                      } catch (error) {
-                                                        // print('There was an error deleting the signed up task: $error');
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text('An error occurred while declining the offer.'),
-                                                          ),
-                                                        );
+                                                    },
+                                                  ),
+                                                  // allow user to decline the task
+                                                  IconButton(
+                                                    icon: Icon(Icons.cancel, color: Colors.red,),
+                                                    padding: EdgeInsets.zero,
+                                                    onPressed: () async {
+                                                      // give user a warning if they want to declne the task
+                                                      bool confirmed = await showDialog(
+                                                        context: context,
+                                                        builder: (context) => AlertDialog(
+                                                          title: Text('Confirm Decline'),
+                                                          content: Text('Are you sure you want to decline this task request?'),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(true),
+                                                              child: Text('Decline'),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(false),
+                                                              child: Text('Cancel'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                      // proceed with the decline process if true
+                                                      if (confirmed == true) {
+                                                        try {
+                                                          // removing from the collection
+                                                          final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                                                                    .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                                                    .collection('In Progress Tasks').doc(taskData['customer email']);
+                                                          await signedUpGeneral.delete();
+                                                          // update the UI
+                                                          setState(() {
+                                                            taskCategory.removeAt(index);
+                                                          });
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('Successfully decline task request.'),
+                                                            ),
+                                                          );
+                                                        } catch (error) {
+                                                          // print('There was an error deleting the signed up task: $error');
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('An error occurred while declining the task request.'),
+                                                            ),
+                                                          );
+                                                        }
                                                       }
-                                                    }
-                                                  },
-                                                ),
-                                              ],
-                                            ) else if (taskData['task accepted'] && !taskData['task started']) ElevatedButton(
-                                              onPressed: () {
-                                                // setState(() {
-                                                //   showStartButton = false;
-                                                // });
-                                                setState(() {
+                                                    },
+                                                  ),
+                                                ],
+                                              ) else if (taskData['task accepted'] && !taskData['task started']) ElevatedButton(
+                                                onPressed: () async {
+                                                  bool confirmed = await showDialog(
+                                                    context: context,
+                                                    builder: (context) => AlertDialog(
+                                                      title: Text('Confirm Start'),
+                                                      content: Text('Are you sure you want to start the task?'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.of(context).pop(true),
+                                                          child: Text('Confirm'),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () => Navigator.of(context).pop(false),
+                                                          child: Text('Cancel'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                  if (confirmed == true) {
+                                                    try {
+                                                      // update the UI
+                                                      setState(() {
                                                           _firestore.collection('Task Categories').doc(categoryName)
                                                           .collection('Hired Taskers').doc(_auth.currentUser!.email)
                                                           .collection('In Progress Tasks').doc(taskData['customer email'])
                                                           .update({'task started': true});
-                                                        });
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green[800],
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
-                                                child: Text("Start", style: TextStyle(color: Colors.white, fontSize: 14)),
-                                              ),
-                                            ) else ElevatedButton(
-                                              onPressed: () async {
-                                                // give user a warning if they really want to delete the task category
-                                                bool confirmed = await showDialog(
-                                                  context: context,
-                                                  builder: (context) => AlertDialog(
-                                                    title: Text('Confirm Completion'),
-                                                    content: Text('Are you sure you are completed with the task?'),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () => Navigator.of(context).pop(true),
-                                                        child: Text('Confirm'),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () => Navigator.of(context).pop(false),
-                                                        child: Text('Cancel'),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                                // proceed with the removal process if true
-                                                if (confirmed == true) {
-                                                  try {
-                                                        // removing from the collection
-                                                        final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                                                                  .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                                                  .collection('In Progress Tasks').doc(taskData['customer email']);
-                                                        await signedUpGeneral.delete();
-                                                        showStartButton = true;
-                                                      YOUR_SPECIFIC_INDEX = -1;
-                                                    // update the UI
-                                                    setState(() {
-                                                      taskCategory.removeAt(index);
-                                                    });
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text('Signed up task removed successfully.'),
-                                                      ),
-                                                    );
-                                                  } catch (error) {
-                                                    // print('There was an error deleting the signed up task: $error');
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text('An error occurred while removing the task.'),
-                                                      ),
-                                                    );
+                                                        }
+                                                      );
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text('Successfully started task.'),
+                                                        ),
+                                                      );
+                                                    } catch (error) {
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text('An error occurred while starting the task.'),
+                                                        ),
+                                                      );
+                                                    }
                                                   }
-                                                }
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green[800],
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green[800],
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+                                                  child: Text("Start", style: TextStyle(color: Colors.white, fontSize: 14)),
+                                                ),
+                                              ) else ElevatedButton(
+                                                onPressed: () async {
+                                                  // give user a warning if they really want to delete the task category
+                                                  bool confirmed = await showDialog(
+                                                    context: context,
+                                                    builder: (context) => AlertDialog(
+                                                      title: Text('Confirm Completion'),
+                                                      content: Text('Are you sure you are completed with the task?'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.of(context).pop(true),
+                                                          child: Text('Confirm'),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () => Navigator.of(context).pop(false),
+                                                          child: Text('Cancel'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                  // proceed with the removal process if true
+                                                  if (confirmed == true) {
+                                                    try {
+                                                      // removing from the collection
+                                                      final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                                                                .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                                                .collection('In Progress Tasks').doc(taskData['customer email']);
+                                                      await signedUpGeneral.delete();
+                                                      // update the UI
+                                                      setState(() {
+                                                        taskCategory.removeAt(index);
+                                                      });
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text('Successfully compeleted task.'),
+                                                        ),
+                                                      );
+                                                    } catch (error) {
+                                                      // print('There was an error deleting the signed up task: $error');
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text('An error occurred while completing task.'),
+                                                        ),
+                                                      );
+                                                    }
+                                                  }
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green[800],
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+                                                  child: Text("Complete", style: TextStyle(color: Colors.white, fontSize: 14)),
+                                                ),
                                               ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
-                                                child: Text("Complete", style: TextStyle(color: Colors.white, fontSize: 14)),
-                                              ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                        
-                                        //  ElevatedButton(
-                                        //       onPressed: () async {
-                                        //         // give user a warning if they really want to delete the task category
-                                        //         bool confirmed = await showDialog(
-                                        //           context: context,
-                                        //           builder: (context) => AlertDialog(
-                                        //             title: Text('Confirm Completion'),
-                                        //             content: Text('Are you sure you are completed with the task?'),
-                                        //             actions: [
-                                        //               TextButton(
-                                        //                 onPressed: () => Navigator.of(context).pop(true),
-                                        //                 child: Text('Confirm'),
-                                        //               ),
-                                        //               TextButton(
-                                        //                 onPressed: () => Navigator.of(context).pop(false),
-                                        //                 child: Text('Cancel'),
-                                        //               ),
-                                        //             ],
-                                        //           ),
-                                        //         );
-                                        //         // proceed with the removal process if true
-                                        //         if (confirmed == true) {
-                                        //           try {
-                                        //                 // removing from the collection
-                                        //                 final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                        //                                           .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                        //                                           .collection('In Progress Tasks').doc(taskData['customer email']);
-                                        //                 await signedUpGeneral.delete();
-                                        //                 showStartButton = true;
-                                        //               YOUR_SPECIFIC_INDEX = -1;
-                                        //             // update the UI
-                                        //             setState(() {
-                                        //               taskCategory.removeAt(index);
-                                        //             });
-                                        //             ScaffoldMessenger.of(context).showSnackBar(
-                                        //               SnackBar(
-                                        //                 content: Text('Signed up task removed successfully.'),
-                                        //               ),
-                                        //             );
-                                        //           } catch (error) {
-                                        //             // print('There was an error deleting the signed up task: $error');
-                                        //             ScaffoldMessenger.of(context).showSnackBar(
-                                        //               SnackBar(
-                                        //                 content: Text('An error occurred while removing the task.'),
-                                        //               ),
-                                        //             );
-                                        //           }
-                                        //         }
-                                        //       },
-                                        //       style: ElevatedButton.styleFrom(
-                                        //         backgroundColor: Colors.green[800],
-                                        //       ),
-                                        //       child: Padding(
-                                        //         padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
-                                        //         child: Text("Complete", style: TextStyle(color: Colors.white, fontSize: 14)),
-                                        //       ),
-                                        //     )
                                       ],
                                     ),
                                   );
@@ -373,7 +425,7 @@ class _InProgressTaskState extends State<InProgressTask> {
       final categoryName = taskData['task category'];
       // go to task category doc in Task Categories collection
       final taskCategory2 = _firestore.collection('Task Categories').doc(categoryName);
-      // go to the Signed Up Taskers collection (from Task Categories Collection) which stores info of taskers sign up
+      // go to the Hired Taskers collection (from Task Categories Collection) which stores info of taskers sign up
       final tasker = taskCategory2.collection('Hired Taskers').doc(_auth.currentUser!.email);
       final inProgressTaskDoc = await tasker.collection('In Progress Tasks').where('customer email', isNotEqualTo: _auth.currentUser!.email).get();
 
