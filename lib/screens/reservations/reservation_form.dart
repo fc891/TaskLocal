@@ -20,31 +20,81 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showModalBottomSheet(
+    final pickedTime = await showModalBottomSheet<TimeOfDay>(
       context: context,
       builder: (BuildContext context) {
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
-          child: CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.hm,
-            minuteInterval: 30, // Set minute interval to 30 minutes
-            initialTimerDuration: Duration(
-              hours: _selectedTime.hour,
-              minutes: _selectedTime.minute,
-            ),
-            onTimerDurationChanged: (Duration duration) {
-              setState(() {
-                _selectedTime = TimeOfDay(
-                  hour: duration.inHours,
-                  minute: duration.inMinutes % 60,
-                );
-              });
-            },
+          child: Row(
+            children: [
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      _selectedTime = TimeOfDay(
+                        hour: index % 12 == 0 ? 12 : index % 12,
+                        minute: _selectedTime.minute,
+                      );
+                    });
+                  },
+                  children: List.generate(12, (index) {
+                    final hour = index == 0 ? 12 : index;
+                    return Center(
+                      child: Text(
+                        '${hour.toString().padLeft(2, '0')}',
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      _selectedTime = TimeOfDay(
+                        hour: _selectedTime.hour,
+                        minute: index * 30,
+                      );
+                    });
+                  },
+                  children: List.generate(2, (index) {
+                    final minute = index == 0 ? '00' : '30';
+                    return Center(
+                      child: Text(
+                        '$minute',
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      // toggle between AM and PM based on the selected index
+                      if (index == 0 && _selectedTime.period == DayPeriod.pm) {
+                        _selectedTime = TimeOfDay(hour: _selectedTime.hour - 12, minute: _selectedTime.minute);
+                      } else if (index == 1 && _selectedTime.period == DayPeriod.am) {
+                        _selectedTime = TimeOfDay(hour: _selectedTime.hour + 12, minute: _selectedTime.minute);
+                      }
+                    });
+                  },
+                  children: [
+                    Center(child: Text('AM')),
+                    Center(child: Text('PM')),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },
     );
-    if (pickedTime != null && pickedTime != _selectedTime) {
+
+    if (pickedTime != null) {
       setState(() {
         _selectedTime = pickedTime;
       });
