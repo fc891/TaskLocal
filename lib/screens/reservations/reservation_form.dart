@@ -3,6 +3,7 @@
 // TODO: Route to/from tasker_details.dart, confirmation.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tasklocal/screens/reservations/confirmation.dart';
 
 class ReservationFormScreen extends StatefulWidget {
@@ -17,6 +18,38 @@ class ReservationFormScreen extends StatefulWidget {
 class _ReservationFormScreenState extends State<ReservationFormScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height / 3,
+          child: CupertinoTimerPicker(
+            mode: CupertinoTimerPickerMode.hm,
+            minuteInterval: 30, // Set minute interval to 30 minutes
+            initialTimerDuration: Duration(
+              hours: _selectedTime.hour,
+              minutes: _selectedTime.minute,
+            ),
+            onTimerDurationChanged: (Duration duration) {
+              setState(() {
+                _selectedTime = TimeOfDay(
+                  hour: duration.inHours,
+                  minute: duration.inMinutes % 60,
+                );
+              });
+            },
+          ),
+        );
+      },
+    );
+    if (pickedTime != null && pickedTime != _selectedTime) {
+      setState(() {
+        _selectedTime = pickedTime;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +96,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final TimeOfDay? pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: _selectedTime,
-                      );
-                      if (pickedTime != null && pickedTime != _selectedTime) {
-                        setState(() {
-                          _selectedTime = pickedTime;
-                        });
-                      }
+                      _selectTime(context);
                     },
                     child: Text('Select Time'),
                   ),
