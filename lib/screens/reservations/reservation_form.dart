@@ -3,6 +3,7 @@
 // TODO: Route to/from tasker_details.dart, confirmation.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tasklocal/screens/reservations/confirmation.dart';
 
 class ReservationFormScreen extends StatefulWidget {
@@ -17,6 +18,88 @@ class ReservationFormScreen extends StatefulWidget {
 class _ReservationFormScreenState extends State<ReservationFormScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+
+  Future<void> _selectTime(BuildContext context) async {
+    final pickedTime = await showModalBottomSheet<TimeOfDay>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height / 3,
+          child: Row(
+            children: [
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      _selectedTime = TimeOfDay(
+                        hour: index % 12 == 0 ? 12 : index % 12,
+                        minute: _selectedTime.minute,
+                      );
+                    });
+                  },
+                  children: List.generate(12, (index) {
+                    final hour = index == 0 ? 12 : index;
+                    return Center(
+                      child: Text(
+                        '${hour.toString().padLeft(2, '0')}',
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      _selectedTime = TimeOfDay(
+                        hour: _selectedTime.hour,
+                        minute: index * 30,
+                      );
+                    });
+                  },
+                  children: List.generate(2, (index) {
+                    final minute = index == 0 ? '00' : '30';
+                    return Center(
+                      child: Text(
+                        '$minute',
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      // toggle between AM and PM based on the selected index
+                      if (index == 0 && _selectedTime.period == DayPeriod.pm) {
+                        _selectedTime = TimeOfDay(hour: _selectedTime.hour - 12, minute: _selectedTime.minute);
+                      } else if (index == 1 && _selectedTime.period == DayPeriod.am) {
+                        _selectedTime = TimeOfDay(hour: _selectedTime.hour + 12, minute: _selectedTime.minute);
+                      }
+                    });
+                  },
+                  children: [
+                    Center(child: Text('AM')),
+                    Center(child: Text('PM')),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        _selectedTime = pickedTime;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +146,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final TimeOfDay? pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: _selectedTime,
-                      );
-                      if (pickedTime != null && pickedTime != _selectedTime) {
-                        setState(() {
-                          _selectedTime = pickedTime;
-                        });
-                      }
+                      _selectTime(context);
                     },
                     child: Text('Select Time'),
                   ),
