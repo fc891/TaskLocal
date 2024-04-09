@@ -172,7 +172,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RateandReviewPage(taskerEmail: 'joe@gmail.com',)),
+                  MaterialPageRoute(builder: (context) => RateandReviewPage(taskerEmail: '',)),
                 );
               },
             ),
