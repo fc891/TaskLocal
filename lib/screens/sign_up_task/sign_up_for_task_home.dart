@@ -149,6 +149,9 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
 
   @override
   Widget build(BuildContext context) {
+    Color unselectedBorderColor = Theme.of(context).colorScheme.primary;
+    Color selectedBorderColor = Theme.of(context).colorScheme.secondary;
+
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
@@ -185,15 +188,16 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                   hintText: 'Address',
+                  hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   filled: true,
-                  fillColor: Colors.grey[200],
+                  fillColor: Theme.of(context).colorScheme.tertiary,
                   // border is black by default and when click the text field, border is white
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: selectedBorderColor),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black), 
+                    borderSide: BorderSide(color: unselectedBorderColor), 
                     borderRadius: BorderRadius.circular(10)
                   )
                 ),
@@ -229,15 +233,16 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                         hintText: 'Enter the amount',
+                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         filled: true,
-                        fillColor: Colors.grey[200],
+                        fillColor: Theme.of(context).colorScheme.tertiary,
                         // border is black by default and when click the text field, border is white
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
+                          borderSide: BorderSide(color: selectedBorderColor),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black), 
+                          borderSide: BorderSide(color: unselectedBorderColor), 
                           borderRadius: BorderRadius.circular(10)
                         )
                       ),
@@ -276,15 +281,16 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                         hintText: 'Enter the amount',
+                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         filled: true,
-                        fillColor: Colors.grey[200],
+                        fillColor: Theme.of(context).colorScheme.tertiary,
                         // border is black by default and when click the text field, border is white
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
+                          borderSide: BorderSide(color: selectedBorderColor),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black), 
+                          borderSide: BorderSide(color: unselectedBorderColor), 
                           borderRadius: BorderRadius.circular(10)
                         )
                       ),
@@ -296,21 +302,21 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                   // padding: EdgeInsets.only(right: 20.0),
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200], 
+                    color: Theme.of(context).colorScheme.tertiary, 
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   ),
                   child: DropdownButtonHideUnderline(
                     // user can select the type of length that corresponds to their amount of experience
                     child: DropdownButton<String>(
                       value: typeOfLength,
-                      icon: Icon(Icons.arrow_drop_down, color: Colors.black,),
+                      icon: Icon(Icons.arrow_drop_down, color: Colors.white,),
                       iconSize: 30,
                       elevation: 16,
                       style: TextStyle(color: Colors.black),
-                      dropdownColor: Colors.white,
+                      dropdownColor: Theme.of(context).colorScheme.tertiary,
                       onChanged: (String? newValue) {
                         setState(() {
                           typeOfLength = newValue!;
@@ -324,7 +330,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                             value: value,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(value, style: TextStyle(color: Colors.black)),
+                              child: Text(value, style: TextStyle(color: Colors.white)),
                             ),
                           );
                         }).toList(),
@@ -389,19 +395,19 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                                     padding: const EdgeInsets.symmetric(vertical: 5.0),
                                     // user can type in the skills in the form
                                     child: TextFormField(
-                                      style: TextStyle(color: Colors.black),
+                                      // style: TextStyle(color: Colors.black),
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                                         hintText: "Enter skill ${index + 1}",
-                                        hintStyle: TextStyle(color: Colors.grey),
+                                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                         filled: true,
-                                        fillColor: Colors.grey[200],
+                                        fillColor: Theme.of(context).colorScheme.tertiary,
                                         focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.white),
+                                          borderSide: BorderSide(color: selectedBorderColor),
                                           borderRadius: BorderRadius.circular(10),
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.black),
+                                          borderSide: BorderSide(color: unselectedBorderColor),
                                           borderRadius: BorderRadius.circular(10),
                                         ),
                                       ),
