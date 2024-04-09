@@ -56,7 +56,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
               onPressed: () {
                 _showFilterOptions();
               },
-              icon: Icon(Icons.filter_list),
+              icon: Icon(Icons.filter_list, color: Colors.black), // Change icon color to black
             ),
           ],
         ),
@@ -144,7 +144,10 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(
+                        value,
+                        style: TextStyle(color: Colors.black), // Change text color to black
+                      ),
                     );
                   }).toList(),
                 ),
@@ -155,7 +158,10 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                   _applyFilters();
                   Navigator.pop(context);
                 },
-                child: Text('Apply Filters'),
+                child: Text(
+                  'Apply Filters',
+                  style: TextStyle(color: Colors.black), // Change text color to black
+                ),
               ),
             ],
           ),
