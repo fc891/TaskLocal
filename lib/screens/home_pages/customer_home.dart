@@ -218,7 +218,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
   Widget _buildCategoryBox(String label, String imagePath) {
     return GestureDetector(
       onTap: () {
-        _navigateToAddressInputPage(context);
+        _navigateToAddressInputPage(context, label);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,10 +253,11 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     );
   }
 
-  void _navigateToAddressInputPage(BuildContext context) {
+  // Add a method to navigate to the address input page with the selected job category
+  void _navigateToAddressInputPage(BuildContext context, String jobCategory) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddressInputPage()),
+      MaterialPageRoute(builder: (context) => AddressInputPage(jobCategory: jobCategory)),
     );
   }
 }
