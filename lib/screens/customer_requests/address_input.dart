@@ -228,7 +228,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
                       ElevatedButton.icon(
                         onPressed: _loadRecentAddresses,
                         icon: Icon(Icons.history),
-                        label: Text('Recent Addresses'),
+                        label: Text('Most Recent'),
                       ),
                     ],
                   ),
