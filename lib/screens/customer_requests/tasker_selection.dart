@@ -4,13 +4,15 @@
 
 // TODO: After, display the tasker's information (Task Categories -> docs -> Signed Up Tasks -> tasker emails -> fields)
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 
 class TaskerSelectionPage extends StatefulWidget {
-  const TaskerSelectionPage({Key? key}) : super(key: key);
+  final String jobCategory;
+
+  const TaskerSelectionPage({Key? key, required this.jobCategory}) : super(key: key);
 
   @override
   _TaskerSelectionPageState createState() => _TaskerSelectionPageState();
@@ -18,7 +20,7 @@ class TaskerSelectionPage extends StatefulWidget {
 
 class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
   TextEditingController _searchController = TextEditingController();
-  String _selectedFilter = 'Years of Experience (Most to Least)'; // Default filter option
+  String _selectedFilter = 'Years of Experience (Most to Least)';
   List<String> _filterOptions = [
     'Years of Experience (Most to Least)',
     'Location (Closest to Farthest)',
@@ -62,7 +64,11 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
       body: Container(
         color: Colors.white,
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Taskers').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('Task Categories')
+              .doc(widget.jobCategory)
+              .collection('Signed Up Taskers')
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -76,17 +82,15 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
               );
             }
 
-            // Convert snapshot data to a list of taskers
             List<DocumentSnapshot> taskers = snapshot.data!.docs;
 
             return ListView.builder(
-  itemCount: taskers.length,
-  itemBuilder: (BuildContext context, int index) {
-    // Access tasker data
-    var taskerData = taskers[index].data() as Map<String, dynamic>;
-    String username = taskerData['username'];
-    String firstName = taskerData['first name'];
-    String lastName = taskerData['last name'];
+              itemCount: taskers.length,
+              itemBuilder: (BuildContext context, int index) {
+                var taskerData = taskers[index].data() as Map<String, dynamic>;
+                String username = taskerData['username'] ?? 'No username';
+                String firstName = taskerData['first name'] ?? '';
+                String lastName = taskerData['last name'] ?? '';
 
                 return ListTile(
                   title: Text(username),
@@ -94,12 +98,10 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                   trailing: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
-                      // Add tasker to "My Taskers"
                       _addTaskerToMyTaskers(taskerData);
                     },
                   ),
                   onTap: () {
-                    // Navigate to tasker profile page
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => TaskerProfilePage()),
@@ -163,61 +165,50 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
   }
 
   void _addTaskerToMyTaskers(Map<String, dynamic> taskerData) {
-    String email = taskerData['email']; // Assuming 'email' is a field in your tasker data
+    String? email = taskerData['email'];
+    if (email != null) {
+      String currentUserEmail = FirebaseAuth.instance.currentUser!.email!;
 
-    // Get the currently logged-in user's email
-    String currentUserEmail = FirebaseAuth.instance.currentUser!.email!;
-
-    // Check if the document for the logged-in customer exists in the "Customers" collection
-    FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).get().then((docSnapshot) {
-      // If the document exists, proceed to check if the "Selected Taskers" collection exists within it
-      if (docSnapshot.exists) {
-        FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').doc().get().then((collectionSnapshot) {
-          // If the collection doesn't exist, create it
-          if (!collectionSnapshot.exists) {
-            FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').doc();
-          }
-
-          // Add tasker data to Firestore under "Selected Taskers" collection within the customer's document
-          FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').doc(email).set({
-            'name': taskerData['username'],
-            'description': '${taskerData['first name']} ${taskerData['last name']}',
-            'email': email, // Include email in Firestore document
-            // Add other necessary tasker data fields
-          }).then((value) {
-            // Show success message or perform any other action upon successful addition
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Tasker added to My Taskers'),
-              ),
-            );
-          }).catchError((error) {
-            // Show error message or perform any other action upon error
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Failed to add tasker to My Taskers'),
-              ),
-            );
-          });
-        });
-      }
-    });
+      FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').doc(email).set({
+        'name': taskerData['username'] ?? 'No username',
+        'description': '${taskerData['first name'] ?? ''} ${taskerData['last name'] ?? ''}',
+        'email': email,
+      }).then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Tasker added to My Taskers'),
+          ),
+        );
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add tasker to My Taskers'),
+          ),
+        );
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Tasker email is missing'),
+        ),
+      );
+    }
   }
 
   void _applyFilters() {
-  // Implement filter/sort functionality based on selected filter (_selectedFilter)
+    // Implement filter/sort functionality based on selected filter (_selectedFilter)
     switch (_selectedFilter) {
-      case 'Years of Experience':
-        // taskers.sort((a, b) => a.experience.compareTo(b.experience));
+      case 'Years of Experience (Most to Least)':
+        // Implement filtering logic
         break;
-      case 'Location Proximity':
-        // taskers = taskers.where((tasker) => tasker.distance <= MAX_DISTANCE).toList();
+      case 'Location (Closest to Farthest)':
+        // Implement filtering logic
         break;
-      case 'Price Range':
-        // taskers = taskers.where((tasker) => tasker.price >= MIN_PRICE && tasker.price <= MAX_PRICE).toList();
+      case 'Price (Highest to Lowest)':
+        // Implement filtering logic
         break;
-      case 'Rating/Reviews':
-        // taskers.sort((a, b) => b.rating.compareTo(a.rating));
+      case 'Rating (Highest to Lowest)':
+        // Implement filtering logic
         break;
       default:
         break;

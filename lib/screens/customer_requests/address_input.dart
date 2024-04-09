@@ -4,23 +4,24 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tasklocal/Screens/customer_requests/tasker_selection.dart';
+import 'package:tasklocal/screens/customer_requests/tasker_selection.dart';
 import 'package:tasklocal/screens/customer_requests/address_book.dart';
 
 class AddressInputPage extends StatefulWidget {
-  const AddressInputPage({Key? key}) : super(key: key);
+  final String jobCategory;
+
+  const AddressInputPage({Key? key, required this.jobCategory}) : super(key: key);
 
   @override
   _AddressInputPageState createState() => _AddressInputPageState();
 }
 
-// TODO: make it so that it grabs the user's last used address when choosing a task
 class _AddressInputPageState extends State<AddressInputPage> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _unitController = TextEditingController();
   bool _isGeolocationPermissionGranted = false;
 
-  void _navigateToTaskerSelectionPage() {
+  void _navigateToTaskerSelectionPage(String jobCategory) {
     if (_addressController.text.trim().isEmpty) {
       showDialog(
         context: context,
@@ -40,7 +41,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
         },
       );
     } else {
-      _saveAddressToFirestore();
+      _saveAddressToFirestore(jobCategory);
     }
   }
 
@@ -98,7 +99,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
     }
   }
 
-  void _saveAddressToFirestore() async {
+  void _saveAddressToFirestore(String jobCategory) async {
     showDialog(
       context: context,
       builder: (context) {
@@ -123,6 +124,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
         await customerAddressRef.set({
           'address': _addressController.text,
           'unit': _unitController.text,
+          'jobCategory': jobCategory, // Store the selected job category
         });
 
         // Close the loading dialog
@@ -131,7 +133,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
         // Navigate to tasker selection page
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TaskerSelectionPage()),
+          MaterialPageRoute(builder: (context) => TaskerSelectionPage(jobCategory: jobCategory)),
         );
       } else {
         throw 'User not logged in.';
@@ -228,7 +230,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
                       ElevatedButton.icon(
                         onPressed: _loadRecentAddresses,
                         icon: Icon(Icons.history),
-                        label: Text('Recent Addresses'),
+                        label: Text('Most Recent'),
                       ),
                     ],
                   ),
@@ -240,7 +242,9 @@ class _AddressInputPageState extends State<AddressInputPage> {
               alignment: Alignment.bottomCenter,
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: ElevatedButton(
-                onPressed: _navigateToTaskerSelectionPage,
+                onPressed: () {
+                  _navigateToTaskerSelectionPage(widget.jobCategory);
+                },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(

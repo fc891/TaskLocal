@@ -86,7 +86,7 @@ class _SearchPageState extends State<SearchPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddressInputPage()), // navigate to AddressInputPage
+                      MaterialPageRoute(builder: (context) => AddressInputPage(jobCategory: '',)), // navigate to AddressInputPage
                     );
                   },
                   child: Card(
