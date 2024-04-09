@@ -139,7 +139,10 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                         });
                       }
                     },
-                    child: Text('Select Date'),
+                    child: Text(
+                      'Select Date',
+                      style: TextStyle(color: Colors.black), // Change text color to black
+                    ),
                   ),
                 ),
                 SizedBox(width: 16),
@@ -148,28 +151,36 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                     onPressed: () async {
                       _selectTime(context);
                     },
-                    child: Text('Select Time'),
+                    child: Text(
+                      'Select Time',
+                      style: TextStyle(color: Colors.black), // Change text color to black
+                    ),
                   ),
                 ),
               ],
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Submit reservation form
-                // Implement submission logic here
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReservationConfirmationScreen(
-                      taskerData: widget.taskerData,
-                      selectedDate: _selectedDate,
-                      selectedTime: _selectedTime,
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Submit reservation form
+                  // Implement submission logic here
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReservationConfirmationScreen(
+                        taskerData: widget.taskerData,
+                        selectedDate: _selectedDate,
+                        selectedTime: _selectedTime,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: Text('Submit Reservation'),
+                  );
+                },
+                child: Text(
+                  'Submit Reservation',
+                  style: TextStyle(color: Colors.black), // Change text color to black
+                ),
+              ),
             ),
           ],
         ),

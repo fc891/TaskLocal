@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 // import 'package:tasklocal/screens/profiles/test_non_logged_in_profile/nonloggedin_taskerprofile.dart';
 
 class MsgListToAdd extends StatefulWidget {
-  const MsgListToAdd({super.key});
+  const MsgListToAdd({Key? key}) : super(key: key);
 
   @override
   State<MsgListToAdd> createState() => _MsgListToAddState();
@@ -21,7 +21,14 @@ class _MsgListToAddState extends State<MsgListToAdd> {
     return Scaffold(
       //backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text('Add Tasker to Message', style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold, fontSize: 20)),
+        title: Text(
+          'Add Tasker to Message',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.secondary,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
         centerTitle: true,
         //backgroundColor: Colors.green[800],
       ),
@@ -60,18 +67,38 @@ class _MsgListToAddState extends State<MsgListToAdd> {
                       //       context,
                       //       MaterialPageRoute(builder: (context) => NonLoggedInTaskerProfilePage(email: taskerData['email'])),
                       //     );
-                      //   },    
+                      //   },
                       //   child: CircleAvatar(
                       //     child: Icon(Icons.account_circle),
                       //   ),
                       // ),
                     ),
-                    Text(
-                      '${taskerData['first name']} ${taskerData['last name']} \n@${taskerData['username']}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: DefaultTextStyle(
+                        style: TextStyle(
+                          color: Colors.black, // Change text color to black
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${taskerData['first name']} ${taskerData['last name']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '@${taskerData['username']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    Spacer(),
-                     Container(
+                    Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.grey[300],
@@ -94,6 +121,7 @@ class _MsgListToAddState extends State<MsgListToAdd> {
       ),
     );
   }
+
   // adds tasker to customer's messaging home page
   // updates the tasker data in the customer's messaging home page
   Future<void> _addTaskerToCollection(Map<String, dynamic> taskerData) async {
@@ -106,14 +134,14 @@ class _MsgListToAddState extends State<MsgListToAdd> {
 
       // Add tasker's data to the 'Message Taskers' collection and tasker's data is updated as well
       await customerDocRef.collection('Message Taskers').doc(taskerData['email']).set(taskerData);
-      
+
       // Tasker's side
       // create 2 collections here in order to initialize the collections for the Taskers
       // size of collection is updated from tasker's "tasker's_msg_list_to_add.dart"
       await taskerDocRef.collection('Message Customers').doc(_auth.currentUser!.email).set(customerData);
       // size of collection remains the same
       await taskerDocRef.collection('Constant Message Customers').doc(_auth.currentUser!.email).set(customerData);
-      
+
       // continuing customer's side
       // indicate the execution was successful
       ScaffoldMessenger.of(context).showSnackBar(
