@@ -155,7 +155,7 @@ class _MsgListToAddState extends State<MsgListToAdd> {
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text('Add Tasker to Message', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+        title: Text('Add Tasker to Message', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20)),
         centerTitle: true,
         backgroundColor: Colors.green[800],
       ),

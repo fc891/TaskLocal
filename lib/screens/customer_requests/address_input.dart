@@ -223,14 +223,20 @@ class _AddressInputPageState extends State<AddressInputPage> {
                         onPressed: () {
                           _loadFromAddressBook(context);
                         },
-                        icon: Icon(Icons.contacts),
-                        label: Text('Address Book'),
+                        icon: Icon(Icons.contacts, color: Colors.black), // Change icon color to black
+                        label: Text(
+                          'Address Book',
+                          style: TextStyle(color: Colors.black), // Change text color to black
+                        ),
                       ),
                       SizedBox(width: 10),
                       ElevatedButton.icon(
                         onPressed: _loadRecentAddresses,
-                        icon: Icon(Icons.history),
-                        label: Text('Most Recent'),
+                        icon: Icon(Icons.history, color: Colors.black), // Change icon color to black
+                        label: Text(
+                          'Most Recent',
+                          style: TextStyle(color: Colors.black), // Change text color to black
+                        ),
                       ),
                     ],
                   ),
@@ -249,7 +255,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
                     'Continue',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18, color: Colors.black), // Change text color to black
                   ),
                 ),
               ),
