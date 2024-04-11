@@ -17,7 +17,7 @@ class _CompletedTaskState extends State<CompletedTask> {
         child: Text(
           "Work in Progress",
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),

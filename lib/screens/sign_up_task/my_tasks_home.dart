@@ -19,9 +19,9 @@ class _MyTasksHomeState extends State<MyTasksHome> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('My Tasks', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26)),
+          title: Text('My Tasks'),
           centerTitle: true,
-          backgroundColor: Colors.green[800],
+          //backgroundColor: Colors.green[800],
           bottom: TabBar(
             // have color based on user selecting the tab
             unselectedLabelColor: Colors.grey[400],

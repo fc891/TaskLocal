@@ -44,11 +44,14 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    Color unselectedBorderColor = Theme.of(context).colorScheme.primary;
+    Color selectedBorderColor = Theme.of(context).colorScheme.secondary;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit ${widget.categoryName}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+        title: Text("Edit ${widget.categoryName}"),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -63,8 +66,18 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                 style: TextStyle(fontSize: 15),
                 decoration: InputDecoration(
                   labelText: 'Location',
+                  labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: selectedBorderColor),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: unselectedBorderColor), 
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.tertiary,
                 ),
               ),
               SizedBox(height: 20),
@@ -75,8 +88,18 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Asking Rate',
+                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: selectedBorderColor),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: unselectedBorderColor), 
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ),
@@ -90,8 +113,18 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         labelText: 'Experience',
+                        labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: selectedBorderColor),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: unselectedBorderColor), 
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        filled: true,
+                        fillColor: Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
                   ),
@@ -99,20 +132,20 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
-                      // color: Colors.grey[200], 
+                      color: Theme.of(context).colorScheme.tertiary, 
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: Colors.grey,
+                        color: Colors.white,
                       ),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: typeOfLength,
-                        icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+                        icon: Icon(Icons.arrow_drop_down, color: Colors.white),
                         iconSize: 30,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black),
-                        dropdownColor: Colors.white,
+                        style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                        dropdownColor: Theme.of(context).colorScheme.tertiary,
                         onChanged: (String? newValue) {
                           setState(() {
                             typeOfLength = newValue!;
@@ -124,7 +157,7 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                             value: value,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(value, style: TextStyle(color: Colors.black)),
+                              child: Text(value, style: TextStyle(color: Colors.white)),
                             ),
                           );
                         }).toList(),
@@ -140,7 +173,7 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                 width: 300,
                 height: 300,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
+                  border: Border.all(color: Colors.white),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Padding(
@@ -151,7 +184,7 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                       if (index == skillControllers.length) {
                         // Add button to add more skills
                         return IconButton(
-                          icon: Icon(Icons.add_circle),
+                          icon: Icon(Icons.add_circle, color: Colors.white),
                           onPressed: () {
                             setState(() {
                               skillControllers.add(TextEditingController());
@@ -168,15 +201,18 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                                 controller: skillControllers[index],
                                 decoration: InputDecoration(
                                   labelText: 'Skill ${index + 1}',
+                                  labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                                   border: OutlineInputBorder(),
+                                  filled: true,
+                                  fillColor: Theme.of(context).colorScheme.tertiary,
                                 ),
                               ),
                             ),
                           ),
                           // Add a button to remove the skill
                           IconButton(
-                            icon: Icon(Icons.remove_circle),
+                            icon: Icon(Icons.remove_circle, color: Colors.white),
                             onPressed: () {
                               setState(() {
                                 skillControllers.removeAt(index);
@@ -194,7 +230,7 @@ class _EditSignUpPageState extends State<EditSignUpPage> {
                 child: ElevatedButton(
                   onPressed: _updateTaskInformation,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[800],
+                    backgroundColor: Theme.of(context).colorScheme.tertiary,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 15),

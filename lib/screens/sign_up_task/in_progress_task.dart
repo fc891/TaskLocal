@@ -70,6 +70,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                               style: TextStyle(
                                                 fontSize: 18, 
                                                 fontWeight: FontWeight.bold,
+                                                color: Theme.of(context).colorScheme.secondary,
                                               )
                                             ),
                                           ),
@@ -86,12 +87,14 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                       TextSpan(
                                                         text: '${taskData['customer first name']} ${taskData['customer last name']}',
                                                         style: TextStyle(
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                     ],
@@ -105,12 +108,14 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                       TextSpan(
                                                         text: '${taskData['description']}',
                                                         style: TextStyle(
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                     ],
@@ -124,12 +129,14 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                       TextSpan(
                                                         text: '${taskData['location']}',
                                                         style: TextStyle(
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                     ],
@@ -143,12 +150,14 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                       TextSpan(
                                                         text: '\$${taskData['pay rate']}',
                                                         style: TextStyle(
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                     ],
@@ -162,12 +171,14 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                       TextSpan(
                                                         text: '${taskData['start date']}',
                                                         style: TextStyle(
                                                           fontSize: 16,
+                                                          color: Theme.of(context).colorScheme.secondary,
                                                         ),
                                                       ),
                                                     ],
@@ -187,7 +198,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   IconButton(
-                                                    icon: Icon(Icons.check_circle,  color: Colors.green[800],),
+                                                    icon: Icon(Icons.check_circle,  color: Colors.green[800]),
                                                     // padding: EdgeInsets.zero,
                                                     onPressed: () async {
                                                       // give user a warning if they really want to confirm the task
@@ -196,6 +207,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         builder: (context) => AlertDialog(
                                                           title: Text('Confirm Accept'),
                                                           content: Text('Are you sure you want to accept this task request?'),
+                                                          backgroundColor: Theme.of(context).colorScheme.tertiary,
                                                           actions: [
                                                             TextButton(
                                                               onPressed: () => Navigator.of(context).pop(true),
@@ -245,6 +257,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         builder: (context) => AlertDialog(
                                                           title: Text('Confirm Decline'),
                                                           content: Text('Are you sure you want to decline this task request?'),
+                                                          backgroundColor: Theme.of(context).colorScheme.tertiary,
                                                           actions: [
                                                             TextButton(
                                                               onPressed: () => Navigator.of(context).pop(true),
@@ -293,6 +306,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     builder: (context) => AlertDialog(
                                                       title: Text('Confirm Start'),
                                                       content: Text('Are you sure you want to start the task?'),
+                                                      backgroundColor: Theme.of(context).colorScheme.tertiary,
                                                       actions: [
                                                         TextButton(
                                                           onPressed: () => Navigator.of(context).pop(true),
@@ -344,6 +358,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     builder: (context) => AlertDialog(
                                                       title: Text('Confirm Completion'),
                                                       content: Text('Are you sure you are completed with the task?'),
+                                                      backgroundColor: Theme.of(context).colorScheme.tertiary,
                                                       actions: [
                                                         TextButton(
                                                           onPressed: () => Navigator.of(context).pop(true),
@@ -384,7 +399,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   }
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.green[800],
+                                                  backgroundColor: Theme.of(context).colorScheme.tertiary,
                                                 ),
                                                 child: Padding(
                                                   padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
