@@ -43,6 +43,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                   border: Border.all(color: Colors.grey),
                 ),
                 child: TextField(
+                  style: TextStyle(color: Colors.black),
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Search Taskers',
@@ -56,7 +57,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
               onPressed: () {
                 _showFilterOptions();
               },
-              icon: Icon(Icons.filter_list, color: Colors.black), // Change icon color to black
+              icon: Icon(Icons.filter_list), // Change icon color to black
             ),
           ],
         ),
@@ -122,7 +123,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
       builder: (BuildContext context) {
         return Container(
           width: MediaQuery.of(context).size.width,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.tertiary,
           padding: EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -134,6 +135,10 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
               SizedBox(height: 10),
               Center(
                 child: DropdownButton<String>(
+                  dropdownColor: Theme.of(context).colorScheme.tertiary,
+                  iconEnabledColor: Theme.of(context).colorScheme.secondary,
+                  iconDisabledColor: Theme.of(context).colorScheme.secondary,
+                  focusColor: Theme.of(context).colorScheme.secondary,
                   value: _selectedFilter,
                   onChanged: (String? newValue) {
                     setState(() {
@@ -146,7 +151,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                       value: value,
                       child: Text(
                         value,
-                        style: TextStyle(color: Colors.black), // Change text color to black
+                        style: TextStyle(color: Colors.white), // Change text color to black
                       ),
                     );
                   }).toList(),
