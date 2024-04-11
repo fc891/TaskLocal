@@ -77,6 +77,7 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                             style: TextStyle(
                                               fontSize: 18, 
                                               fontWeight: FontWeight.bold,
+                                              color: Theme.of(context).colorScheme.secondary,
                                             )
                                           ),
                                         ),
@@ -93,12 +94,14 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: 16,
+                                                        color: Theme.of(context).colorScheme.secondary,
                                                       ),
                                                     ),
                                                     TextSpan(
                                                       text: '${taskData['location']}',
                                                       style: TextStyle(
                                                         fontSize: 16,
+                                                        color: Theme.of(context).colorScheme.secondary,
                                                       ),
                                                     ),
                                                   ],
@@ -112,12 +115,14 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: 16,
+                                                        color: Theme.of(context).colorScheme.secondary,
                                                       ),
                                                     ),
                                                     TextSpan(
                                                       text: '\$${taskData['askingRate']}',
                                                       style: TextStyle(
                                                         fontSize: 16,
+                                                        color: Theme.of(context).colorScheme.secondary,
                                                       ),
                                                     ),
                                                   ],
@@ -131,12 +136,14 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: 16,
+                                                        color: Theme.of(context).colorScheme.secondary,
                                                       ),
                                                     ),
                                                     TextSpan(
                                                       text: '${taskData['experience']}',
                                                       style: TextStyle(
                                                         fontSize: 16,
+                                                        color: Theme.of(context).colorScheme.secondary,
                                                       ),
                                                     ),
                                                   ],
@@ -150,12 +157,14 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: 16,
+                                                        color: Theme.of(context).colorScheme.secondary,
                                                       ),
                                                     ),
                                                     TextSpan(
                                                       text: '${taskData['skills'].join(', ')}',
                                                       style: TextStyle(
                                                         fontSize: 16,
+                                                        color: Theme.of(context).colorScheme.secondary,
                                                       ),
                                                     ),
                                                   ],
@@ -173,7 +182,7 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                           children: [
                                             // allow user to edit the task
                                             IconButton(
-                                              icon: Icon(Icons.edit),
+                                              icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.secondary),
                                               onPressed: () {
                                                 Navigator.push(
                                                   context,
@@ -189,7 +198,7 @@ class _EditRemoveSignUpTaskState extends State<EditRemoveSignUpTask> {
                                             ),
                                             // allow user to remove the task
                                             IconButton(
-                                              icon: Icon(Icons.delete),
+                                              icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.secondary),
                                               onPressed: () async {
                                                 // give user a warning if they really want to delete the task category
                                                 bool confirmed = await showDialog(

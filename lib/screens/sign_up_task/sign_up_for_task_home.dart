@@ -153,11 +153,11 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
     Color selectedBorderColor = Theme.of(context).colorScheme.secondary;
 
     return Scaffold(
-      backgroundColor: Colors.green,
+      //backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text(widget.taskCategory.name, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24)),
+        title: Text(widget.taskCategory.name),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -362,7 +362,9 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
                     Container(
                       height: 300,
                       width: 300,
-                      decoration: BoxDecoration(color: Colors.green[400], borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.tertiary, 
+                        borderRadius: BorderRadius.circular(10)),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 15, top: 5,),
                         child: ListView.builder(
@@ -445,7 +447,7 @@ class _SignUpForTaskHomeState extends State<SignUpForTaskHome> {
             ElevatedButton(
               onPressed: _submitTaskSignUp,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[800],
+                backgroundColor: Theme.of(context).colorScheme.tertiary,
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15),

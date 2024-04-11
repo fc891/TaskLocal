@@ -104,7 +104,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
           const SizedBox(height: 20.0),
           //Select media button
           ElevatedButton(
-              child: const Text("Select Media"),
+              child: Text("Select Media", style: TextStyle(color: Colors.black)),
               onPressed: () async {
                 await selectMedia();
               }),
@@ -112,7 +112,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
           //Upload media button (only display once user selects an image)
           if (hasMediaSelected)
             ElevatedButton(
-                child: const Text("Upload Media"),
+                child: const Text("Upload Media", style: TextStyle(color: Colors.black)),
                 onPressed: () async {
                   if (selected != null) {
                     await uploadMedia();

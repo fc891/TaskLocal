@@ -157,7 +157,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                       child: Column(
                         children: [
                           Text(
-                            "You have a scheduled appointment!",
+                            "You Have a Scheduled Appointment!",
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary),
                           ),
@@ -171,7 +171,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Sign up for a service!',
+                  'Sign Up for a Service!',
                   style: TextStyle(
                     //color: Colors.white,
                     fontSize: 20,
@@ -198,7 +198,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                     },
                     controller: searchController,
                     decoration: InputDecoration(
-                        hintText: 'Search for task categories',
+                        hintText: 'Search for Task Categories',
                         hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         filled: true,
                         fillColor: Theme.of(context).colorScheme.tertiary,
@@ -223,7 +223,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Text(
-                  'Task Catagories',
+                  'Task Categories',
                   style: TextStyle(
                     //color: Colors.white,
                     fontSize: 20,
