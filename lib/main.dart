@@ -75,6 +75,7 @@ class MyApp extends ConsumerWidget {
         '/taskertaskinfopage': (context) =>
             TaskerTaskInfoPage(taskinfo: defaultinfo),
         '/messageshome': (context) => MessagesHome(),
+        '/reviewspage': (context) => ReviewsPage(taskerEmail: "joe@gmail.com"),
       },
     );
   }

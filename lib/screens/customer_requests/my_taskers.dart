@@ -107,8 +107,8 @@ class _MyTaskersPageState extends State<MyTaskersPage> {
                     }
                   },
                   child: ListTile(
-                    title: Text(tasker['name'] ?? ''),
-                    subtitle: Text(tasker['description'] ?? ''),
+                    title: Text(tasker['name'] ?? '', style: TextStyle(color: Colors.white)),
+                    subtitle: Text(tasker['description'] ?? '', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -153,11 +153,11 @@ class _MsgListToAddState extends State<MsgListToAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
+      //backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text('Add Tasker to Message', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20)),
+        title: Text('Add Tasker to Message', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
         centerTitle: true,
-        backgroundColor: Colors.green[800],
+        //backgroundColor: Colors.green[800],
       ),
       body: StreamBuilder<QuerySnapshot>(
         // updates the customer's list of taskers
@@ -177,7 +177,7 @@ class _MsgListToAddState extends State<MsgListToAdd> {
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.tertiary,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
