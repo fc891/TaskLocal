@@ -41,6 +41,7 @@ class ReviewCard extends StatelessWidget {
 
                 // display the rating using flutter rating bar app API
                 RatingBarIndicator(
+                  unratedColor: Theme.of(context).colorScheme.tertiary,
                   rating: reviewData['rating'] ?? 0.0,
                   itemBuilder: (context, index) => Icon(Icons.star, color: Colors.amber),
                   itemCount: 5,

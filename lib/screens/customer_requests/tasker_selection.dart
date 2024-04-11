@@ -62,7 +62,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
         ),
       ),
       body: Container(
-        color: Colors.white,
+        //color: Theme.of(context).colorScheme.tertiary,
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('Task Categories')
@@ -93,8 +93,8 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                 String lastName = taskerData['last name'] ?? '';
 
                 return ListTile(
-                  title: Text(username),
-                  subtitle: Text('$firstName $lastName'),
+                  title: Text(username, style: TextStyle(color: Colors.white)),
+                  subtitle: Text('$firstName $lastName', style: TextStyle(color:Colors.white)),
                   trailing: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {

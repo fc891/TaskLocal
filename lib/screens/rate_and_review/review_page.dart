@@ -76,6 +76,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                             Text("Overall Rating: ${averageRating.toStringAsFixed(1)}"),
                             // use flutter rating bar API
                             RatingBarIndicator(
+                              unratedColor: Theme.of(context).colorScheme.tertiary,
                               rating: averageRating,
                               itemBuilder: (context, index) => Icon(Icons.star, color: Colors.amber),
                               itemCount: 5,

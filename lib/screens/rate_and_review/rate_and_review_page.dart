@@ -42,7 +42,7 @@ class _RateandReviewPage extends State<RateandReviewPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.green, 
+          backgroundColor: Theme.of(context).colorScheme.tertiary, 
           title: Text(
             'Maximum Images Reached',
             style: TextStyle(color: Colors.white), 
@@ -57,7 +57,7 @@ class _RateandReviewPage extends State<RateandReviewPage> {
                 Navigator.of(context).pop();
               },
               style: TextButton.styleFrom(
-              backgroundColor: Colors.green, 
+              backgroundColor: Theme.of(context).colorScheme.tertiary, 
               ),
               child: Text(
                 'OK',
@@ -92,7 +92,7 @@ class _RateandReviewPage extends State<RateandReviewPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: Colors.green, 
+            backgroundColor: Theme.of(context).colorScheme.tertiary, 
             title: Text(
               'Image Limit Reached',
               style: TextStyle(color: Colors.white),
@@ -243,14 +243,14 @@ Future<void> _submitReview() async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         title: Text('Missing Information', style: TextStyle(color: Colors.white)),
         content: Text('Please make sure all areas of field are filled out.', style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text('OK', style: TextStyle(color: Colors.white)),
-            style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.green),
+            style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Theme.of(context).colorScheme.tertiary),
           ),
         ],
       ),
@@ -265,7 +265,7 @@ Future<void> _submitReview() async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         title: Text('Error', style: TextStyle(color: Colors.white)),
         content: Text('You must be logged in to submit a review.', style: TextStyle(color: Colors.white)),
         actions: <Widget>[
@@ -287,7 +287,7 @@ Future<void> _submitReview() async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         title: Text('Error', style: TextStyle(color: Colors.white)),
         content: Text('Could not load your information. Try Again or Relog.', style: TextStyle(color: Colors.white)),
         actions: <Widget>[
@@ -331,7 +331,7 @@ Future<void> _submitReview() async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         title: Text('Review Submitted', style: TextStyle(color: Colors.white)),
         content: Text('Your review has been successfully submitted.', style: TextStyle(color: Colors.white)),
         actions: <Widget>[
@@ -351,14 +351,14 @@ Future<void> _submitReview() async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         title: Text('Error', style: TextStyle(color: Colors.white)),
         content: Text('Error occured when attempting to submit. Try Again.', style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            style: TextButton.styleFrom(backgroundColor: Colors.red),
-            child: Text('OK', style: TextStyle(color: Colors.white)),
+            style: TextButton.styleFrom(backgroundColor: Colors.white),
+            child: Text('OK', style: TextStyle(color: Colors.black)),
           ),
         ],
       ),
@@ -447,7 +447,8 @@ Future<void> _submitReview() async {
             SizedBox(height: 8),
             // Implement rating bar
             RatingBar.builder(
-              initialRating: _rating,
+              unratedColor: Theme.of(context).colorScheme.tertiary, //Default star color will be this
+              initialRating: _rating, 
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -491,13 +492,13 @@ Future<void> _submitReview() async {
             SizedBox(height: 8),
             ElevatedButton.icon(
               onPressed: _imageSelector,
-              icon: Icon(Icons.add_a_photo),
+              icon: Icon(Icons.add_a_photo, color: Colors.black),
               label: Text(
                 "Add Images",
-                style: GoogleFonts.lato(), // Apply Lato font here
+                style: GoogleFonts.lato(color: Colors.black), // Apply Lato font here
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 22, 56, 23),
+                backgroundColor: Colors.white,
                 textStyle: GoogleFonts.lato(), // Optionally, apply Lato font to all text within the button
               ),
             ),
@@ -511,11 +512,11 @@ Future<void> _submitReview() async {
               child: ElevatedButton(
                 onPressed: _submitReview,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 22, 56, 23),
+                  backgroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 15),
                   textStyle: TextStyle(fontSize: 18),
                 ),
-                child: Text('Submit Review', style: GoogleFonts.lato()),
+                child: Text('Submit Review', style: GoogleFonts.lato(color: Colors.black)),
               ),
             ),
           ],
