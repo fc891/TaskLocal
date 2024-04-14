@@ -4,6 +4,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/components/task_category_box.dart';
+import 'package:tasklocal/screens/discussion_board/discussion_board_home.dart';
 import 'package:tasklocal/screens/home_pages/task_category.dart';
 import 'package:tasklocal/screens/home_pages/tasker_search_task.dart';
 import 'package:tasklocal/screens/messages/tasker_messages_home.dart';
@@ -141,32 +142,6 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
-              // Richard's code
-              // Displays any important info of the user such as schedule appointments
-              Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.tertiary,
-                    borderRadius: BorderRadius.circular(20)),
-                padding: EdgeInsets.all(25),
-                margin: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 20.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            "You Have a Scheduled Appointment!",
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -273,6 +248,45 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                 ),
               ),
               const SizedBox(height: 20),
+              // Richard's code
+              // Displays the preview of discussion board, so tasker can navigate to the main page
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.tertiary,
+                  borderRadius: BorderRadius.circular(20)),
+                padding: EdgeInsets.only(left: 25, bottom: 15, top: 15),
+                margin: EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, 
+                      children: [
+                        Text(
+                          "Discussion Board",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => DiscussionBoardHome()),
+                            );
+                          },
+                          child: Text(
+                            "View More",
+                            style: TextStyle(
+                              
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
