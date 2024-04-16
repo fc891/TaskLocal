@@ -64,7 +64,8 @@ class MyApp extends ConsumerWidget {
       routes: {
         //'/': (context) => LoadScreen(), //loading screen (WIP)
         '/home': (context) => OnboardingPage(),
-        '/customerregistration': (context) => CustomerRegistration(onTap: (){}),
+        '/customerregistration': (context) =>
+            CustomerRegistration(onTap: () {}),
         '/taskerregistration': (context) => TaskerRegistration(onTap: () {}),
         '/customerhomepage': (context) => CustomerHomePage(),
         '/taskerhomepage': (context) => TaskerHomePage(),

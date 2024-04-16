@@ -51,5 +51,9 @@
 		<string>Camera for Uploading Media</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>Microphone for Media and Communications</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to your location.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to your location when in the background.</string>
 </dict>
 </plist>
