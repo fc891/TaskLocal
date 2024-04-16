@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/Screens/app_theme/appthemecustomization.dart';
+import 'package:tasklocal/screens/gps_services/current_location.dart';
 import 'package:tasklocal/screens/profiles/taskereditprofile.dart';
 import 'package:tasklocal/screens/profiles/customereditprofile.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
@@ -201,6 +202,29 @@ class _SettingsPageState extends State<SettingsPage> {
                   MaterialPageRoute(
                       builder: (context) =>
                           AppThemeCustomization())); //Replace with actual screen name
+            },
+          ),
+          //Get current location (temp)
+          ListTile(
+            leading: Icon(
+              Icons.location_pin,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            title: Text("(temp) Get Location",
+                style: TextStyle(
+                    fontSize: 16.0,
+                    color: Theme.of(context).colorScheme.secondary)),
+            subtitle: Text("Testing get current location",
+                style: TextStyle(
+                    fontSize: 12.0,
+                    color: Theme.of(context).colorScheme.secondary)),
+            trailing: Text(""),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CurrentLocation())); //Replace with actual screen name
             },
           ),
           //Manage notifications (turn on/off)
