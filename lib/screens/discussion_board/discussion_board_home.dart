@@ -87,7 +87,7 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DiscussionPage(email: email, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                              numOfMsg: numOfMsg, numOfLikes: numOfLikes, date: formattedDate2)),
+                                                                              numOfMsg: numOfMsg, numOfLikes: numOfLikes, date: formattedDate2, mmddyy: formattedDate)),
                     );
                   },
                   child: ListTile(
