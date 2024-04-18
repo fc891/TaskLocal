@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasklocal/screens/discussion_board/discussion_page.dart';
 import 'package:tasklocal/screens/discussion_board/post_discussion_topic.dart';
+import 'package:intl/intl.dart';
+
 
 class DiscussionBoardHome extends StatefulWidget {
   const DiscussionBoardHome({super.key});
@@ -11,6 +15,8 @@ class DiscussionBoardHome extends StatefulWidget {
 
 class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Map<String, bool> topicLikes = {};
 
   @override
   Widget build(BuildContext context) {
@@ -62,22 +68,57 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
               itemCount: topics.length,
               itemBuilder: (context, index) {
                 final topic = topics[index];
-                final date = topic['date'].toDate();
+                final email = topic['email'];
                 final taskCategory = topic['task category'];
-                final text = topic['text'];
                 final topicTitle = topic['topic title'];
+                final text = topic['text'];
                 final username = topic['username'];
+                final numOfMsg = topic['num of msg'];
+                final numOfLikes = topic['num of likes'];
+                final isLiked = topicLikes[topic.id] ?? false;
 
-                return ListTile(
-                  title: Text(topicTitle),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Date: $date'),
-                      Text('Task Category: $taskCategory'),
-                      Text('Text: $text'),
-                      Text('Text: $username'),
-                    ],
+                final date = topic['date'].toDate();
+                // final DateFormat formatter = DateFormat('MM/dd/yyyy');
+                final String formattedDate = DateFormat('MM/dd/yyyy').format(date);
+                String formattedDate2 = DateFormat('yyyy-MM-dd HH:mm:ss.S').format(date);
+
+                return GestureDetector(
+                    onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DiscussionPage(email: email, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
+                                                                              numOfMsg: numOfMsg, numOfLikes: numOfLikes, date: formattedDate2)),
+                    );
+                  },
+                  child: ListTile(
+                    // title: Text(topicTitle),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text('$taskCategory'),
+                            Spacer(),
+                            Icon(Icons.message, color: Theme.of(context).colorScheme.secondary),
+                            Text('$numOfMsg'),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  topicLikes[topic.id] = !isLiked;
+                                });
+                              },
+                              child: Icon(
+                                isLiked ? Icons.favorite : Icons.favorite_border, 
+                                color: isLiked ? Colors.red : Theme.of(context).colorScheme.secondary
+                              ),
+                            ),
+                            Text('$numOfLikes'),
+                          ],
+                        ),
+                        Text('$topicTitle'),
+                        Text('@$username - $formattedDate'),
+                      ],
+                    ),
                   ),
                 );
               },

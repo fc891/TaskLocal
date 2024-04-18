@@ -40,11 +40,15 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
       if (_selectedCategory != null && topicTitle.isNotEmpty && text.isNotEmpty) {
         // store all info in the Task Categories collection
         await postedTopicDoc.set({
+          'email': _auth.currentUser!.email,
           'task category': _selectedCategory,
           'topic title': topicTitle,
           'text': text,
           'date': DateTime.now(),
           'username': taskerInfo['username'],
+          'num of msg': 0,
+          'num of likes': 0,
+          'likes by users': [],
         });
         await postedTopicDoc2.set({
           'location of posted topic': '${_auth.currentUser!.email}_${DateTime.now().toString()}',
@@ -153,7 +157,7 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
                     'Photography Projects',
                     'Art Installations',
                     'Tech Innovations',
-                    'Gardening Projects'
+                    'Gardening Projects',
                     'Music Productions',
                     'Fitness Training',
                     'Organization',
