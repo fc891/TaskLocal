@@ -34,6 +34,8 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
       // for individual purposes
       final postedTopicDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Posted Topics').doc('${_auth.currentUser!.email}_${DateTime.now().toString()}');
 
+      final taskerInfo = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
+
       // Check if all required fields are filled in
       if (_selectedCategory != null && topicTitle.isNotEmpty && text.isNotEmpty) {
         // store all info in the Task Categories collection
@@ -41,6 +43,8 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
           'task category': _selectedCategory,
           'topic title': topicTitle,
           'text': text,
+          'date': DateTime.now(),
+          'username': taskerInfo['username'],
         });
         await postedTopicDoc2.set({
           'location of posted topic': '${_auth.currentUser!.email}_${DateTime.now().toString()}',
@@ -53,6 +57,7 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
         setState(() {
           _selectedCategory = null;
         });
+        Navigator.pop(context, true);
       } else {
         // Show an error message requiring user to fill in the fields 
         showDialog(
