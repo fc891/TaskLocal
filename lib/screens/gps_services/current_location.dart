@@ -6,6 +6,7 @@ import 'dart:ffi';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,22 +14,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 
 final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
 //Bill's Current Location Screen
 class CurrentLocation extends StatefulWidget {
   const CurrentLocation({super.key});
-  State<CurrentLocation> createState() => _CurrentLocationState();
+  State<CurrentLocation> createState() => CurrentLocationState();
 }
 
 //enum UrlType { IMAGE, VIDEO, UNKNOWN }
 
 //Bill's Current Location Screen
-class _CurrentLocationState extends State<CurrentLocation> {
+class CurrentLocationState extends State<CurrentLocation> {
   bool hasLocationSelected = false;
   String? currentAddress;
   Position? currentPosition;
+
+  late GoogleMapController mapController;
+  LatLng _center = LatLng(33.7830, -118.1129);
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
 
   //Check for GPS services on the current device. If permissions are disabled, prompt user to enable.
   Future<bool> checkLocationPermission() async {
@@ -69,29 +78,29 @@ class _CurrentLocationState extends State<CurrentLocation> {
   //Function to get user's current location
   Future<void> getLocation() async {
     final hasPermission = await checkLocationPermission();
-    print("running2 $hasPermission");
     if (hasPermission == false) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
-      setState(() {
+      setState(() async {
         currentPosition = position;
-        getAddressFromLatLong(position);
+        await getAddressFromLatLong(currentPosition!);
         hasLocationSelected = true;
+        _center = LatLng(position.latitude, position.longitude);
       });
     }).catchError((e) {
-      print("Error Detected");
+      print("Error Detected Getting Location");
       debugPrint(e);
     });
   }
 
+  //Function to convert from a lat/long (Position) to a string address
   Future<void> getAddressFromLatLong(Position position) async {
     String street = "";
     String city = "";
     String state = "";
     String zip = "";
     String country = "";
-    await placemarkFromCoordinates(
-            currentPosition!.latitude, currentPosition!.longitude)
+    await placemarkFromCoordinates(position.latitude, position.longitude)
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
       setState(() {
@@ -123,36 +132,38 @@ class _CurrentLocationState extends State<CurrentLocation> {
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Column(children: [
+          //If location selected, display a map
           if (hasLocationSelected)
-            Flexible(
-                child: Container(
-                  width: 500.0,
-                  height: 500.0,
-              color: Theme.of(context).colorScheme.tertiary,
-              //TODO: Implement map view here
-              child: Text("MAP WIP")
-            )),
-          const SizedBox(height: 20.0),
+            SizedBox(
+              width: 400.0,
+              height: 400.0,
+              child: GoogleMap(
+                onMapCreated: _onMapCreated,
+                initialCameraPosition:
+                    CameraPosition(target: _center, zoom: 11.0),
+              ),
+            ),
+            const SizedBox(height: 20.0),
           //Image details
           if (hasLocationSelected)
-          Padding(
-            padding: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 10.0),
-            child: Text("Current Location:",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  letterSpacing: 1.0,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ))),
+            Padding(
+                padding: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 10.0),
+                child: Text("Current Location:",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                      letterSpacing: 1.0,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ))),
           if (hasLocationSelected)
-          Padding(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("$currentAddress",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  letterSpacing: 1.0,
-                  fontSize: 16.0,
-                ))),
+            Padding(
+                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                child: Text("$currentAddress",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                      letterSpacing: 1.0,
+                      fontSize: 16.0,
+                    ))),
           const SizedBox(height: 20.0),
           //Select media button
           ElevatedButton(
