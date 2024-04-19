@@ -8,10 +8,11 @@ class DiscussionPage extends StatefulWidget {
   final String username;
   final int numOfMsg;
   final int numOfLikes;
+  final List<dynamic> usersLiked;
   final String date;
   final String mmddyy;
   const DiscussionPage({super.key, required this.email, required this.taskCategory, required this.topicTitle, required this.text, required this.username, 
-  required this.numOfMsg, required this.numOfLikes, required this.date, required this.mmddyy});
+                        required this.numOfMsg, required this.numOfLikes, required this.usersLiked, required this.date, required this.mmddyy});
 
   @override
   State<DiscussionPage> createState() => _DiscussionPageState();
@@ -72,7 +73,8 @@ class _DiscussionPageState extends State<DiscussionPage> {
                   SizedBox(width: 16),
                   Icon(Icons.thumb_up),
                   SizedBox(width: 8),
-                  Text(widget.numOfLikes.toString()),
+                  // Text(widget.numOfLikes.toString()),
+                  Text(widget.usersLiked.length.toString()),
                 ],
               ),
               SizedBox(height: 16),

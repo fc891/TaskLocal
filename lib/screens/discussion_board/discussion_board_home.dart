@@ -75,7 +75,12 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                 final username = topic['username'];
                 final numOfMsg = topic['num of msg'];
                 final numOfLikes = topic['num of likes'];
-                final isLiked = topicLikes[topic.id] ?? false;
+                final usersLiked = topic['liked by users'];
+                // final isLiked = topicLikes[topic.id] ?? false;
+                              // Check if the current user has liked the topic
+              final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
+              final currentUserEmail = _auth.currentUser!.email;
+              final isLiked = likedByUsers.contains(currentUserEmail);
 
                 final date = topic['date'].toDate();
                 // final DateFormat formatter = DateFormat('MM/dd/yyyy');
@@ -87,7 +92,7 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DiscussionPage(email: email, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                              numOfMsg: numOfMsg, numOfLikes: numOfLikes, date: formattedDate2, mmddyy: formattedDate)),
+                                                                              numOfMsg: numOfMsg, numOfLikes: numOfLikes, usersLiked: usersLiked, date: formattedDate2, mmddyy: formattedDate)),
                     );
                   },
                   child: ListTile(
@@ -102,9 +107,34 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                             Icon(Icons.message, color: Theme.of(context).colorScheme.secondary),
                             Text('$numOfMsg'),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 setState(() {
-                                  topicLikes[topic.id] = !isLiked;
+                                  // topicLikes[topic.id] = !isLiked;
+                                });
+                                // Access the document reference
+                                final documentReference = topic.reference;
+
+                                // Update the num of likes field
+                                // await documentReference.update({
+                                //   'num of likes': isLiked ? numOfLikes - 1 : numOfLikes + 1,
+                                // });
+
+                                // List of users who liked the topic, stored as 'liked by users'
+                                final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
+
+                                // Check if the current user's email is in the list of likedByUsers
+                                final currentUserEmail = _auth.currentUser!.email;
+                                if (isLiked) {
+                                  // If the user unlikes the topic, remove their email from the list
+                                  likedByUsers.remove(currentUserEmail);
+                                } else {
+                                  // If the user likes the topic, add their email to the list
+                                  likedByUsers.add(currentUserEmail);
+                                }
+
+                                // Update the 'liked by users' field in Firestore
+                                await documentReference.update({
+                                  'liked by users': likedByUsers,
                                 });
                               },
                               child: Icon(
@@ -112,7 +142,7 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                                 color: isLiked ? Colors.red : Theme.of(context).colorScheme.secondary
                               ),
                             ),
-                            Text('$numOfLikes'),
+                            Text(likedByUsers.length.toString()),
                           ],
                         ),
                         Text('$topicTitle'),
