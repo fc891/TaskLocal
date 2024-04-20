@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PostDiscussionTopic extends StatefulWidget {
   const PostDiscussionTopic({super.key});
@@ -18,6 +19,9 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
 
   // when user presses the submit button, stores all the inputs of the user to the db
   void _submitPost() async {
+    DateTime currentDateTime = DateTime.now();
+    String timeWithSeconds = DateFormat('h:mm:ss a').format(currentDateTime);
+
     // provide some dialog when user hasn't enter any info
     BuildContext? dialogContext;
     try {
@@ -31,9 +35,9 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
       taskerDoc.set({'dummy': 'dummy'});
 
       // for public knowledge, go to the tasker's collection of posted discussion
-      final postedTopicDoc = taskerDoc.collection('Posted Topics').doc(topicTitle);
+      final postedTopicDoc = taskerDoc.collection('Posted Topics').doc('${topicTitle}_$timeWithSeconds');
       // for individual purposes
-      final postedTopicDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Posted Topics').doc(topicTitle);
+      final postedTopicDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Posted Topics').doc('${topicTitle}_$timeWithSeconds');
 
       final taskerInfo = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
 
@@ -46,6 +50,7 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
           'topic title': topicTitle,
           'text': text,
           'date': DateTime.now(),
+          'time with seconds': timeWithSeconds,
           'username': taskerInfo['username'],
           'num of msg': 0,
           'liked by users': [],

@@ -379,6 +379,10 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                                                 .collection('Hired Taskers').doc(_auth.currentUser!.email)
                                                                                 .collection('In Progress Tasks').doc(taskData['customer email']);
                                                       await signedUpGeneral.delete();
+
+                                                      // update the number of completed task in personal tasker's collection
+                                                      
+
                                                       // update the UI
                                                       setState(() {
                                                         taskCategory.removeAt(index);

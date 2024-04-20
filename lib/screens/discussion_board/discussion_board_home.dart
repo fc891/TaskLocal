@@ -67,13 +67,14 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
               itemCount: topics.length,
               itemBuilder: (context, index) {
                 final topic = topics[index];
-                final email = topic['email'];
+                final topicPosterEmail = topic['email'];
                 final taskCategory = topic['task category'];
                 final topicTitle = topic['topic title'];
                 final text = topic['text'];
                 final username = topic['username'];
                 final numOfMsg = topic['num of msg'];
                 final usersLiked = topic['liked by users'];
+                final timeWithSeconds = topic['time with seconds'];
                 // Check if the current user has liked the topic
                 final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
                 final currentUserEmail = _auth.currentUser!.email;
@@ -87,8 +88,9 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                     onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DiscussionPage(email: email, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                              numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, onLikeUpdated: () {
+                      MaterialPageRoute(builder: (context) => DiscussionPage(topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
+                                                                              numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, timeWithSeconds: timeWithSeconds, 
+                                                                              onLikeUpdated: () {
                             // Trigger rebuild when like is updated
                             setState(() {});
                           }, isTextFieldVisible: false)),
@@ -107,8 +109,9 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => DiscussionPage(email: email, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                                          numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, onLikeUpdated: () {
+                                  MaterialPageRoute(builder: (context) => DiscussionPage(topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
+                                                                                          numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, timeWithSeconds: timeWithSeconds,
+                                                                                          onLikeUpdated: () {
                                         // Trigger rebuild when like is updated
                                         setState(() {});
                                       }, isTextFieldVisible: true)),
