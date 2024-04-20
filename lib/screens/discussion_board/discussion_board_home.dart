@@ -91,7 +91,7 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                                                                               numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, onLikeUpdated: () {
                             // Trigger rebuild when like is updated
                             setState(() {});
-                          },)),
+                          }, isTextFieldVisible: false)),
                     );
                   },
                   child: ListTile(
@@ -103,7 +103,22 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                           children: [
                             Text('$taskCategory'),
                             Spacer(),
-                            Icon(Icons.message, color: Theme.of(context).colorScheme.secondary),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => DiscussionPage(email: email, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
+                                                                                          numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, onLikeUpdated: () {
+                                        // Trigger rebuild when like is updated
+                                        setState(() {});
+                                      }, isTextFieldVisible: true)),
+                                );
+                              },
+                              child: Icon(
+                                Icons.message, 
+                                color: Theme.of(context).colorScheme.secondary
+                              )
+                            ),
                             Text('$numOfMsg'),
                             GestureDetector(
                               onTap: () async {

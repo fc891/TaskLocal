@@ -12,6 +12,7 @@ class DiscussionPage extends StatefulWidget {
   final List<dynamic> usersLiked;
   final String mmddyy;
   final Function? onLikeUpdated; // Callback function
+  final bool isTextFieldVisible;
 
   const DiscussionPage({
     Key? key,
@@ -24,6 +25,7 @@ class DiscussionPage extends StatefulWidget {
     required this.usersLiked,
     required this.mmddyy,
     this.onLikeUpdated, // Receive the callback function
+    required this.isTextFieldVisible,
   }) : super(key: key);
 
   @override
@@ -35,6 +37,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late bool isLiked;
   late List<dynamic> _updatedUsersLiked;
+  bool isTextFieldVisible = false; // Add this variable to track visibility
 
   @override
   void initState() {
@@ -42,6 +45,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
     // Check if the current user has liked the topic
     isLiked = widget.usersLiked.contains(_auth.currentUser!.email);
     _updatedUsersLiked = List.from(widget.usersLiked); // Initialize the updated users liked list
+    isTextFieldVisible = widget.isTextFieldVisible;
   }
 
   // Function to update database and call callback
@@ -113,7 +117,16 @@ class _DiscussionPageState extends State<DiscussionPage> {
               SizedBox(height: 16),
               Row(
                 children: [
-                  Icon(Icons.message),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isTextFieldVisible = !isTextFieldVisible; // Toggle visibility
+                      });
+                    },
+                    child: Icon(
+                      Icons.message
+                    )
+                  ),
                   SizedBox(width: 8),
                   Text(widget.numOfMsg.toString()),
                   SizedBox(width: 16),
@@ -129,7 +142,29 @@ class _DiscussionPageState extends State<DiscussionPage> {
                 ],
               ),
               SizedBox(height: 16),
-              // Add more widgets or components as needed
+              if (isTextFieldVisible)
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.tertiary,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                    width: 1,
+                  ),
+                ),
+                child: TextField(
+                  // controller: textController,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    hintText: 'Text',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(10),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
