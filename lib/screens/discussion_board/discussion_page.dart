@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DiscussionPage extends StatefulWidget {
@@ -7,24 +9,68 @@ class DiscussionPage extends StatefulWidget {
   final String text;
   final String username;
   final int numOfMsg;
-  final int numOfLikes;
   final List<dynamic> usersLiked;
-  final String date;
   final String mmddyy;
-  const DiscussionPage({super.key, required this.email, required this.taskCategory, required this.topicTitle, required this.text, required this.username, 
-                        required this.numOfMsg, required this.numOfLikes, required this.usersLiked, required this.date, required this.mmddyy});
+  final Function? onLikeUpdated; // Callback function
+
+  const DiscussionPage({
+    Key? key,
+    required this.email,
+    required this.taskCategory,
+    required this.topicTitle,
+    required this.text,
+    required this.username,
+    required this.numOfMsg,
+    required this.usersLiked,
+    required this.mmddyy,
+    this.onLikeUpdated, // Receive the callback function
+  }) : super(key: key);
 
   @override
   State<DiscussionPage> createState() => _DiscussionPageState();
 }
 
 class _DiscussionPageState extends State<DiscussionPage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late bool isLiked;
+  late List<dynamic> _updatedUsersLiked;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if the current user has liked the topic
+    isLiked = widget.usersLiked.contains(_auth.currentUser!.email);
+    _updatedUsersLiked = List.from(widget.usersLiked); // Initialize the updated users liked list
+  }
+
+  // Function to update database and call callback
+  Future<void> _updateDatabaseAndCallback() async {
+    setState(() {
+      isLiked = !isLiked;
+      if (isLiked) {
+        _updatedUsersLiked.add(_auth.currentUser!.email); // Add user to liked list
+      } else {
+        _updatedUsersLiked.remove(_auth.currentUser!.email); // Remove user from liked list
+      }
+    });
+
+    final docRef = _firestore.collection('Tasker Discussion Board').doc(widget.email).collection('Posted Topics').doc(widget.topicTitle);
+
+    await docRef.update({
+      'liked by users': _updatedUsersLiked,
+    });
+
+    // Call the callback function to inform the parent widget
+    if (widget.onLikeUpdated != null) {
+      widget.onLikeUpdated!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -50,7 +96,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                 children: [
                   Icon(Icons.person),
                   SizedBox(width: 8),
-                  Text (
+                  Text(
                     '${widget.username} - ${widget.mmddyy}',
                     style: TextStyle(
                       fontSize: 16,
@@ -71,10 +117,15 @@ class _DiscussionPageState extends State<DiscussionPage> {
                   SizedBox(width: 8),
                   Text(widget.numOfMsg.toString()),
                   SizedBox(width: 16),
-                  Icon(Icons.thumb_up),
+                  GestureDetector(
+                    onTap: _updateDatabaseAndCallback, // Call function on tap
+                    child: Icon(
+                      isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+                      color: isLiked ? Colors.blue : Theme.of(context).iconTheme.color,
+                    ),
+                  ),
                   SizedBox(width: 8),
-                  // Text(widget.numOfLikes.toString()),
-                  Text(widget.usersLiked.length.toString()),
+                  Text(_updatedUsersLiked.length.toString()), // Use updated liked list length
                 ],
               ),
               SizedBox(height: 16),

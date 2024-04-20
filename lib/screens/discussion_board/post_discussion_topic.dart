@@ -29,10 +29,11 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
       final taskerDoc = _firestore.collection('Tasker Discussion Board').doc(_auth.currentUser!.email);
       // create dummy values so document is actually created and stored in db
       taskerDoc.set({'dummy': 'dummy'});
+
       // for public knowledge, go to the tasker's collection of posted discussion
-      final postedTopicDoc = taskerDoc.collection('Posted Topics').doc('${_auth.currentUser!.email}_${DateTime.now().toString()}');
+      final postedTopicDoc = taskerDoc.collection('Posted Topics').doc(topicTitle);
       // for individual purposes
-      final postedTopicDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Posted Topics').doc('${_auth.currentUser!.email}_${DateTime.now().toString()}');
+      final postedTopicDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Posted Topics').doc(topicTitle);
 
       final taskerInfo = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
 
@@ -47,11 +48,9 @@ class _PostDiscussionTopicState extends State<PostDiscussionTopic> {
           'date': DateTime.now(),
           'username': taskerInfo['username'],
           'num of msg': 0,
-          'num of likes': 0,
-          'likes by users': [],
+          'liked by users': [],
         });
         await postedTopicDoc2.set({
-          'location of posted topic': '${_auth.currentUser!.email}_${DateTime.now().toString()}',
           'task category': _selectedCategory,
           'topic title': topicTitle,
         });

@@ -16,7 +16,6 @@ class DiscussionBoardHome extends StatefulWidget {
 class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  Map<String, bool> topicLikes = {};
 
   @override
   Widget build(BuildContext context) {
@@ -74,25 +73,25 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                 final text = topic['text'];
                 final username = topic['username'];
                 final numOfMsg = topic['num of msg'];
-                final numOfLikes = topic['num of likes'];
                 final usersLiked = topic['liked by users'];
-                // final isLiked = topicLikes[topic.id] ?? false;
-                              // Check if the current user has liked the topic
-              final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
-              final currentUserEmail = _auth.currentUser!.email;
-              final isLiked = likedByUsers.contains(currentUserEmail);
+                // Check if the current user has liked the topic
+                final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
+                final currentUserEmail = _auth.currentUser!.email;
+                final isLiked = likedByUsers.contains(currentUserEmail);
 
                 final date = topic['date'].toDate();
                 // final DateFormat formatter = DateFormat('MM/dd/yyyy');
                 final String formattedDate = DateFormat('MM/dd/yyyy').format(date);
-                String formattedDate2 = DateFormat('yyyy-MM-dd HH:mm:ss.S').format(date);
 
                 return GestureDetector(
                     onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DiscussionPage(email: email, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                              numOfMsg: numOfMsg, numOfLikes: numOfLikes, usersLiked: usersLiked, date: formattedDate2, mmddyy: formattedDate)),
+                                                                              numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, onLikeUpdated: () {
+                            // Trigger rebuild when like is updated
+                            setState(() {});
+                          },)),
                     );
                   },
                   child: ListTile(
@@ -108,16 +107,9 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                             Text('$numOfMsg'),
                             GestureDetector(
                               onTap: () async {
-                                setState(() {
-                                  // topicLikes[topic.id] = !isLiked;
-                                });
+                                setState(() {});
                                 // Access the document reference
                                 final documentReference = topic.reference;
-
-                                // Update the num of likes field
-                                // await documentReference.update({
-                                //   'num of likes': isLiked ? numOfLikes - 1 : numOfLikes + 1,
-                                // });
 
                                 // List of users who liked the topic, stored as 'liked by users'
                                 final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
