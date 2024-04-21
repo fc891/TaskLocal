@@ -40,6 +40,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late bool isLiked;
   late List<dynamic> _updatedUsersLiked;
+  late int updatedNumOfMsg;
   bool isTextFieldVisible = false; // Add this variable to track visibility
   final commentBoxController = TextEditingController();
 
@@ -89,7 +90,17 @@ class _DiscussionPageState extends State<DiscussionPage> {
         commentBoxController.clear();
         setState(() {
           isTextFieldVisible = false;
+          updatedNumOfMsg++;
         });
+                // Increment 'num of msg' in the database
+        final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail).collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+        
+        await topicDocRef.update({
+          'num of msg': updatedNumOfMsg
+        });
+        if (widget.onLikeUpdated != null) {
+          widget.onLikeUpdated!();
+        }
       } else {
         // Show an error message requiring user to fill in the fields 
         showDialog(
@@ -131,6 +142,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
     isLiked = widget.usersLiked.contains(_auth.currentUser!.email);
     _updatedUsersLiked = List.from(widget.usersLiked); // Initialize the updated users liked list
     isTextFieldVisible = widget.isTextFieldVisible;
+    updatedNumOfMsg = widget.numOfMsg;
   }
 
   // Function to update database and call callback
@@ -213,7 +225,8 @@ class _DiscussionPageState extends State<DiscussionPage> {
                     )
                   ),
                   SizedBox(width: 8),
-                  Text(widget.numOfMsg.toString()),
+                  // Text(widget.numOfMsg.toString()),
+                  Text(updatedNumOfMsg.toString()),
                   SizedBox(width: 16),
                   GestureDetector(
                     onTap: _updateDatabaseAndCallback, // Call function on tap
@@ -241,14 +254,6 @@ class _DiscussionPageState extends State<DiscussionPage> {
                     children: [
                       Container(
                         height: 200,
-                        // decoration: BoxDecoration(
-                        //   color: Theme.of(context).colorScheme.tertiary,
-                        //   borderRadius: BorderRadius.circular(10),
-                        //   border: Border.all(
-                        //     color: Theme.of(context).colorScheme.secondary,
-                        //     width: 1,
-                        //   ),
-                        // ),
                         child: TextField(
                           controller: commentBoxController,
                           maxLines: null,
