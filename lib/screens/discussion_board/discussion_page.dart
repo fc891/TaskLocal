@@ -12,6 +12,7 @@ class DiscussionPage extends StatefulWidget {
   final int numOfMsg;
   final List<dynamic> usersLiked;
   final String mmddyy;
+  final String time;
   final String timeWithSeconds;
   final Function? onLikeUpdated; // Callback function
   final bool isTextFieldVisible;
@@ -26,6 +27,7 @@ class DiscussionPage extends StatefulWidget {
     required this.numOfMsg,
     required this.usersLiked,
     required this.mmddyy,
+    required this.time,
     required this.timeWithSeconds,
     this.onLikeUpdated, // Receive the callback function
     required this.isTextFieldVisible,
@@ -43,6 +45,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
   late int updatedNumOfMsg;
   bool isTextFieldVisible = false; // Add this variable to track visibility
   final commentBoxController = TextEditingController();
+  String sortBy = 'New';
 
   // when user presses the submit button, stores all the inputs of the user to the db
   void _submitPost() async {
@@ -75,6 +78,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
           'text': commentBox,
           'email': _auth.currentUser!.email,
           'username': taskerInfo['username'],
+          'date': currentDateTime,
           'date posted': date,
           'date edited': date,
           'time': time,
@@ -198,7 +202,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                   Icon(Icons.person),
                   SizedBox(width: 8),
                   Text(
-                    '${widget.username} - ${widget.mmddyy}',
+                    '${widget.username} - ${widget.mmddyy} ${widget.time}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).colorScheme.secondary,
@@ -306,66 +310,125 @@ class _DiscussionPageState extends State<DiscussionPage> {
                   ),
                 ),
                 
-              StreamBuilder<QuerySnapshot>(
-                stream: _firestore
-                    .collection('Tasker Discussion Board')
-                    .doc(widget.topicPosterEmail)
-                    .collection('Posted Topics')
-                    .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
-                    .collection('Comments')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else {
-                    final comments = snapshot.data!.docs;
-                    if (comments.isEmpty) {
-                      return SizedBox(); // Return an empty container if no comments found
-                    }
-                    // Map comments to ListTiles
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: comments.length,
-                      itemBuilder: (context, index) {
-                        final commentData = comments[index].data() as Map<String, dynamic>; // Explicit cast
-                        // Ensure that commentData is not null
-                        if (commentData.isNotEmpty) {
-                          // Safely access fields using '?'
-                          final commentText = commentData['text'] as String?;
-                          final username = commentData['username'] as String?;
-                          final datePosted = commentData['date posted'] as String?;
-                          final time = commentData['time'] as String?;
-
-                          // Check for nullability before using the values
-                          if (commentText != null && username != null && datePosted != null && time != null) {
-                            // Create a ListTile for each comment
-                            return ListTile(
-                              title: Text(commentText),
-                              subtitle: 
-                                Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('$username'),
-                                  Text('$datePosted $time'),
-                                  Text(commentText),
-                                ],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    // padding: EdgeInsets.only(right: 20.0),
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.tertiary, 
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      // user can select the type of length that corresponds to their amount of experience
+                      child: DropdownButton<String>(
+                        value: sortBy,
+                        icon: Icon(Icons.arrow_drop_down, color: Colors.white,),
+                        iconSize: 30,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black),
+                        dropdownColor: Theme.of(context).colorScheme.tertiary,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            sortBy = newValue!;
+                          });
+                        },
+                        items: <String>['New', 'Old']
+                          .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(value, style: TextStyle(color: Colors.white)),
                               ),
-                              // Add additional fields from commentData as needed
                             );
-                          }
+                          }).toList(),
+                      ),
+                    ),
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: _firestore
+                        .collection('Tasker Discussion Board')
+                        .doc(widget.topicPosterEmail)
+                        .collection('Posted Topics')
+                        .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
+                        .collection('Comments')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else {
+                        final comments = snapshot.data!.docs;
+                        if (comments.isEmpty) {
+                          return SizedBox(); // Return an empty container if no comments found
                         }
-                        // Return an empty container if any required field is null
-                        return Container();
-                      },
-                    );
-                  }
-                },
+
+                        // Sort comments based on selected value
+                        if (sortBy == 'New') {
+                          comments.sort((a, b) {
+                            DateTime dateA = a['date'].toDate();
+                            DateTime dateB = b['date'].toDate();
+                            return dateB.compareTo(dateA); // Sort in descending order (latest first)
+                          });
+                        } else if (sortBy == 'Old') {
+                          comments.sort((a, b) {
+                            DateTime dateA = a['date'].toDate();
+                            DateTime dateB = b['date'].toDate();
+                            return dateA.compareTo(dateB); // Sort in ascending order (oldest first)
+                          });
+                        }
+
+                        // Map comments to ListTiles
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: comments.length,
+                          itemBuilder: (context, index) {
+                            final commentData = comments[index].data() as Map<String, dynamic>; // Explicit cast
+                            // Ensure that commentData is not null
+                            if (commentData.isNotEmpty) {
+                              // Safely access fields using '?'
+                              final commentText = commentData['text'] as String?;
+                              final username = commentData['username'] as String?;
+                              final datePosted = commentData['date posted'] as String?;
+                              final time = commentData['time'] as String?;
+                  
+                              // Check for nullability before using the values
+                              if (commentText != null && username != null && datePosted != null && time != null) {
+                                // Create a ListTile for each comment
+                                return ListTile(
+                                  contentPadding: EdgeInsets.all(0),
+                                  title: Text(commentText),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('$username'),
+                                      Text('$datePosted $time'),
+                                      Text(commentText),
+                                    ],
+                                  ),
+                                  // Add additional fields from commentData as needed
+                                );
+                              }
+                            }
+                            // Return an empty container if any required field is null
+                            return Container();
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
           ),
