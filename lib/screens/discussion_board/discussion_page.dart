@@ -182,12 +182,37 @@ class _DiscussionPageState extends State<DiscussionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                widget.taskCategory,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+              Row(
+                children: [
+                  Text(
+                    widget.taskCategory,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  Spacer(),
+                  if (_auth.currentUser!.email == widget.topicPosterEmail)
+                    IconButton(
+                      onPressed: () async {
+                        // Get a reference to the document to be deleted
+                        final docRef = _firestore
+                            .collection('Tasker Discussion Board')
+                            .doc(widget.topicPosterEmail)
+                            .collection('Posted Topics')
+                            .doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+
+                        // Delete the document
+                        await docRef.delete();
+                        setState(() {
+                          
+                        });
+                        // go back to the DiscussionBoardHome (previous) screen
+                        Navigator.pop(context, true);
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
+                ],
               ),
               SizedBox(height: 8),
               Text(
@@ -402,22 +427,48 @@ class _DiscussionPageState extends State<DiscussionPage> {
                               final username = commentData['username'] as String?;
                               final datePosted = commentData['date posted'] as String?;
                               final time = commentData['time'] as String?;
-                  
+                              final timeWithSeconds = commentData['time with seconds'] as String?;
+                              final email = commentData['email']as String?;
+                                          
                               // Check for nullability before using the values
                               if (commentText != null && username != null && datePosted != null && time != null) {
                                 // Create a ListTile for each comment
-                                return ListTile(
-                                  contentPadding: EdgeInsets.all(0),
-                                  title: Text(commentText),
-                                  subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('$username'),
-                                      Text('$datePosted $time'),
-                                      Text(commentText),
-                                    ],
-                                  ),
-                                  // Add additional fields from commentData as needed
+                                return Row(
+                                  children: [
+                                    Expanded(
+                                      child: ListTile(
+                                        contentPadding: EdgeInsets.all(0),
+                                        title: Text(commentText),
+                                        subtitle: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('$username'),
+                                            Text('$datePosted $time'),
+                                            Text(commentText),
+                                          ],
+                                        ),
+                                        // Add additional fields from commentData as needed
+                                      ),
+                                    ),
+                                    if (_auth.currentUser!.email == email)
+                                      IconButton(
+                                        onPressed: () async {
+                                          // Get a reference to the document to be deleted
+                                          final docRef = _firestore
+                                              .collection('Tasker Discussion Board')
+                                              .doc(widget.topicPosterEmail)
+                                              .collection('Posted Topics')
+                                              .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
+                                              .collection('Comments')
+                                              .doc('${_auth.currentUser!.email}_$timeWithSeconds');
+
+                                          // Delete the document
+                                          await docRef.delete();
+                                          setState(() { });
+                                        },
+                                        icon: Icon(Icons.delete),
+                                      ),
+                                  ],
                                 );
                               }
                             }
