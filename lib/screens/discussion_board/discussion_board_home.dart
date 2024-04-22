@@ -137,7 +137,11 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                                   // Trigger rebuild when like is updated
                                   setState(() {});
                                 }, isTextFieldVisible: false)),
-                          );
+                          ).then((updatedData) {                    
+                            if (updatedData) {
+                              setState(() {});
+                            }
+                          });
                         },
                         child: ListTile(
                           // title: Text(topicTitle),
@@ -158,7 +162,11 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                                               // Trigger rebuild when like is updated
                                               setState(() {});
                                             }, isTextFieldVisible: true)),
-                                      );
+                                      ).then((updatedData) {                    
+                                        if (updatedData) {
+                                          setState(() {});
+                                        }
+                                      });
                                     },
                                     child: Icon(
                                       Icons.message, 
