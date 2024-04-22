@@ -464,7 +464,20 @@ class _DiscussionPageState extends State<DiscussionPage> {
 
                                           // Delete the document
                                           await docRef.delete();
-                                          setState(() { });
+
+                                          setState(() {
+                                            updatedNumOfMsg--;
+                                          });
+                                          // Decrement 'num of msg' in the database
+                                          final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
+                                          .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                          
+                                          await topicDocRef.update({
+                                            'num of msg': updatedNumOfMsg
+                                          });
+                                          if (widget.onLikeUpdated != null) {
+                                            widget.onLikeUpdated!();
+                                          }
                                         },
                                         icon: Icon(Icons.delete),
                                       ),
