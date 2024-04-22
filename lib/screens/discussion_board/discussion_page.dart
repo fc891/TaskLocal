@@ -194,23 +194,44 @@ class _DiscussionPageState extends State<DiscussionPage> {
                   Spacer(),
                   if (_auth.currentUser!.email == widget.topicPosterEmail)
                     IconButton(
-                      onPressed: () async {
-                        // Get a reference to the document to be deleted
-                        final docRef = _firestore
-                            .collection('Tasker Discussion Board')
-                            .doc(widget.topicPosterEmail)
-                            .collection('Posted Topics')
-                            .doc('${widget.topicTitle}_${widget.timeWithSeconds}');
-
-                        // Delete the document
-                        await docRef.delete();
-                        setState(() {
-                          
-                        });
-                        // go back to the DiscussionBoardHome (previous) screen
-                        Navigator.pop(context, true);
-                      },
                       icon: Icon(Icons.delete),
+                      onPressed: () async {
+                        bool confirmed = await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Confirm Deletion'),
+                            content: Text('Are you sure want to delete the discussion topic?'),
+                            backgroundColor: Theme.of(context).colorScheme.tertiary,
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: Text('Confirm'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: Text('Cancel'),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed == true) {                            
+                        // Get a reference to the document to be deleted
+                          final docRef = _firestore
+                              .collection('Tasker Discussion Board')
+                              .doc(widget.topicPosterEmail)
+                              .collection('Posted Topics')
+                              .doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+
+                          // Delete the document
+                          await docRef.delete();
+                          setState(() {
+                            
+                          });
+                          // go back to the DiscussionBoardHome (previous) screen
+                          Navigator.pop(context, true);
+                        }
+                      },
+                      
                     ),
                 ],
               ),
@@ -452,34 +473,53 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                     ),
                                     if (_auth.currentUser!.email == email)
                                       IconButton(
+                                        icon: Icon(Icons.delete),
                                         onPressed: () async {
-                                          // Get a reference to the document to be deleted
-                                          final docRef = _firestore
-                                              .collection('Tasker Discussion Board')
-                                              .doc(widget.topicPosterEmail)
-                                              .collection('Posted Topics')
-                                              .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
-                                              .collection('Comments')
-                                              .doc('${_auth.currentUser!.email}_$timeWithSeconds');
+                                          bool confirmed = await showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: Text('Confirm Deletion'),
+                                              content: Text('Are you sure want to delete the comment?'),
+                                              backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(context).pop(true),
+                                                  child: Text('Confirm'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(context).pop(false),
+                                                  child: Text('Cancel'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                          if (confirmed == true) { // Get a reference to the document to be deleted
+                                            final docRef = _firestore
+                                                .collection('Tasker Discussion Board')
+                                                .doc(widget.topicPosterEmail)
+                                                .collection('Posted Topics')
+                                                .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
+                                                .collection('Comments')
+                                                .doc('${_auth.currentUser!.email}_$timeWithSeconds');
 
-                                          // Delete the document
-                                          await docRef.delete();
+                                            // Delete the document
+                                            await docRef.delete();
 
-                                          setState(() {
-                                            updatedNumOfMsg--;
-                                          });
-                                          // Decrement 'num of msg' in the database
-                                          final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
-                                          .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
-                                          
-                                          await topicDocRef.update({
-                                            'num of msg': updatedNumOfMsg
-                                          });
-                                          if (widget.onLikeUpdated != null) {
-                                            widget.onLikeUpdated!();
+                                            setState(() {
+                                              updatedNumOfMsg--;
+                                            });
+                                            // Decrement 'num of msg' in the database
+                                            final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
+                                            .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                            
+                                            await topicDocRef.update({
+                                              'num of msg': updatedNumOfMsg
+                                            });
+                                            if (widget.onLikeUpdated != null) {
+                                              widget.onLikeUpdated!();
+                                            }
                                           }
                                         },
-                                        icon: Icon(Icons.delete),
                                       ),
                                   ],
                                 );
