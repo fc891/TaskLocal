@@ -454,73 +454,81 @@ class _DiscussionPageState extends State<DiscussionPage> {
                               // Check for nullability before using the values
                               if (commentText != null && username != null && datePosted != null && time != null) {
                                 // Create a ListTile for each comment
-                                return Row(
+                                return Column(
                                   children: [
-                                    Expanded(
-                                      child: ListTile(
-                                        contentPadding: EdgeInsets.all(0),
-                                        title: Text(commentText),
-                                        subtitle: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('$username'),
-                                            Text('$datePosted $time'),
-                                            Text(commentText),
-                                          ],
-                                        ),
-                                        // Add additional fields from commentData as needed
+                                    ListTile(
+                                      contentPadding: EdgeInsets.all(0),
+                                      subtitle: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(commentText),
+                                          Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(username),
+                                                  Text('$datePosted $time'),
+                                                ],
+                                              ),
+                                              SizedBox(width: 20),
+                                              if (_auth.currentUser!.email == email)
+                                                IconButton(
+                                                  icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.secondary),
+                                                  onPressed: () async {
+                                                    bool confirmed = await showDialog(
+                                                      context: context,
+                                                      builder: (context) => AlertDialog(
+                                                        title: Text('Confirm Deletion'),
+                                                        content: Text('Are you sure want to delete the comment?'),
+                                                        backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () => Navigator.of(context).pop(true),
+                                                            child: Text('Confirm'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () => Navigator.of(context).pop(false),
+                                                            child: Text('Cancel'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                    if (confirmed == true) { // Get a reference to the document to be deleted
+                                                      final docRef = _firestore
+                                                          .collection('Tasker Discussion Board')
+                                                          .doc(widget.topicPosterEmail)
+                                                          .collection('Posted Topics')
+                                                          .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
+                                                          .collection('Comments')
+                                                          .doc('${_auth.currentUser!.email}_$timeWithSeconds');
+                                    
+                                                      // Delete the document
+                                                      await docRef.delete();
+                                    
+                                                      setState(() {
+                                                        updatedNumOfMsg--;
+                                                      });
+                                                      // Decrement 'num of msg' in the database
+                                                      final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
+                                                      .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                                      
+                                                      await topicDocRef.update({
+                                                        'num of msg': updatedNumOfMsg
+                                                      });
+                                                      if (widget.onLikeUpdated != null) {
+                                                        widget.onLikeUpdated!();
+                                                      }
+                                                    }
+                                                  },
+                                                ),
+                                              
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    if (_auth.currentUser!.email == email)
-                                      IconButton(
-                                        icon: Icon(Icons.delete),
-                                        onPressed: () async {
-                                          bool confirmed = await showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: Text('Confirm Deletion'),
-                                              content: Text('Are you sure want to delete the comment?'),
-                                              backgroundColor: Theme.of(context).colorScheme.tertiary,
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(context).pop(true),
-                                                  child: Text('Confirm'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(context).pop(false),
-                                                  child: Text('Cancel'),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                          if (confirmed == true) { // Get a reference to the document to be deleted
-                                            final docRef = _firestore
-                                                .collection('Tasker Discussion Board')
-                                                .doc(widget.topicPosterEmail)
-                                                .collection('Posted Topics')
-                                                .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
-                                                .collection('Comments')
-                                                .doc('${_auth.currentUser!.email}_$timeWithSeconds');
-
-                                            // Delete the document
-                                            await docRef.delete();
-
-                                            setState(() {
-                                              updatedNumOfMsg--;
-                                            });
-                                            // Decrement 'num of msg' in the database
-                                            final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
-                                            .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
-                                            
-                                            await topicDocRef.update({
-                                              'num of msg': updatedNumOfMsg
-                                            });
-                                            if (widget.onLikeUpdated != null) {
-                                              widget.onLikeUpdated!();
-                                            }
-                                          }
-                                        },
-                                      ),
+                                    Divider(color: Colors.white),
                                   ],
                                 );
                               }
