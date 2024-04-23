@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/Screens/app_theme/appthemecustomization.dart';
 import 'package:tasklocal/screens/gps_services/current_location.dart';
+import 'package:tasklocal/screens/gps_services/google_maps_service.dart';
 import 'package:tasklocal/screens/profiles/taskereditprofile.dart';
 import 'package:tasklocal/screens/profiles/customereditprofile.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
