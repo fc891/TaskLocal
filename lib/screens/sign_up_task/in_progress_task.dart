@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+
 
 class InProgressTask extends StatefulWidget {
   const InProgressTask({super.key});
@@ -53,6 +55,10 @@ class _InProgressTaskState extends State<InProgressTask> {
                                 itemCount: taskCategory.length,
                                 itemBuilder: (context, index) {
                                   final taskData = taskCategory[index];
+                                  // get the current date and time
+                                  DateTime currentDateTime = DateTime.now();
+                                  final String date = DateFormat('MM/dd/yy').format(currentDateTime); 
+                                  
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     // display the information of the signed up task in a ListTile
@@ -299,58 +305,78 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     },
                                                   ),
                                                 ],
-                                              ) else if (taskData['task accepted'] && !taskData['task started']) ElevatedButton(
-                                                onPressed: () async {
-                                                  bool confirmed = await showDialog(
-                                                    context: context,
-                                                    builder: (context) => AlertDialog(
-                                                      title: Text('Confirm Start'),
-                                                      content: Text('Are you sure you want to start the task?'),
-                                                      backgroundColor: Theme.of(context).colorScheme.tertiary,
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () => Navigator.of(context).pop(true),
-                                                          child: Text('Confirm'),
+                                              ) 
+                                              else if (taskData['task accepted'] && !taskData['task started']) 
+                                                ElevatedButton(
+                                                  onPressed: () async {
+                                                    if(taskData['start date'] == date) {
+                                                      bool confirmed = await showDialog(
+                                                        context: context,
+                                                        builder: (context) => AlertDialog(
+                                                          title: Text('Confirm Start'),
+                                                          content: Text('Are you sure you want to start the task?'),
+                                                          backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(true),
+                                                              child: Text('Confirm'),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(false),
+                                                              child: Text('Cancel'),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        TextButton(
-                                                          onPressed: () => Navigator.of(context).pop(false),
-                                                          child: Text('Cancel'),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                  if (confirmed == true) {
-                                                    try {
-                                                      // update the UI
-                                                      setState(() {
-                                                          _firestore.collection('Task Categories').doc(categoryName)
-                                                          .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                          .collection('In Progress Tasks').doc(taskData['customer email'])
-                                                          .update({'task started': true});
+                                                      );
+                                                      if (confirmed == true) {
+                                                        try {
+                                                          // update the UI
+                                                          setState(() {
+                                                              _firestore.collection('Task Categories').doc(categoryName)
+                                                              .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                              .collection('In Progress Tasks').doc(taskData['customer email'])
+                                                              .update({'task started': true});
+                                                            }
+                                                          );
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('Successfully started task.'),
+                                                            ),
+                                                          );
+                                                        } catch (error) {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text('An error occurred while starting the task.'),
+                                                            ),
+                                                          );
                                                         }
-                                                      );
-                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                        SnackBar(
-                                                          content: Text('Successfully started task.'),
-                                                        ),
-                                                      );
-                                                    } catch (error) {
-                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                        SnackBar(
-                                                          content: Text('An error occurred while starting the task.'),
+                                                      }
+                                                    } else {
+                                                      await showDialog(
+                                                        context: context,
+                                                        builder: (context) => AlertDialog(
+                                                          title: Text('Cannot Start'),
+                                                          content: Text('You cannot start the task until the specificed date'),
+                                                          backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () => Navigator.of(context).pop(true),
+                                                              child: Text('OK'),
+                                                            ),
+                                                          ],
                                                         ),
                                                       );
                                                     }
-                                                  }
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.green[800],
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
-                                                  child: Text("Start", style: TextStyle(color: Colors.white, fontSize: 14)),
-                                                ),
-                                              ) else ElevatedButton(
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors.green[800],
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+                                                    child: Text("Start", style: TextStyle(color: Colors.white, fontSize: 14)),
+                                                  ),
+                                                ) 
+                                              else ElevatedButton(
                                                 onPressed: () async {
                                                   // give user a warning if they really want to delete the task category
                                                   bool confirmed = await showDialog(
@@ -381,7 +407,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       await signedUpGeneral.delete();
 
                                                       // update the number of completed task in personal tasker's collection
-                                                      
+                                                      _firestore.collection('Taskesr').doc(_auth.currentUser!.email).collection('Completed Tasks').doc('completed tasks');
 
                                                       // update the UI
                                                       setState(() {
