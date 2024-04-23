@@ -67,7 +67,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
       // commentsDoc.set({'dummy': 'dummy'});
 
       // for individual purposes
-      final commentsDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Commented Topics').doc('${widget.topicTitle}_$timeWithSeconds');
+      final commentsDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Commented Topics').doc('${_auth.currentUser!.email}_$timeWithSeconds');
 
       final taskerInfo = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
 
@@ -229,10 +229,15 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                           
                                 // Delete the document
                                 await docRef.delete();
-                                setState(() {
-                                  
-                                });
-                                // go back to the DiscussionBoardHome (previous) screen
+                                // setState(() {});
+
+                                // Access the posted topic from the tasker's individual collection
+                                final postedTopicDoc = _firestore.collection('Taskers').doc(_auth.currentUser!.email)
+                                                      .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                // remove the posted topic from the tasker's individual collection
+                                await postedTopicDoc.delete();
+
+                                // go back to the DiscussionBoardHome (previous) screen to update the UI
                                 Navigator.pop(context, true);
                               }
                             },
@@ -536,11 +541,19 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                       });
                                                       // Decrement 'num of msg' in the database
                                                       final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
-                                                      .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                                                      .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
                                                       
                                                       await topicDocRef.update({
                                                         'num of msg': updatedNumOfMsg
                                                       });
+
+                                                      // Access the comment from the tasker's individual collection
+                                                      final commentsDoc = _firestore.collection('Taskers').doc(_auth.currentUser!.email)
+                                                                          .collection('Commented Topics').doc('${_auth.currentUser!.email}_$timeWithSeconds');
+                                                      // remove the comment from the tasker's individual collection
+                                                      await commentsDoc.delete();
+
+                                                      // update the UI for the DiscussionBoardHome (previous) screen
                                                       if (widget.onLikeUpdated != null) {
                                                         widget.onLikeUpdated!();
                                                       }
