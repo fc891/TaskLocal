@@ -182,73 +182,93 @@ class _DiscussionPageState extends State<DiscussionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                height: 40,
+                child: Row(
+                  children: [
+                    Text(
+                      widget.taskCategory,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    Spacer(),
+                    if (_auth.currentUser!.email == widget.topicPosterEmail)
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.delete_outline, color: Theme.of(context).colorScheme.secondary, size: 25),
+                            onPressed: () async {
+                              bool confirmed = await showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('Confirm Deletion'),
+                                  content: Text('Are you sure want to delete the discussion topic?'),
+                                  backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                      child: Text('Confirm'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                      child: Text('Cancel'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirmed == true) {                            
+                              // Get a reference to the document to be deleted
+                                final docRef = _firestore
+                                    .collection('Tasker Discussion Board')
+                                    .doc(widget.topicPosterEmail)
+                                    .collection('Posted Topics')
+                                    .doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                          
+                                // Delete the document
+                                await docRef.delete();
+                                setState(() {
+                                  
+                                });
+                                // go back to the DiscussionBoardHome (previous) screen
+                                Navigator.pop(context, true);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              // SizedBox(height: 8),
+              Text(
+                widget.topicTitle,
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+              SizedBox(height: 8),
               Row(
                 children: [
                   Text(
-                    widget.taskCategory,
+                    '${widget.mmddyy} ${widget.time}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  Spacer(),
-                  if (_auth.currentUser!.email == widget.topicPosterEmail)
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () async {
-                        bool confirmed = await showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Confirm Deletion'),
-                            content: Text('Are you sure want to delete the discussion topic?'),
-                            backgroundColor: Theme.of(context).colorScheme.tertiary,
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(true),
-                                child: Text('Confirm'),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(false),
-                                child: Text('Cancel'),
-                              ),
-                            ],
-                          ),
-                        );
-                        if (confirmed == true) {                            
-                        // Get a reference to the document to be deleted
-                          final docRef = _firestore
-                              .collection('Tasker Discussion Board')
-                              .doc(widget.topicPosterEmail)
-                              .collection('Posted Topics')
-                              .doc('${widget.topicTitle}_${widget.timeWithSeconds}');
-
-                          // Delete the document
-                          await docRef.delete();
-                          setState(() {
-                            
-                          });
-                          // go back to the DiscussionBoardHome (previous) screen
-                          Navigator.pop(context, true);
-                        }
-                      },
-                      
-                    ),
                 ],
-              ),
-              SizedBox(height: 8),
-              Text(
-                widget.topicTitle,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
+              ), 
               Row(
                 children: [
-                  Icon(Icons.person),
+                  Icon(Icons.person, color: Theme.of(context).colorScheme.secondary, size: 20),
                   SizedBox(width: 8),
                   Text(
-                    '${widget.username} - ${widget.mmddyy} ${widget.time}',
+                    widget.username,
                     style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).colorScheme.secondary,
@@ -260,7 +280,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
               Text(
                 widget.text,
                 style: TextStyle(fontSize: 16),
-              ),
+              ),              
               SizedBox(height: 16),
               Row(
                 children: [
@@ -271,7 +291,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                       });
                     },
                     child: Icon(
-                      Icons.message
+                      Icons.message, color: Theme.of(context).colorScheme.secondary,
                     )
                   ),
                   SizedBox(width: 8),
@@ -359,42 +379,47 @@ class _DiscussionPageState extends State<DiscussionPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    // padding: EdgeInsets.only(right: 20.0),
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.tertiary, 
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.white,
+                  Row(
+                    children: [
+                      Text( 'Sort by:', style: TextStyle(color: Colors.white)),
+                      SizedBox(width: 10),
+                      Container(
+                        // padding: EdgeInsets.only(right: 20.0),
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.tertiary, 
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.white,
+                          ),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          // user can select the type of length that corresponds to their amount of experience
+                          child: DropdownButton<String>(
+                            value: sortBy,
+                            icon: Icon(Icons.arrow_drop_down, color: Colors.white,),
+                            style: TextStyle(color: Colors.black),
+                            dropdownColor: Theme.of(context).colorScheme.tertiary,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                sortBy = newValue!;
+                              });
+                            },
+                            items: <String>['New', 'Old']
+                              .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(value, style: TextStyle(color: Colors.white)),
+                                  ),
+                                );
+                              }).toList(),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      // user can select the type of length that corresponds to their amount of experience
-                      child: DropdownButton<String>(
-                        value: sortBy,
-                        icon: Icon(Icons.arrow_drop_down, color: Colors.white,),
-                        iconSize: 30,
-                        elevation: 16,
-                        style: TextStyle(color: Colors.black),
-                        dropdownColor: Theme.of(context).colorScheme.tertiary,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            sortBy = newValue!;
-                          });
-                        },
-                        items: <String>['New', 'Old']
-                          .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(value, style: TextStyle(color: Colors.white)),
-                              ),
-                            );
-                          }).toList(),
-                      ),
-                    ),
+                    ],
                   ),
                   StreamBuilder<QuerySnapshot>(
                     stream: _firestore
@@ -474,7 +499,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                               SizedBox(width: 20),
                                               if (_auth.currentUser!.email == email)
                                                 IconButton(
-                                                  icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.secondary),
+                                                  icon: Icon(Icons.delete_outline, color: Theme.of(context).colorScheme.secondary, size: 25),
                                                   onPressed: () async {
                                                     bool confirmed = await showDialog(
                                                       context: context,
@@ -502,10 +527,10 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                           .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
                                                           .collection('Comments')
                                                           .doc('${_auth.currentUser!.email}_$timeWithSeconds');
-                                    
+                                                                                    
                                                       // Delete the document
                                                       await docRef.delete();
-                                    
+                                                                                    
                                                       setState(() {
                                                         updatedNumOfMsg--;
                                                       });
