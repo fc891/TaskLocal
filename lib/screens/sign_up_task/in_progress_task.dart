@@ -407,7 +407,23 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       await signedUpGeneral.delete();
 
                                                       // update the number of completed task in personal tasker's collection
-                                                      _firestore.collection('Taskesr').doc(_auth.currentUser!.email).collection('Completed Tasks').doc('completed tasks');
+                                                      final amntCompDoc = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Completed Tasks').doc('amount completed');
+                                                      // transaction used to update the value atomically
+                                                      await _firestore.runTransaction((transact) async {
+                                                        // Retrieve current value of 'amount completed'
+                                                        final docSnapshot = await transact.get(amntCompDoc);
+                                                        if (docSnapshot.exists) {
+                                                          // if there is data retrieve it, else assign variable to 0. And increment by 1
+                                                          final currentAmount = docSnapshot.data()?['amount completed'] ?? 0;
+                                                          final newAmount = currentAmount + 1;
+
+                                                          // Update 'amount completed' to plus 1
+                                                          transact.update(amntCompDoc, {'amount completed': newAmount});
+                                                        } else {
+                                                          // If doc is not present, create it along with 'amount completed' assigned to 1
+                                                          transact.set(amntCompDoc, {'amount completed': 1});
+                                                        }
+                                                      });
 
                                                       // update the UI
                                                       setState(() {
