@@ -7,10 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/screens/customer_requests/tasker_selection.dart';
 import 'package:tasklocal/screens/customer_requests/address_book.dart';
 
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
 class AddressInputPage extends StatefulWidget {
   final String jobCategory;
 
-  const AddressInputPage({Key? key, required this.jobCategory}) : super(key: key);
+  const AddressInputPage({Key? key, required this.jobCategory})
+      : super(key: key);
 
   @override
   _AddressInputPageState createState() => _AddressInputPageState();
@@ -20,6 +24,10 @@ class _AddressInputPageState extends State<AddressInputPage> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _unitController = TextEditingController();
   bool _isGeolocationPermissionGranted = false;
+
+  String? currentAddress;
+  Position? currentPosition;
+  String loadingText = "Use Current Location";
 
   void _navigateToTaskerSelectionPage(String jobCategory) {
     if (_addressController.text.trim().isEmpty) {
@@ -45,9 +53,98 @@ class _AddressInputPageState extends State<AddressInputPage> {
     }
   }
 
-  void _handleGeolocationPermission() {
+  //Grabs user's current address
+  void _handleGeolocationPermission() async {
+    await getLocation();
     setState(() {
+      //Getting geolocation and then setting "address" String variable to the current user's device location
       _isGeolocationPermissionGranted = true;
+    });
+  }
+
+  //Sets addressController to current address when pressed by user
+  void _setAddressToCurrentLocation() {
+    setState(() {
+      _addressController.text = currentAddress!;
+    });
+  }
+
+  //Check for GPS services on the current device. If permissions are disabled, prompt user to enable.
+  Future<bool> checkLocationPermission() async {
+    bool isServiceEnabled;
+    LocationPermission permission;
+
+    isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!isServiceEnabled) {
+      //If GPS services are disabled, request to enable
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "GeoLocation services disabled, please enable location services for this app")));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      //Try to request access to GPS services
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        //If user declines access to GPS services, prompt to enable
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                "App was denied access to location permissions, please enable location services for this app")));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      //If user's device has GPS services disabled, prompt to enable
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "Location permissions are permanently denied, please enable location services for this app")));
+      return false;
+    }
+    return true;
+  }
+
+  //Function to get user's current location
+  Future<void> getLocation() async {
+    setState(() {
+      loadingText = "Loading...";
+    });
+    final hasPermission = await checkLocationPermission();
+    if (hasPermission == false) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() async {
+        currentPosition = position;
+        await getAddressFromLatLong(currentPosition!);
+        loadingText = "Use Current Location";
+      });
+    }).catchError((e) {
+      print("Error Detected Getting Location");
+      debugPrint(e);
+    });
+  }
+
+  //Function to convert from a lat/long (Position) to a string address
+  Future<void> getAddressFromLatLong(Position position) async {
+    String street = "";
+    String city = "";
+    String state = "";
+    String zip = "";
+    String country = "";
+    await placemarkFromCoordinates(position.latitude, position.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        street = "${place.street}";
+        city = "${place.locality}";
+        state = "${place.administrativeArea}";
+        zip = "${place.postalCode}";
+        country = "${place.country}";
+        currentAddress = street + ", " + city + ", " + state + ", " + zip + ", " + country;
+      });
+    }).catchError((e) {
+      debugPrint(e);
     });
   }
 
@@ -74,11 +171,13 @@ class _AddressInputPageState extends State<AddressInputPage> {
             .collection('Customers')
             .doc(user.email) // Use user's email as document ID
             .collection('Customer Address')
-            .doc('latestAddressInput') // Assuming there's a document named 'latestAddressInput' holding the latestAddressInput address
+            .doc(
+                'latestAddressInput') // Assuming there's a document named 'latestAddressInput' holding the latestAddressInput address
             .get();
 
         if (addressSnapshot.exists) {
-          Map<String, dynamic> addressData = addressSnapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> addressData =
+              addressSnapshot.data() as Map<String, dynamic>;
           setState(() {
             _addressController.text = addressData['address'] ?? '';
             _unitController.text = addressData['unit'] ?? '';
@@ -133,7 +232,9 @@ class _AddressInputPageState extends State<AddressInputPage> {
         // Navigate to tasker selection page
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TaskerSelectionPage(jobCategory: jobCategory)),
+          MaterialPageRoute(
+              builder: (context) =>
+                  TaskerSelectionPage(jobCategory: jobCategory)),
         );
       } else {
         throw 'User not logged in.';
@@ -206,10 +307,17 @@ class _AddressInputPageState extends State<AddressInputPage> {
                     ),
                   ),
                   SizedBox(height: 10),
+                  //TextButton that displays "Use Current Location" if not currently grabbing address. Otherwise, display "Loading..." while grabbing address.
                   TextButton(
                     onPressed: _handleGeolocationPermission,
-                    child: Text('Use Current Location'),
+                    child: Text(loadingText, style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
+                  //Display address if found
+                  if (currentAddress != null)
+                    TextButton(
+                      onPressed: _setAddressToCurrentLocation,
+                      child: Text("$currentAddress"),
+                    ),
                   SizedBox(height: 10),
                   SizedBox(height: 20),
                   Text(
@@ -223,19 +331,25 @@ class _AddressInputPageState extends State<AddressInputPage> {
                         onPressed: () {
                           _loadFromAddressBook(context);
                         },
-                        icon: Icon(Icons.contacts, color: Colors.black), // Change icon color to black
+                        icon: Icon(Icons.contacts,
+                            color: Colors.black), // Change icon color to black
                         label: Text(
                           'Address Book',
-                          style: TextStyle(color: Colors.black), // Change text color to black
+                          style: TextStyle(
+                              color:
+                                  Colors.black), // Change text color to black
                         ),
                       ),
                       SizedBox(width: 10),
                       ElevatedButton.icon(
                         onPressed: _loadRecentAddresses,
-                        icon: Icon(Icons.history, color: Colors.black), // Change icon color to black
+                        icon: Icon(Icons.history,
+                            color: Colors.black), // Change icon color to black
                         label: Text(
                           'Most Recent',
-                          style: TextStyle(color: Colors.black), // Change text color to black
+                          style: TextStyle(
+                              color:
+                                  Colors.black), // Change text color to black
                         ),
                       ),
                     ],
@@ -255,7 +369,9 @@ class _AddressInputPageState extends State<AddressInputPage> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
                     'Continue',
-                    style: TextStyle(fontSize: 18, color: Colors.black), // Change text color to black
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black), // Change text color to black
                   ),
                 ),
               ),
