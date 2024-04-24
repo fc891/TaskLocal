@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:tasklocal/screens/discussion_board/discussion_page.dart';
 
 class PostedTopicsHistory extends StatefulWidget {
-  const PostedTopicsHistory({super.key});
+  final Function onLikeUpdated;
+  const PostedTopicsHistory({super.key, required this.onLikeUpdated});
+  // const PostedTopicsHistory({super.key});
 
   @override
   State<PostedTopicsHistory> createState() => _PostedTopicsHistoryState();
@@ -114,6 +116,11 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                                                                                       onLikeUpdated: () {
                                     // Trigger rebuild when like is updated
                                     setState(() {});
+
+                                    // Trigger rebuild when like is updated
+                                            if (widget.onLikeUpdated != null) {
+                                              widget.onLikeUpdated();
+                                            }
                                   }, isTextFieldVisible: false)),
                             ).then((updatedData) {                    
                               if (updatedData) {
@@ -135,10 +142,16 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => DiscussionPage(topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                                                  numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, time: time, timeWithSeconds: timeWithSeconds,
+                                                                                                  numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: mmddyy, time: time, timeWithSeconds: timeWithSeconds,
                                                                                                   onLikeUpdated: () {
                                                 // Trigger rebuild when like is updated
                                                 setState(() {});
+
+                                                // Trigger rebuild when like is updated
+                                            if (widget.onLikeUpdated != null) {
+                                              widget.onLikeUpdated();
+                                            }
+
                                               }, isTextFieldVisible: true)),
                                         ).then((updatedData) {                    
                                           if (updatedData) {
@@ -175,6 +188,13 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                                         await documentReference.update({
                                           'liked by users': likedByUsers,
                                         });
+
+                                            // Trigger rebuild when like is updated
+                                            if (widget.onLikeUpdated != null) {
+                                              widget.onLikeUpdated();
+                                            }
+
+
                                       },
                                       child: Icon(
                                         isLiked ? Icons.favorite : Icons.favorite_border, 
@@ -185,7 +205,7 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                                   ],
                                 ),
                                 Text('$topicTitle'),
-                                Text('@$username - $formattedDate $time'),
+                                Text('$formattedDate $time'),
                               ],
                             ),
                           ),
@@ -203,63 +223,27 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
   }
 
   Future<List<DocumentSnapshot>> _getPostedTopics(String sortBy) async {
-    // Map to store the data
-    Map<String, List<DocumentSnapshot>> postedTopicsData = {};
-
     // Access the collection that stores user's signed up tasks
-    final taskers = await _firestore.collection('Tasker Discussion Board').get();
-
-    // Loop through each document in the Tasker Discussion Board collection
-    for (var taskerDoc in taskers.docs) {
-      // Access the subcollection Posted Topics for each tasker
-      final postedTopicsCollection = await taskerDoc.reference.collection('Posted Topics').get();
-
-      // List to store the documents in the Posted Topics subcollection
-      List<DocumentSnapshot> postedTopics = postedTopicsCollection.docs;
-      
-      // Add the list of posted topics to the map with the tasker's document ID as the key
-      postedTopicsData[taskerDoc.id] = postedTopics;
-    }
-    // Return the map containing the data
-    List<DocumentSnapshot> combinedPostedTopics = [];
-  
-    // Combine all posted topics into a single list
-    for (var postedTopics in postedTopicsData.values) {
-      combinedPostedTopics.addAll(postedTopics);
-    }
-
-    // // Sort the combined list of posted topics by date
-    // combinedPostedTopics.sort((a, b) {
-    //   // Assuming the date is stored in a field named 'date' in each document
-    //   DateTime dateA = a['date'].toDate(); // Convert Firebase Timestamp to DateTime
-    //   DateTime dateB = b['date'].toDate(); // Convert Firebase Timestamp to DateTime
-    //   return dateB.compareTo(dateA); // Sort in descending order (latest first)
-    // });
+    final postedTopicsCollection = await _firestore.collection('Tasker Discussion Board').doc(_auth.currentUser!.email)
+                          .collection('Posted Topics').get();
+                          
+    // List to store the documents in the Posted Topics subcollection
+    List<DocumentSnapshot> postedTopics = postedTopicsCollection.docs;
 
     // Sort comments based on selected value
     if (sortBy == 'New') {
-      combinedPostedTopics.sort((a, b) {
+      postedTopics.sort((a, b) {
         DateTime dateA = a['date'].toDate();
         DateTime dateB = b['date'].toDate();
         return dateB.compareTo(dateA); // Sort in descending order (latest first)
       });
     } else if (sortBy == 'Old') {
-      combinedPostedTopics.sort((a, b) {
+      postedTopics.sort((a, b) {
         DateTime dateA = a['date'].toDate();
         DateTime dateB = b['date'].toDate();
         return dateA.compareTo(dateB); // Sort in ascending order (oldest first)
       });
     }
-
-    // for (DocumentSnapshot doc in combinedPostedTopics) {
-    //   print('Document ID: ${doc.id}');
-    //   // Assuming fields in the document are 'title', 'content', and 'date'
-    //   print('Title: ${doc['task category']}');
-    //   // Convert Firebase Timestamp to DateTime for the 'date' field
-    //   DateTime date = doc['date'].toDate();
-    //   print('Date: $date');
-    //   print('--------------------------------------');
-    // }
-    return combinedPostedTopics;
+    return postedTopics;
   }
 }

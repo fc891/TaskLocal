@@ -5,7 +5,8 @@ import 'package:tasklocal/screens/discussion_board/posted_comments_history.dart'
 import 'package:tasklocal/screens/discussion_board/posted_topics_history.dart';
 
 class PostedTopicsCommentsHistoryHome extends StatefulWidget {
-  const PostedTopicsCommentsHistoryHome({super.key});
+  final Function? onLikeUpdated;
+  const PostedTopicsCommentsHistoryHome({super.key, this.onLikeUpdated});
 
   @override
   State<PostedTopicsCommentsHistoryHome> createState() => _PostedTopicsCommentsHistoryHomeState();
@@ -38,10 +39,18 @@ class _PostedTopicsCommentsHistoryHomeState extends State<PostedTopicsCommentsHi
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           // navigate to the pages
           children: [
-            PostedTopicsHistory(),
+            // PostedTopicsHistory(),
+            PostedTopicsHistory(
+              onLikeUpdated: () {
+                // Trigger rebuild when like is updated
+                if (widget.onLikeUpdated != null) {
+                  widget.onLikeUpdated!();
+                }
+              },
+            ),
             PostedCommentsHistory(),
           ],
         ),
