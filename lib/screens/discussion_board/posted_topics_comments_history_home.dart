@@ -51,7 +51,14 @@ class _PostedTopicsCommentsHistoryHomeState extends State<PostedTopicsCommentsHi
                 }
               },
             ),
-            PostedCommentsHistory(),
+            PostedCommentsHistory(
+              onLikeUpdated: () {
+                // Trigger rebuild when like is updated
+                if (widget.onLikeUpdated != null) {
+                  widget.onLikeUpdated!();
+                }
+              },
+            ),
           ],
         ),
       ),
