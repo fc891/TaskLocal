@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasklocal/Screens/app_theme/appthemecustomization.dart';
 import 'package:tasklocal/screens/gps_services/current_location.dart';
-import 'package:tasklocal/screens/gps_services/google_maps_service.dart';
+import 'package:tasklocal/screens/gps_services/marker_info.dart';
 import 'package:tasklocal/screens/profiles/taskereditprofile.dart';
 import 'package:tasklocal/screens/profiles/customereditprofile.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
@@ -92,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
         //backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
-          title: Text(widget.userType),
+          title: Text("${widget.userType} Settings Page"),
           centerTitle: true,
           //backgroundColor: Colors.green[800],
           elevation: 0.0,
@@ -168,14 +168,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     color: Theme.of(context).colorScheme.secondary)),
             trailing: Text(""),
             onTap: () {
-              if (widget.userType == "Taskers") { //If current user is type tasker, lead to tasker edit profile page
+              if (widget.userType == "Taskers") {
+                //If current user is type tasker, lead to tasker edit profile page
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => TaskerEditProfile()));
-              }
-              else if(widget.userType == "Customers"){ //If current user is type customer, lead to customer edit profile page
-                  Navigator.push(
+              } else if (widget.userType == "Customers") {
+                //If current user is type customer, lead to customer edit profile page
+                Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => CustomerEditProfile()));
@@ -224,8 +225,9 @@ class _SettingsPageState extends State<SettingsPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          CurrentLocation())); //Replace with actual screen name
+                      builder: (context) => CurrentLocation(
+                          userType: widget
+                              .userType))); //Replace with actual screen name
             },
           ),
           //Manage notifications (turn on/off)
