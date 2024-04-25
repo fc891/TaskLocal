@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:ffi' as ffi;
 import 'dart:convert';
+//import 'dart:html';
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
@@ -20,6 +21,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+//import 'package:location/location.dart' as loc;
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
@@ -34,6 +37,8 @@ class CurrentLocation extends StatefulWidget {
 
 //Bill's Current Location Screen
 class CurrentLocationState extends State<CurrentLocation> {
+  //loc.Location _locationController = new loc.Location();
+
   bool hasLocationSelected = false;
   bool _displayOtherUserInfo = false;
   String? currentAddress;
@@ -44,17 +49,28 @@ class CurrentLocationState extends State<CurrentLocation> {
   double selectedDistance = 0.0;
 
   late GoogleMapController mapController;
+  final Completer<GoogleMapController> _mapController =
+      Completer<GoogleMapController>();
   List<Marker> _markers = [];
   List<Marker> _markersOtherUser = [];
   List<LatLng> _positions = [];
   List<LatLng> _positionsOtherUser = [];
   LatLng _centerOtherUser = LatLng(33.7854, -118.1086);
-  LatLng _center = LatLng(33.7830, -118.1129);
+  LatLng _center = LatLng(33.7791, -118.1128);
+
+  Map<PolylineId, Polyline> polylines = {};
 
   @override
   void initState() {
     super.initState();
-    getLocation();
+    getLocation().then((_) => {
+          print("DONE1"),
+          getPolylinePoints().then((coordinates) => {
+                print("DONE2"),
+                createPolyline(coordinates),
+              })
+        });
+    //getLocationUpdates();
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -104,16 +120,87 @@ class CurrentLocationState extends State<CurrentLocation> {
     if (hasPermission == false) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
-      setState(() async {
+      setState(() {
         currentPosition = position;
-        await getAddressFromLatLong(currentPosition!);
+        getAddressFromLatLong(currentPosition!);
         hasLocationSelected = true;
         _center = LatLng(position.latitude, position.longitude);
       });
+      loadMarkerData();
+      setState(() {
+        //refresh ui
+      });
     }).catchError((e) {
-      print("Error Detected Getting Location");
+      print("Error Detected while Getting Location: $e");
       debugPrint(e);
     });
+  }
+
+  // Future<void> getLocationUpdates() async {
+  //   bool _serviceEnabled;
+  //   loc.PermissionStatus _permissionGranted;
+
+  //   _serviceEnabled = await _locationController.serviceEnabled();
+  //   if (_serviceEnabled) {
+  //     _serviceEnabled = await _locationController.requestService();
+  //   } else {
+  //     return;
+  //   }
+
+  //   _permissionGranted = await _locationController.hasPermission();
+  //   if (_permissionGranted == loc.PermissionStatus.denied) {
+  //     _permissionGranted = await _locationController.requestPermission();
+  //     if (_permissionGranted != loc.PermissionStatus.granted) {
+  //       return;
+  //     }
+  //   }
+
+  //   _locationController.onLocationChanged.listen((loc.LocationData currentLoc) {
+  //     if (currentLoc.latitude != null && currentLoc.longitude != null) {
+  //       setState(() {
+  //         _center = LatLng(currentLoc.latitude!, currentLoc.longitude!);
+  //       });
+  //       print(_center);
+  //     }
+  //   });
+  // }
+
+  Future<List<LatLng>> getPolylinePoints() async {
+    List<LatLng> polylineCoords = [];
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        globals.mapsAPIKey,
+        PointLatLng(_center.latitude, _center.longitude),
+        PointLatLng(_centerOtherUser.latitude, _centerOtherUser.longitude),
+        travelMode: TravelMode.walking);
+
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoords.add(LatLng(point.latitude, point.longitude));
+      });
+    } else {
+      print(result.errorMessage);
+    }
+    print("Got polyline coords: $polylineCoords");
+    return polylineCoords;
+  }
+
+  void createPolyline(List<LatLng> polylineCoords) async {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+        polylineId: id, color: Colors.green, points: polylineCoords, width: 8);
+    setState(() {
+      polylines[id] = polyline;
+    });
+  }
+
+  Future<void> _cameraToPosition(LatLng pos) async {
+    final GoogleMapController cont = await _mapController.future;
+    CameraPosition _newCamPos = CameraPosition(
+      target: pos,
+      zoom: 14.0,
+    );
+    await cont.animateCamera(CameraUpdate.newCameraPosition(_newCamPos));
   }
 
   //Function to convert from a lat/long (Position) to a string address
@@ -414,60 +501,66 @@ class CurrentLocationState extends State<CurrentLocation> {
       //backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
-        title: Text('${widget.userType} Location Services', style: TextStyle(fontSize: 22.0)),
+        title: Text('${widget.userType} Location Services',
+            style: TextStyle(fontSize: 22.0)),
         centerTitle: true,
         //backgroundColor: Colors.green[800],
         elevation: 0.0,
       ),
       resizeToAvoidBottomInset: false,
-      body: Center(
-        child: Column(children: [
-          //Display a map
-          //if (hasLocationSelected)
-          SizedBox(
-            width: 400.0,
-            height: 600.0,
-            child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition:
-                  CameraPosition(target: _center, zoom: 14.0),
-              markers: Set<Marker>.of(_markers),
-              mapType: MapType.normal,
+      body: _center == null
+          ? const Center(
+              child: Text("Loading..."),
+            )
+          : Center(
+              child: Column(children: [
+                //Display a map
+                //if (hasLocationSelected)
+                SizedBox(
+                  width: 400.0,
+                  height: 600.0,
+                  child: GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition:
+                        CameraPosition(target: _center, zoom: 14.0),
+                    markers: Set<Marker>.of(_markers),
+                    mapType: MapType.normal,
+                    polylines: Set<Polyline>.of(polylines.values),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                //Selected user details
+                if (_displayOtherUserInfo)
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 10.0),
+                      child: Text(
+                          "$selectedFirstName $selectedLastName @$selectedUserName",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            letterSpacing: 1.0,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ))),
+                if (_displayOtherUserInfo)
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                      child: Text("$selectedDistance km away",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            letterSpacing: 1.0,
+                            fontSize: 16.0,
+                          ))),
+                // const SizedBox(height: 20.0),
+                //Select location button
+                // ElevatedButton(
+                //     child:
+                //         Text("Get Location", style: TextStyle(color: Colors.black)),
+                //     onPressed: () async {
+                //       await getLocation();
+                //     }),
+                // const SizedBox(height: 20.0),
+              ]),
             ),
-          ),
-          const SizedBox(height: 20.0),
-          //Selected user details
-          if (_displayOtherUserInfo)
-            Padding(
-                padding: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 10.0),
-                child: Text(
-                    "$selectedFirstName $selectedLastName @$selectedUserName",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      letterSpacing: 1.0,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ))),
-          if (_displayOtherUserInfo)
-            Padding(
-                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                child: Text("$selectedDistance km away",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      letterSpacing: 1.0,
-                      fontSize: 16.0,
-                    ))),
-          // const SizedBox(height: 20.0),
-          //Select location button
-          // ElevatedButton(
-          //     child:
-          //         Text("Get Location", style: TextStyle(color: Colors.black)),
-          //     onPressed: () async {
-          //       await getLocation();
-          //     }),
-          // const SizedBox(height: 20.0),
-        ]),
-      ),
     );
   }
 }
