@@ -1,10 +1,12 @@
+// Contributors: Richard N.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/discussion_board/discussion_page.dart';
 import 'package:tasklocal/screens/discussion_board/post_discussion_topic.dart';
 import 'package:intl/intl.dart';
-
+import 'package:tasklocal/screens/discussion_board/posted_topics_comments_history_home.dart';
 
 class DiscussionBoardHome extends StatefulWidget {
   const DiscussionBoardHome({super.key});
@@ -25,15 +27,21 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
         title: Text("Discussion Board"),
         centerTitle: true,
         actions: [
+          // navigate to history page
           IconButton(
             icon: Icon(Icons.history),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PostDiscussionTopic()),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        PostedTopicsCommentsHistoryHome(onLikeUpdated: () {
+                          setState(() {});
+                        })),
               );
             },
           ),
+          // navigate to post discussion topic
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
@@ -42,9 +50,7 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                 MaterialPageRoute(builder: (context) => PostDiscussionTopic()),
               ).then((value) {
                 if (value == true) {
-                  setState(() {
-                    // Trigger a rebuild of the widget
-                  });
+                  setState(() {});
                 }
               });
             },
@@ -71,42 +77,47 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                 children: [
                   Row(
                     children: [
-                      Text( 'Sort by:', style: TextStyle(color: Colors.white)),
+                      Text('Sort by:', style: TextStyle(color: Colors.white)),
                       SizedBox(width: 10),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 5),
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.tertiary, 
+                          color: Theme.of(context).colorScheme.tertiary,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: Colors.white,
                           ),
                         ),
                         child: DropdownButtonHideUnderline(
-                          // user can select the type of length that corresponds to their amount of experience
+                          // user can select the type of sort
                           child: DropdownButton<String>(
                             value: sortBy,
-                            icon: Icon(Icons.arrow_drop_down, color: Colors.white,),
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.white,
+                            ),
                             // iconSize: 30,
                             // elevation: 16,
                             style: TextStyle(color: Colors.black),
-                            dropdownColor: Theme.of(context).colorScheme.tertiary,
+                            dropdownColor:
+                                Theme.of(context).colorScheme.tertiary,
                             onChanged: (String? newValue) {
                               setState(() {
                                 sortBy = newValue!;
                               });
                             },
                             items: <String>['New', 'Old']
-                              .map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(value, style: TextStyle(color: Colors.white)),
-                                  ),
-                                );
-                              }).toList(),
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(value,
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ),
                       ),
@@ -121,31 +132,39 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                         final taskCategory = topic['task category'];
                         final topicTitle = topic['topic title'];
                         final text = topic['text'];
+                        final mmddyy = topic['formatted date'];
+                        final time = topic['time'];
                         final username = topic['username'];
                         final numOfMsg = topic['num of msg'];
                         final usersLiked = topic['liked by users'];
                         final timeWithSeconds = topic['time with seconds'];
-                        // Check if the current user has liked the topic
                         final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
                         final currentUserEmail = _auth.currentUser!.email;
                         final isLiked = likedByUsers.contains(currentUserEmail);
-                    
                         final date = topic['date'].toDate();
-                        // final DateFormat formatter = DateFormat('MM/dd/yyyy');
                         final String formattedDate = DateFormat('MM/dd/yyyy').format(date);
-                        final String time = DateFormat('h:mm a').format(date);
-                    
+
                         return GestureDetector(
-                            onTap: () {
+                          onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DiscussionPage(topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                                      numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, time: time, timeWithSeconds: timeWithSeconds, 
-                                                                                      onLikeUpdated: () {
-                                    // Trigger rebuild when like is updated
-                                    setState(() {});
-                                  }, isTextFieldVisible: false)),
-                            ).then((updatedData) {                    
+                              MaterialPageRoute(
+                                  builder: (context) => DiscussionPage(
+                                      topicPosterEmail: topicPosterEmail,
+                                      taskCategory: taskCategory,
+                                      topicTitle: topicTitle,
+                                      text: text,
+                                      username: username,
+                                      numOfMsg: numOfMsg,
+                                      usersLiked: usersLiked,
+                                      mmddyy: mmddyy,
+                                      time: time,
+                                      timeWithSeconds: timeWithSeconds,
+                                      onLikeUpdated: () {
+                                        setState(() {});
+                                      },
+                                      isTextFieldVisible: false)),
+                            ).then((updatedData) {
                               if (updatedData) {
                                 setState(() {});
                               }
@@ -158,64 +177,110 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                               children: [
                                 Row(
                                   children: [
-                                    Text('$taskCategory'),
+                                    Text('$taskCategory',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      ),
+                                    ),
                                     Spacer(),
                                     GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => DiscussionPage(topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                                                  numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: formattedDate, time: time, timeWithSeconds: timeWithSeconds,
-                                                                                                  onLikeUpdated: () {
-                                                // Trigger rebuild when like is updated
-                                                setState(() {});
-                                              }, isTextFieldVisible: true)),
-                                        ).then((updatedData) {                    
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                              DiscussionPage(
+                                                topicPosterEmail: topicPosterEmail,
+                                                taskCategory: taskCategory,
+                                                topicTitle: topicTitle,
+                                                text: text,
+                                                username: username,
+                                                numOfMsg: numOfMsg,
+                                                usersLiked: usersLiked,
+                                                mmddyy: mmddyy,
+                                                time: time,
+                                                timeWithSeconds: timeWithSeconds,
+                                                onLikeUpdated: () {
+                                                  setState(() {});
+                                                },
+                                                isTextFieldVisible: true
+                                              )),
+                                        ).then((updatedData) {
                                           if (updatedData) {
                                             setState(() {});
                                           }
                                         });
                                       },
-                                      child: Icon(
-                                        Icons.message, 
-                                        color: Theme.of(context).colorScheme.secondary
-                                      )
+                                      child: Icon(Icons.message,
+                                          color: Theme.of(context).colorScheme.secondary)
                                     ),
-                                    Text('$numOfMsg'),
+                                    SizedBox(width: 5),
+                                    Text('$numOfMsg',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      ),
+                                    ),
+                                    SizedBox(width: 20),
                                     GestureDetector(
                                       onTap: () async {
+                                        // updates the page
                                         setState(() {});
-                                        // Access the document reference
                                         final documentReference = topic.reference;
-                    
-                                        // List of users who liked the topic, stored as 'liked by users'
+
+                                        // access the list of users that liked the topic
                                         final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
-                    
-                                        // Check if the current user's email is in the list of likedByUsers
+
+                                        // Check if the user's email is in list
                                         final currentUserEmail = _auth.currentUser!.email;
                                         if (isLiked) {
-                                          // If the user unlikes the topic, remove their email from the list
+                                          // If user removes like to topic, delete email from list
                                           likedByUsers.remove(currentUserEmail);
                                         } else {
-                                          // If the user likes the topic, add their email to the list
+                                          // If user adds like to topic, add email to list
                                           likedByUsers.add(currentUserEmail);
                                         }
-                    
-                                        // Update the 'liked by users' field in Firestore
+                                        // updates in the database
                                         await documentReference.update({
                                           'liked by users': likedByUsers,
                                         });
                                       },
                                       child: Icon(
-                                        isLiked ? Icons.favorite : Icons.favorite_border, 
-                                        color: isLiked ? Colors.red : Theme.of(context).colorScheme.secondary
+                                          isLiked
+                                              ? Icons.thumb_up
+                                              : Icons.thumb_up_outlined,
+                                          color: isLiked
+                                              ? Colors.white
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      likedByUsers.length.toString(), 
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Theme.of(context).colorScheme.secondary,
                                       ),
                                     ),
-                                    Text(likedByUsers.length.toString()),
                                   ],
                                 ),
-                                Text('$topicTitle'),
-                                Text('@$username - $formattedDate $time'),
+                                Text(
+                                  '$topicTitle',
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                Text(
+                                  '@$username - $formattedDate $time', 
+                                    style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -232,64 +297,49 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
     );
   }
 
+  // Retrieves and display the posted discussion topics
   Future<List<DocumentSnapshot>> _getPostedTopics(String sortBy) async {
-    // Map to store the data
+    // Map is used to store data
     Map<String, List<DocumentSnapshot>> postedTopicsData = {};
 
-    // Access the collection that stores user's signed up tasks
-    final taskers = await _firestore.collection('Tasker Discussion Board').get();
+    // Access the collection that stores user info about posted topics
+    final taskers =
+        await _firestore.collection('Tasker Discussion Board').get();
 
-    // Loop through each document in the Tasker Discussion Board collection
+    // Loop through each doc in the Tasker Discussion Board collection
     for (var taskerDoc in taskers.docs) {
-      // Access the subcollection Posted Topics for each tasker
-      final postedTopicsCollection = await taskerDoc.reference.collection('Posted Topics').get();
-
-      // List to store the documents in the Posted Topics subcollection
+      // Access the subcollection Posted Topics for each tasker to retrieve the doc
+      final postedTopicsCollection =
+          await taskerDoc.reference.collection('Posted Topics').get();
+      // store the doc
       List<DocumentSnapshot> postedTopics = postedTopicsCollection.docs;
-      
-      // Add the list of posted topics to the map with the tasker's document ID as the key
+
+      // use the doc ID of tasker as key to store the list of posted doc
       postedTopicsData[taskerDoc.id] = postedTopics;
     }
-    // Return the map containing the data
     List<DocumentSnapshot> combinedPostedTopics = [];
-  
-    // Combine all posted topics into a single list
+
+    // combine every tasker's posted topics
     for (var postedTopics in postedTopicsData.values) {
       combinedPostedTopics.addAll(postedTopics);
     }
 
-    // // Sort the combined list of posted topics by date
-    // combinedPostedTopics.sort((a, b) {
-    //   // Assuming the date is stored in a field named 'date' in each document
-    //   DateTime dateA = a['date'].toDate(); // Convert Firebase Timestamp to DateTime
-    //   DateTime dateB = b['date'].toDate(); // Convert Firebase Timestamp to DateTime
-    //   return dateB.compareTo(dateA); // Sort in descending order (latest first)
-    // });
-
-    // Sort comments based on selected value
+    // sort comments depending on the type
     if (sortBy == 'New') {
       combinedPostedTopics.sort((a, b) {
         DateTime dateA = a['date'].toDate();
         DateTime dateB = b['date'].toDate();
-        return dateB.compareTo(dateA); // Sort in descending order (latest first)
+        return dateB
+            .compareTo(dateA); // Sort by latest first or descending order
       });
     } else if (sortBy == 'Old') {
       combinedPostedTopics.sort((a, b) {
         DateTime dateA = a['date'].toDate();
         DateTime dateB = b['date'].toDate();
-        return dateA.compareTo(dateB); // Sort in ascending order (oldest first)
+        return dateA
+            .compareTo(dateB); // Sort by oldest first or ascending order
       });
     }
-
-    // for (DocumentSnapshot doc in combinedPostedTopics) {
-    //   print('Document ID: ${doc.id}');
-    //   // Assuming fields in the document are 'title', 'content', and 'date'
-    //   print('Title: ${doc['task category']}');
-    //   // Convert Firebase Timestamp to DateTime for the 'date' field
-    //   DateTime date = doc['date'].toDate();
-    //   print('Date: $date');
-    //   print('--------------------------------------');
-    // }
     return combinedPostedTopics;
   }
 }
