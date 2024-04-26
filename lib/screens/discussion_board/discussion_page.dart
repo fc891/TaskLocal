@@ -1,3 +1,5 @@
+// Contributors: Richard N.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,7 @@ class DiscussionPage extends StatefulWidget {
   final String mmddyy;
   final String time;
   final String timeWithSeconds;
-  final Function? onLikeUpdated; // Callback function
+  final Function? onLikeUpdated;
   final bool isTextFieldVisible;
 
   const DiscussionPage({
@@ -29,7 +31,7 @@ class DiscussionPage extends StatefulWidget {
     required this.mmddyy,
     required this.time,
     required this.timeWithSeconds,
-    this.onLikeUpdated, // Receive the callback function
+    this.onLikeUpdated,
     required this.isTextFieldVisible,
   }) : super(key: key);
 
@@ -43,14 +45,14 @@ class _DiscussionPageState extends State<DiscussionPage> {
   late bool isLiked;
   late List<dynamic> _updatedUsersLiked;
   late int updatedNumOfMsg;
-  bool isTextFieldVisible = false; // Add this variable to track visibility
+  bool isTextFieldVisible = false; // determines whether keyboard opens up
   final commentBoxController = TextEditingController();
   String sortBy = 'New';
 
-  // when user presses the submit button, stores all the inputs of the user to the db
+  // after user presses the submit button, stores all the inputs of the user to the db
   void _submitPost() async {
     DateTime currentDateTime = DateTime.now();
-    final String date = DateFormat('MM/dd/yyyy').format(currentDateTime); 
+    final String date = DateFormat('MM-dd-yy').format(currentDateTime); 
     String time = DateFormat('h:mm a').format(currentDateTime);
     String timeWithSeconds = DateFormat('h:mm:ss a').format(currentDateTime);
 
@@ -60,14 +62,16 @@ class _DiscussionPageState extends State<DiscussionPage> {
       // store user's input into the variables
       String commentBox = commentBoxController.text;
        // for public knowledge, go to the Tasker Discussion Board's collection
-      final topicTitleDoc = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail).collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+      final topicTitleDoc = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
+                            .collection('Posted Topics').doc('${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}');
       // create collection to store the comments
-      final commentsDoc = topicTitleDoc.collection('Comments').doc('${_auth.currentUser!.email}_$timeWithSeconds');
+      final commentsDoc = topicTitleDoc.collection('Comments').doc('${_auth.currentUser!.email}_${date}_$timeWithSeconds');
       // create dummy values so document is actually created and stored in db
       // commentsDoc.set({'dummy': 'dummy'});
 
       // for individual purposes
-      final commentsDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Commented Topics').doc('${_auth.currentUser!.email}_$timeWithSeconds');
+      final commentsDoc2 = _firestore.collection('Taskers').doc(_auth.currentUser!.email)
+                          .collection('Commented Topics').doc('${_auth.currentUser!.email}_${date}_$timeWithSeconds');
 
       final taskerInfo = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
 
@@ -83,25 +87,34 @@ class _DiscussionPageState extends State<DiscussionPage> {
           'date edited': date,
           'time': time,
           'time with seconds': timeWithSeconds,
+
+          'posted topic location': '${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}',
+          'topic poster email': widget.topicPosterEmail,
         });
         await commentsDoc2.set({
           'topic poster email': widget.topicPosterEmail,
           'task category': widget.taskCategory,
           'topic title': widget.topicTitle,
-          'location of doc': '${widget.topicTitle}_$timeWithSeconds',
+          'posted topic location': '${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}',
+          'posted comment location': '${_auth.currentUser!.email}_${date}_$timeWithSeconds',
         });
-        // Remove the user's input after submitting
+        // Clear the user's input after submitting
         commentBoxController.clear();
+
+        // removes keyboard and increment number of msg
         setState(() {
           isTextFieldVisible = false;
           updatedNumOfMsg++;
         });
-                // Increment 'num of msg' in the database
-        final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail).collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
-        
+
+        final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
+                            .collection('Posted Topics').doc('${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}');
+        // update in db
         await topicDocRef.update({
           'num of msg': updatedNumOfMsg
         });
+
+        // go back to previous page to update the UI for the number of comments
         if (widget.onLikeUpdated != null) {
           widget.onLikeUpdated!();
         }
@@ -139,34 +152,36 @@ class _DiscussionPageState extends State<DiscussionPage> {
     }
   }
 
+  // Initialize the variables
   @override
   void initState() {
     super.initState();
     // Check if the current user has liked the topic
     isLiked = widget.usersLiked.contains(_auth.currentUser!.email);
-    _updatedUsersLiked = List.from(widget.usersLiked); // Initialize the updated users liked list
+    _updatedUsersLiked = List.from(widget.usersLiked); // used to display the number of likes in the UI and show the current user like
     isTextFieldVisible = widget.isTextFieldVisible;
     updatedNumOfMsg = widget.numOfMsg;
   }
 
-  // Function to update database and call callback
+  // udpate database
   Future<void> _updateDatabaseAndCallback() async {
     setState(() {
       isLiked = !isLiked;
       if (isLiked) {
-        _updatedUsersLiked.add(_auth.currentUser!.email); // Add user to liked list
+        _updatedUsersLiked.add(_auth.currentUser!.email);
       } else {
-        _updatedUsersLiked.remove(_auth.currentUser!.email); // Remove user from liked list
+        _updatedUsersLiked.remove(_auth.currentUser!.email);
       }
     });
 
-    final docRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail).collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+    final docRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
+                  .collection('Posted Topics').doc('${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}');
 
     await docRef.update({
       'liked by users': _updatedUsersLiked,
     });
 
-    // Call the callback function to inform the parent widget
+    // go back to previous page to update the UI for number of likes and show current user like
     if (widget.onLikeUpdated != null) {
       widget.onLikeUpdated!();
     }
@@ -195,12 +210,14 @@ class _DiscussionPageState extends State<DiscussionPage> {
                       ),
                     ),
                     Spacer(),
+                    // user can only delete the topic post if its theirs
                     if (_auth.currentUser!.email == widget.topicPosterEmail)
                       Row(
                         children: [
                           IconButton(
                             icon: Icon(Icons.delete_outline, color: Theme.of(context).colorScheme.secondary, size: 25),
                             onPressed: () async {
+                              // ensure user really wants to remove the topic
                               bool confirmed = await showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
@@ -225,7 +242,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                     .collection('Tasker Discussion Board')
                                     .doc(widget.topicPosterEmail)
                                     .collection('Posted Topics')
-                                    .doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                    .doc('${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}');
                                           
                                 // Delete the document
                                 await docRef.delete();
@@ -233,7 +250,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
 
                                 // Access the posted topic from the tasker's individual collection
                                 final postedTopicDoc = _firestore.collection('Taskers').doc(_auth.currentUser!.email)
-                                                      .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                                      .collection('Posted Topics').doc('${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}');
                                 // remove the posted topic from the tasker's individual collection
                                 await postedTopicDoc.delete();
 
@@ -247,7 +264,6 @@ class _DiscussionPageState extends State<DiscussionPage> {
                   ],
                 ),
               ),
-              // SizedBox(height: 8),
               Text(
                 widget.topicTitle,
                 style: TextStyle(
@@ -262,7 +278,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                   Text(
                     '${widget.mmddyy} ${widget.time}',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
@@ -270,12 +286,10 @@ class _DiscussionPageState extends State<DiscussionPage> {
               ), 
               Row(
                 children: [
-                  Icon(Icons.person, color: Theme.of(context).colorScheme.secondary, size: 20),
-                  SizedBox(width: 8),
                   Text(
-                    widget.username,
+                    '@${widget.username}',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
@@ -284,15 +298,16 @@ class _DiscussionPageState extends State<DiscussionPage> {
               SizedBox(height: 8),
               Text(
                 widget.text,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 20),
               ),              
               SizedBox(height: 16),
               Row(
                 children: [
                   GestureDetector(
+                    // toggle keyboard visibility
                     onTap: () {
                       setState(() {
-                        isTextFieldVisible = !isTextFieldVisible; // Toggle visibility
+                        isTextFieldVisible = !isTextFieldVisible;
                       });
                     },
                     child: Icon(
@@ -300,87 +315,90 @@ class _DiscussionPageState extends State<DiscussionPage> {
                     )
                   ),
                   SizedBox(width: 8),
-                  // Text(widget.numOfMsg.toString()),
                   Text(updatedNumOfMsg.toString()),
                   SizedBox(width: 16),
                   GestureDetector(
                     onTap: _updateDatabaseAndCallback, // Call function on tap
                     child: Icon(
                       isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-                      color: isLiked ? Colors.blue : Theme.of(context).iconTheme.color,
+                      color: isLiked ? Colors.white : Theme.of(context).colorScheme.secondary,                
                     ),
                   ),
                   SizedBox(width: 8),
-                  Text(_updatedUsersLiked.length.toString()), // Use updated liked list length
+                  Text(_updatedUsersLiked.length.toString()),
                 ],
               ),
               SizedBox(height: 16),
               if (isTextFieldVisible)
-                Container(
-                  decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.tertiary,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: 1,
-                          ),
-                        ),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 200,
-                        child: TextField(
-                          controller: commentBoxController,
-                          maxLines: null,
-                          keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
-                            hintText: 'Text',
-                            hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.all(10),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.tertiary,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.secondary,
+                                width: 1,
+                              ),
+                            ),
+                      child: Column(
                         children: [
-                          TextButton(
-                            onPressed: _submitPost,
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 14),
-                            ),
-                            child: Text(
-                              "Comment",
-                              style: TextStyle(
-                                color: Colors.black,
-                                // fontSize: 14,
+                          Container(
+                            height: 200,
+                            child: TextField(
+                              controller: commentBoxController,
+                              maxLines: null,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                hintText: 'Text',
+                                hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.all(10),
                               ),
                             ),
                           ),
-                          SizedBox(width: 16),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                isTextFieldVisible = !isTextFieldVisible; // Toggle visibility
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 25),
-                            ),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                color: Colors.black,
-                                // fontSize: 14,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: _submitPost,
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(horizontal: 14),
+                                ),
+                                child: Text(
+                                  "Comment",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    // fontSize: 14,
+                                  ),
+                                ),
                               ),
-                            ),
+                              SizedBox(width: 16),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isTextFieldVisible = !isTextFieldVisible; // Toggle visibility
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(horizontal: 25),
+                                ),
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    // fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 16),
+                  ],
                 ),
-                
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -431,7 +449,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                         .collection('Tasker Discussion Board')
                         .doc(widget.topicPosterEmail)
                         .collection('Posted Topics')
-                        .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
+                        .doc('${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}')
                         .collection('Comments')
                         .snapshots(),
                     builder: (context, snapshot) {
@@ -463,25 +481,20 @@ class _DiscussionPageState extends State<DiscussionPage> {
                             return dateA.compareTo(dateB); // Sort in ascending order (oldest first)
                           });
                         }
-
-                        // Map comments to ListTiles
                         return ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: comments.length,
                           itemBuilder: (context, index) {
-                            final commentData = comments[index].data() as Map<String, dynamic>; // Explicit cast
-                            // Ensure that commentData is not null
+                            final commentData = comments[index].data() as Map<String, dynamic>;
                             if (commentData.isNotEmpty) {
-                              // Safely access fields using '?'
                               final commentText = commentData['text'] as String?;
                               final username = commentData['username'] as String?;
                               final datePosted = commentData['date posted'] as String?;
                               final time = commentData['time'] as String?;
                               final timeWithSeconds = commentData['time with seconds'] as String?;
                               final email = commentData['email']as String?;
-                                          
-                              // Check for nullability before using the values
+
                               if (commentText != null && username != null && datePosted != null && time != null) {
                                 // Create a ListTile for each comment
                                 return Column(
@@ -491,14 +504,14 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(commentText),
+                                          Text(commentText, style: TextStyle(color: Colors.white, fontSize: 16)),
                                           Row(
                                             children: [
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(username),
-                                                  Text('$datePosted $time'),
+                                                  Text(username, style: TextStyle(color: Colors.white, fontSize: 12)),
+                                                  Text('$datePosted $time', style: TextStyle(color: Colors.white, fontSize: 12)),
                                                 ],
                                               ),
                                               SizedBox(width: 20),
@@ -524,14 +537,14 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                         ],
                                                       ),
                                                     );
-                                                    if (confirmed == true) { // Get a reference to the document to be deleted
+                                                    if (confirmed == true) { 
                                                       final docRef = _firestore
                                                           .collection('Tasker Discussion Board')
                                                           .doc(widget.topicPosterEmail)
                                                           .collection('Posted Topics')
-                                                          .doc('${widget.topicTitle}_${widget.timeWithSeconds}')
+                                                          .doc('${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}')
                                                           .collection('Comments')
-                                                          .doc('${_auth.currentUser!.email}_$timeWithSeconds');
+                                                          .doc('${_auth.currentUser!.email}_${datePosted}_$timeWithSeconds');
                                                                                     
                                                       // Delete the document
                                                       await docRef.delete();
@@ -539,9 +552,9 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                       setState(() {
                                                         updatedNumOfMsg--;
                                                       });
-                                                      // Decrement 'num of msg' in the database
+                                                      
                                                       final topicDocRef = _firestore.collection('Tasker Discussion Board').doc(widget.topicPosterEmail)
-                                                                      .collection('Posted Topics').doc('${widget.topicTitle}_${widget.timeWithSeconds}');
+                                                                      .collection('Posted Topics').doc('${widget.topicTitle}_${widget.mmddyy}_${widget.timeWithSeconds}');
                                                       
                                                       await topicDocRef.update({
                                                         'num of msg': updatedNumOfMsg
@@ -549,7 +562,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
 
                                                       // Access the comment from the tasker's individual collection
                                                       final commentsDoc = _firestore.collection('Taskers').doc(_auth.currentUser!.email)
-                                                                          .collection('Commented Topics').doc('${_auth.currentUser!.email}_$timeWithSeconds');
+                                                                          .collection('Commented Topics').doc('${_auth.currentUser!.email}_${datePosted}_$timeWithSeconds');
                                                       // remove the comment from the tasker's individual collection
                                                       await commentsDoc.delete();
 
@@ -566,7 +579,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                         ],
                                       ),
                                     ),
-                                    Divider(color: Colors.white),
+                                    Divider(color: Colors.white,),
                                   ],
                                 );
                               }
