@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// Contributors: Richard N.
+
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/discussion_board/posted_comments_history.dart';
 import 'package:tasklocal/screens/discussion_board/posted_topics_history.dart';
@@ -13,21 +13,15 @@ class PostedTopicsCommentsHistoryHome extends StatefulWidget {
 }
 
 class _PostedTopicsCommentsHistoryHomeState extends State<PostedTopicsCommentsHistoryHome> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  // _firestore.collection('Task Discussion Board').doc(_auth.currentUser.!email).collection('Posted Topics');
-
   @override
   Widget build(BuildContext context) {
-    // creates the tab navigation bar, there will be 2 tabs
+    // creates the tab navigation bar
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('My Tasks'),
+          title: Text('History'),
           centerTitle: true,
-          //backgroundColor: Colors.green[800],
           bottom: TabBar(
             // have color based on user selecting the tab
             unselectedLabelColor: Colors.white,
@@ -42,10 +36,9 @@ class _PostedTopicsCommentsHistoryHomeState extends State<PostedTopicsCommentsHi
         body: TabBarView(
           // navigate to the pages
           children: [
-            // PostedTopicsHistory(),
             PostedTopicsHistory(
               onLikeUpdated: () {
-                // Trigger rebuild when like is updated
+                // update the UI for discussion board home
                 if (widget.onLikeUpdated != null) {
                   widget.onLikeUpdated!();
                 }
@@ -53,7 +46,7 @@ class _PostedTopicsCommentsHistoryHomeState extends State<PostedTopicsCommentsHi
             ),
             PostedCommentsHistory(
               onLikeUpdated: () {
-                // Trigger rebuild when like is updated
+                // update the UI for discussion board home
                 if (widget.onLikeUpdated != null) {
                   widget.onLikeUpdated!();
                 }
