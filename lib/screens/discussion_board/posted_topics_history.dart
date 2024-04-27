@@ -1,3 +1,5 @@
+// Contributors: Richard N.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -54,12 +56,10 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                           ),
                         ),
                         child: DropdownButtonHideUnderline(
-                          // user can select the type of length that corresponds to their amount of experience
+                          // user can select the type of sort
                           child: DropdownButton<String>(
                             value: sortBy,
                             icon: Icon(Icons.arrow_drop_down, color: Colors.white,),
-                            // iconSize: 30,
-                            // elevation: 16,
                             style: TextStyle(color: Colors.black),
                             dropdownColor: Theme.of(context).colorScheme.tertiary,
                             onChanged: (String? newValue) {
@@ -97,31 +97,27 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                         final numOfMsg = topic['num of msg'];
                         final usersLiked = topic['liked by users'];
                         final timeWithSeconds = topic['time with seconds'];
-                        // Check if the current user has liked the topic
                         final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
                         final currentUserEmail = _auth.currentUser!.email;
                         final isLiked = likedByUsers.contains(currentUserEmail);
-                    
                         final date = topic['date'].toDate();
-                        // final DateFormat formatter = DateFormat('MM/dd/yyyy');
                         final String formattedDate = DateFormat('MM/dd/yyyy').format(date);
-                        // final String time = DateFormat('h:mm a').format(date);
                     
                         return GestureDetector(
                             onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DiscussionPage(topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                                      numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: mmddyy, time: time, timeWithSeconds: timeWithSeconds, 
-                                                                                      onLikeUpdated: () {
-                                    // Trigger rebuild when like is updated
-                                    setState(() {});
-
-                                    // Trigger rebuild when like is updated
-                                            if (widget.onLikeUpdated != null) {
-                                              widget.onLikeUpdated();
-                                            }
-                                  }, isTextFieldVisible: false)),
+                              MaterialPageRoute(builder: (context) => DiscussionPage(
+                                topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
+                                numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: mmddyy, time: time, timeWithSeconds: timeWithSeconds, 
+                                onLikeUpdated: () { 
+                                  setState(() {});
+                                  if (widget.onLikeUpdated != null) {
+                                    widget.onLikeUpdated();
+                                  }
+                                }, 
+                                isTextFieldVisible: false
+                              )),
                             ).then((updatedData) {                    
                               if (updatedData) {
                                 setState(() {});
@@ -135,24 +131,28 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                               children: [
                                 Row(
                                   children: [
-                                    Text('$taskCategory'),
+                                    Text('$taskCategory',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      ),
+                                    ),
                                     Spacer(),
                                     GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => DiscussionPage(topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
-                                                                                                  numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: mmddyy, time: time, timeWithSeconds: timeWithSeconds,
-                                                                                                  onLikeUpdated: () {
-                                                // Trigger rebuild when like is updated
-                                                setState(() {});
-
-                                                // Trigger rebuild when like is updated
-                                            if (widget.onLikeUpdated != null) {
-                                              widget.onLikeUpdated();
-                                            }
-
-                                              }, isTextFieldVisible: true)),
+                                          MaterialPageRoute(builder: (context) => DiscussionPage(
+                                            topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
+                                            numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: mmddyy, time: time, timeWithSeconds: timeWithSeconds,
+                                            onLikeUpdated: () {
+                                              setState(() {});
+                                              if (widget.onLikeUpdated != null) {
+                                                widget.onLikeUpdated();
+                                              }
+                                            }, 
+                                            isTextFieldVisible: true
+                                          )),
                                         ).then((updatedData) {                    
                                           if (updatedData) {
                                             setState(() {});
@@ -164,48 +164,70 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                                         color: Theme.of(context).colorScheme.secondary
                                       )
                                     ),
-                                    Text('$numOfMsg'),
+                                    SizedBox(width: 5),
+                                    Text('$numOfMsg',
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      ),
+                                    ),
+                                    SizedBox(width: 20),
                                     GestureDetector(
                                       onTap: () async {
+                                        // updates the page
                                         setState(() {});
-                                        // Access the document reference
                                         final documentReference = topic.reference;
                     
-                                        // List of users who liked the topic, stored as 'liked by users'
+                                        // access the list of users that liked the topic
                                         final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
                     
-                                        // Check if the current user's email is in the list of likedByUsers
+                                        // Check if the user's email is in list
                                         final currentUserEmail = _auth.currentUser!.email;
                                         if (isLiked) {
-                                          // If the user unlikes the topic, remove their email from the list
+                                          // If user removes like to topic, delete email from list
                                           likedByUsers.remove(currentUserEmail);
                                         } else {
-                                          // If the user likes the topic, add their email to the list
+                                          // If user adds like to topic, add email to list
                                           likedByUsers.add(currentUserEmail);
                                         }
                     
-                                        // Update the 'liked by users' field in Firestore
+                                        // updates in the database
                                         await documentReference.update({
                                           'liked by users': likedByUsers,
                                         });
 
-                                            // Trigger rebuild when like is updated
-                                            if (widget.onLikeUpdated != null) {
-                                              widget.onLikeUpdated();
-                                            }
-
-
+                                        if (widget.onLikeUpdated != null) {
+                                          widget.onLikeUpdated();
+                                        }
                                       },
                                       child: Icon(
-                                        isLiked ? Icons.favorite : Icons.favorite_border, 
-                                        color: isLiked ? Colors.red : Theme.of(context).colorScheme.secondary
+                                        isLiked ? Icons.thumb_up : Icons.thumb_up_outlined, 
+                                        color: isLiked ? Colors.white : Theme.of(context).colorScheme.secondary
                                       ),
                                     ),
-                                    Text(likedByUsers.length.toString()),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      likedByUsers.length.toString(), 
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      ),
+                                    ),
                                   ],
                                 ),
-                                Text('$topicTitle'),
-                                Text('$formattedDate $time'),
+                                Text(
+                                  '$topicTitle',
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                Text(
+                                  '$formattedDate $time', 
+                                    style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
                               ],
                             ),
                           ),

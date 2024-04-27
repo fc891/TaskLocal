@@ -218,7 +218,6 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                                     SizedBox(width: 5),
                                     Text('$numOfMsg',
                                       style: TextStyle(
-                                        fontSize: 16,
                                         color: Theme.of(context).colorScheme.secondary,
                                       ),
                                     ),
@@ -260,7 +259,6 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                                     Text(
                                       likedByUsers.length.toString(), 
                                       style: TextStyle(
-                                        fontSize: 12,
                                         color: Theme.of(context).colorScheme.secondary,
                                       ),
                                     ),
