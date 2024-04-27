@@ -494,6 +494,8 @@ class _DiscussionPageState extends State<DiscussionPage> {
                               final time = commentData['time'] as String?;
                               final timeWithSeconds = commentData['time with seconds'] as String?;
                               final email = commentData['email']as String?;
+                              final date = commentData['date'].toDate();
+                              final String dateWithSlash = DateFormat('MM/dd/yyyy').format(date);
 
                               if (commentText != null && username != null && datePosted != null && time != null) {
                                 // Create a ListTile for each comment
@@ -505,13 +507,15 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(commentText, style: TextStyle(color: Colors.white, fontSize: 16)),
+                                          if (_auth.currentUser!.email != email)
+                                            SizedBox(height: 8),
                                           Row(
                                             children: [
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
+                                                  Text('$dateWithSlash $time', style: TextStyle(color: Colors.white, fontSize: 12)),
                                                   Text(username, style: TextStyle(color: Colors.white, fontSize: 12)),
-                                                  Text('$datePosted $time', style: TextStyle(color: Colors.white, fontSize: 12)),
                                                 ],
                                               ),
                                               SizedBox(width: 20),
@@ -573,7 +577,6 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                     }
                                                   },
                                                 ),
-                                              
                                             ],
                                           ),
                                         ],

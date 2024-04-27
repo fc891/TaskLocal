@@ -245,25 +245,25 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
   }
 
   Future<List<DocumentSnapshot>> _getPostedTopics(String sortBy) async {
-    // Access the collection that stores user's signed up tasks
+    // Access the collection that stores user info about posted topics
     final postedTopicsCollection = await _firestore.collection('Tasker Discussion Board').doc(_auth.currentUser!.email)
                           .collection('Posted Topics').get();
                           
-    // List to store the documents in the Posted Topics subcollection
+    // store the doc in the Posted Topics subcollection
     List<DocumentSnapshot> postedTopics = postedTopicsCollection.docs;
 
-    // Sort comments based on selected value
+    // sort comments depending on the type
     if (sortBy == 'New') {
       postedTopics.sort((a, b) {
         DateTime dateA = a['date'].toDate();
         DateTime dateB = b['date'].toDate();
-        return dateB.compareTo(dateA); // Sort in descending order (latest first)
+        return dateB.compareTo(dateA); // Sort by latest first or descending order
       });
     } else if (sortBy == 'Old') {
       postedTopics.sort((a, b) {
         DateTime dateA = a['date'].toDate();
         DateTime dateB = b['date'].toDate();
-        return dateA.compareTo(dateB); // Sort in ascending order (oldest first)
+        return dateA.compareTo(dateB); // Sort by latest first or descending order
       });
     }
     return postedTopics;
