@@ -150,6 +150,7 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DiscussionPage(
+                                    dateAndTime: date,
                                       topicPosterEmail: topicPosterEmail,
                                       taskCategory: taskCategory,
                                       topicTitle: topicTitle,
@@ -170,117 +171,123 @@ class _DiscussionBoardHomeState extends State<DiscussionBoardHome> {
                               }
                             });
                           },
-                          child: ListTile(
-                            contentPadding: EdgeInsets.all(0),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                          child: Column(
+                            children: [
+                              ListTile(
+                                contentPadding: EdgeInsets.all(0),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('$taskCategory',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Theme.of(context).colorScheme.secondary,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                              DiscussionPage(
-                                                topicPosterEmail: topicPosterEmail,
-                                                taskCategory: taskCategory,
-                                                topicTitle: topicTitle,
-                                                text: text,
-                                                username: username,
-                                                numOfMsg: numOfMsg,
-                                                usersLiked: usersLiked,
-                                                mmddyy: mmddyy,
-                                                time: time,
-                                                timeWithSeconds: timeWithSeconds,
-                                                onLikeUpdated: () {
-                                                  setState(() {});
-                                                },
-                                                isTextFieldVisible: true
-                                              )),
-                                        ).then((updatedData) {
-                                          if (updatedData) {
+                                    Row(
+                                      children: [
+                                        Text('$taskCategory',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                  DiscussionPage(
+                                                    dateAndTime: date,
+                                                    topicPosterEmail: topicPosterEmail,
+                                                    taskCategory: taskCategory,
+                                                    topicTitle: topicTitle,
+                                                    text: text,
+                                                    username: username,
+                                                    numOfMsg: numOfMsg,
+                                                    usersLiked: usersLiked,
+                                                    mmddyy: mmddyy,
+                                                    time: time,
+                                                    timeWithSeconds: timeWithSeconds,
+                                                    onLikeUpdated: () {
+                                                      setState(() {});
+                                                    },
+                                                    isTextFieldVisible: true
+                                                  )),
+                                            ).then((updatedData) {
+                                              if (updatedData) {
+                                                setState(() {});
+                                              }
+                                            });
+                                          },
+                                          child: Icon(Icons.message,
+                                              color: Theme.of(context).colorScheme.secondary)
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text('$numOfMsg',
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
+                                        ),
+                                        SizedBox(width: 20),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            // updates the page
                                             setState(() {});
-                                          }
-                                        });
-                                      },
-                                      child: Icon(Icons.message,
-                                          color: Theme.of(context).colorScheme.secondary)
+                                            final documentReference = topic.reference;
+                              
+                                            // access the list of users that liked the topic
+                                            final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
+                              
+                                            // Check if the user's email is in list
+                                            final currentUserEmail = _auth.currentUser!.email;
+                                            if (isLiked) {
+                                              // If user removes like to topic, delete email from list
+                                              likedByUsers.remove(currentUserEmail);
+                                            } else {
+                                              // If user adds like to topic, add email to list
+                                              likedByUsers.add(currentUserEmail);
+                                            }
+                                            // updates in the database
+                                            await documentReference.update({
+                                              'liked by users': likedByUsers,
+                                            });
+                                          },
+                                          child: Icon(
+                                              isLiked
+                                                  ? Icons.thumb_up
+                                                  : Icons.thumb_up_outlined,
+                                              color: isLiked
+                                                  ? Colors.white
+                                                  : Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary),
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          likedByUsers.length.toString(), 
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(width: 5),
-                                    Text('$numOfMsg',
+                                    Text(
+                                      '$topicTitle',
                                       style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
                                         color: Theme.of(context).colorScheme.secondary,
                                       ),
                                     ),
-                                    SizedBox(width: 20),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        // updates the page
-                                        setState(() {});
-                                        final documentReference = topic.reference;
-
-                                        // access the list of users that liked the topic
-                                        final List<dynamic> likedByUsers = topic['liked by users'] ?? [];
-
-                                        // Check if the user's email is in list
-                                        final currentUserEmail = _auth.currentUser!.email;
-                                        if (isLiked) {
-                                          // If user removes like to topic, delete email from list
-                                          likedByUsers.remove(currentUserEmail);
-                                        } else {
-                                          // If user adds like to topic, add email to list
-                                          likedByUsers.add(currentUserEmail);
-                                        }
-                                        // updates in the database
-                                        await documentReference.update({
-                                          'liked by users': likedByUsers,
-                                        });
-                                      },
-                                      child: Icon(
-                                          isLiked
-                                              ? Icons.thumb_up
-                                              : Icons.thumb_up_outlined,
-                                          color: isLiked
-                                              ? Colors.white
-                                              : Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                    ),
-                                    SizedBox(width: 5),
                                     Text(
-                                      likedByUsers.length.toString(), 
-                                      style: TextStyle(
+                                      '@$username - $formattedDate $time', 
+                                        style: TextStyle(
+                                        fontSize: 12,
                                         color: Theme.of(context).colorScheme.secondary,
                                       ),
                                     ),
                                   ],
                                 ),
-                                Text(
-                                  '$topicTitle',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.secondary,
-                                  ),
-                                ),
-                                Text(
-                                  '@$username - $formattedDate $time', 
-                                    style: TextStyle(
-                                    fontSize: 12,
-                                    color: Theme.of(context).colorScheme.secondary,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                              Divider(color: Colors.white,),
+                            ],
                           ),
                         );
                       },

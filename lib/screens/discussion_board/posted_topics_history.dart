@@ -108,6 +108,7 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => DiscussionPage(
+                                dateAndTime: date,
                                 topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
                                 numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: mmddyy, time: time, timeWithSeconds: timeWithSeconds, 
                                 onLikeUpdated: () { 
@@ -131,7 +132,7 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                               children: [
                                 Row(
                                   children: [
-                                    Text('$taskCategory',
+                                    Text('$taskCategory • $topicTitle',
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Theme.of(context).colorScheme.secondary,
@@ -143,6 +144,7 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => DiscussionPage(
+                                            dateAndTime: date,
                                             topicPosterEmail: topicPosterEmail, taskCategory: taskCategory, topicTitle: topicTitle, text: text, username: username,
                                             numOfMsg: numOfMsg, usersLiked: usersLiked, mmddyy: mmddyy, time: time, timeWithSeconds: timeWithSeconds,
                                             onLikeUpdated: () {
@@ -213,14 +215,14 @@ class _PostedTopicsHistoryState extends State<PostedTopicsHistory> {
                                     ),
                                   ],
                                 ),
-                                Text(
-                                  '$topicTitle',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.secondary,
-                                  ),
-                                ),
+                                // Text(
+                                //   '$topicTitle',
+                                //   style: TextStyle(
+                                //     fontSize: 20,
+                                //     fontWeight: FontWeight.bold,
+                                //     color: Theme.of(context).colorScheme.secondary,
+                                //   ),
+                                // ),
                                 Text(
                                   '$formattedDate $time', 
                                     style: TextStyle(

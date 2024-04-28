@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DiscussionPage extends StatefulWidget {
+  final DateTime dateAndTime;
   final String topicPosterEmail;
   final String taskCategory;
   final String topicTitle;
@@ -21,6 +22,7 @@ class DiscussionPage extends StatefulWidget {
 
   const DiscussionPage({
     Key? key,
+    required this.dateAndTime,
     required this.topicPosterEmail,
     required this.taskCategory,
     required this.topicTitle,
@@ -84,7 +86,6 @@ class _DiscussionPageState extends State<DiscussionPage> {
           'username': taskerInfo['username'],
           'date': currentDateTime,
           'date posted': date,
-          'date edited': date,
           'time': time,
           'time with seconds': timeWithSeconds,
 
@@ -267,7 +268,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
               Text(
                 widget.topicTitle,
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.secondary,
                 ),
@@ -276,7 +277,7 @@ class _DiscussionPageState extends State<DiscussionPage> {
               Row(
                 children: [
                   Text(
-                    '${widget.mmddyy} ${widget.time}',
+                    '@${widget.username} - ${DateFormat('MM/dd/yyyy').format(widget.dateAndTime)} ${widget.time}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Theme.of(context).colorScheme.secondary,
@@ -284,17 +285,17 @@ class _DiscussionPageState extends State<DiscussionPage> {
                   ),
                 ],
               ), 
-              Row(
-                children: [
-                  Text(
-                    '@${widget.username}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       '@${widget.username}',
+              //       style: TextStyle(
+              //         fontSize: 12,
+              //         color: Theme.of(context).colorScheme.secondary,
+              //       ),
+              //     ),
+              //   ],
+              // ),
               SizedBox(height: 8),
               Text(
                 widget.text,
@@ -506,16 +507,13 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(commentText, style: TextStyle(color: Colors.white, fontSize: 16)),
-                                          if (_auth.currentUser!.email != email)
-                                            SizedBox(height: 8),
                                           Row(
                                             children: [
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text('$dateWithSlash $time', style: TextStyle(color: Colors.white, fontSize: 12)),
-                                                  Text(username, style: TextStyle(color: Colors.white, fontSize: 12)),
+                                                  Text('@$username', style: TextStyle(color: Colors.white, fontSize: 12)),
                                                 ],
                                               ),
                                               SizedBox(width: 20),
@@ -579,6 +577,9 @@ class _DiscussionPageState extends State<DiscussionPage> {
                                                 ),
                                             ],
                                           ),
+                                          if (_auth.currentUser!.email != email)
+                                            SizedBox(height: 8),
+                                          Text(commentText, style: TextStyle(color: Colors.white, fontSize: 16)),
                                         ],
                                       ),
                                     ),

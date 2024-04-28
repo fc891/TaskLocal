@@ -116,6 +116,7 @@ class _PostedCommentsHistoryState extends State<PostedCommentsHistory> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => DiscussionPage(
+                                    dateAndTime: postedTopicData['date'].toDate(),
                                     topicPosterEmail: postedTopicData['email'], taskCategory: postedTopicData['task category'], topicTitle: postedTopicData['topic title'], 
                                     text: postedTopicData['text'], username: postedTopicData['username'],
                                     numOfMsg: postedTopicData['num of msg'], usersLiked: postedTopicData['liked by users'], mmddyy: postedTopicData['formatted date'], 
@@ -140,43 +141,43 @@ class _PostedCommentsHistoryState extends State<PostedCommentsHistory> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${postedTopicData['task category']}',
+                                        '${postedTopicData['task category']} • ${postedTopicData['topic title']}',
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Theme.of(context).colorScheme.secondary,
                                         ),
                                       ),
+                                      SizedBox(height: 5),
+                                      // Text(
+                                      //   '${postedTopicData['topic title']}',
+                                      //   style: TextStyle(
+                                      //     fontSize: 16,
+                                      //     color: Theme.of(context).colorScheme.secondary,
+                                      //   ),
+                                      // ),
                                       Text(
-                                        '${postedTopicData['topic title']}',
+                                        '@$username commented $formattedDate $time',
                                         style: TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context).colorScheme.secondary,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Commented:',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context).colorScheme.secondary,
-                                        ),
-                                      ),
-                                      Text(
-                                        '$text',
-                                        style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 14,
                                           color: Theme.of(context).colorScheme.secondary,
                                         ),
                                       ),
                                       SizedBox(height: 5),
                                       Text(
-                                        '$formattedDate $time',
+                                        '$text',
                                         style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 16,
                                           color: Theme.of(context).colorScheme.secondary,
                                         ),
                                       ),
+                                      // SizedBox(height: 5),
+                                      // Text(
+                                      //   '$formattedDate $time',
+                                      //   style: TextStyle(
+                                      //     fontSize: 12,
+                                      //     color: Theme.of(context).colorScheme.secondary,
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ),
