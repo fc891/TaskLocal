@@ -24,6 +24,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:location/location.dart' as loc;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/marker_updates.dart';
+import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
+import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
 
 final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
@@ -50,6 +52,7 @@ class CurrentLocationState extends State<CurrentLocation> {
   String selectedUserName = "Loading user info...";
   String selectedFirstName = "";
   String selectedLastName = "";
+  String selectedEmail = "";
   double selectedDistance = 0.0;
 
   late GoogleMapController mapController;
@@ -156,7 +159,7 @@ class CurrentLocationState extends State<CurrentLocation> {
     _locationController.onLocationChanged.listen((loc.LocationData currentLoc) {
       if (currentLoc.latitude != null && currentLoc.longitude != null) {
         if (mounted) {
-          setState(() async{
+          setState(() async {
             _hasCheckLocationRan = true;
             _center = LatLng(currentLoc.latitude!, currentLoc.longitude!);
             List<LatLng> res = await getPolylinePoints();
@@ -331,7 +334,7 @@ class CurrentLocationState extends State<CurrentLocation> {
             bottomRight: radius,
           ),
           borderPaint);
-    // Add border circle - Red for other (if Tasker, other is Customer, vice versa)
+      // Add border circle - Red for other (if Tasker, other is Customer, vice versa)
     } else if (type == "Other") {
       final Paint borderPaint = Paint()..color = Colors.red;
       canvas.drawRRect(
@@ -429,6 +432,7 @@ class CurrentLocationState extends State<CurrentLocation> {
         selectedUserName = data['username'];
         selectedFirstName = data['first name'];
         selectedLastName = data['last name'];
+        selectedEmail = data['email'];
       });
   }
 
@@ -544,28 +548,18 @@ class CurrentLocationState extends State<CurrentLocation> {
                 //Display a map
                 //if (hasLocationSelected)
                 SizedBox(
-                  width: 400.0,
-                  height: 600.0,
+                  width: 410.0,
+                  height: 570.0,
                   child: GoogleMap(
                     onMapCreated: _onMapCreated,
                     initialCameraPosition:
                         CameraPosition(target: _center, zoom: 14.0),
                     markers: Set<Marker>.of(_markers),
                     polylines: Set<Polyline>.of(polylines.values),
-                    // markers: {
-                    //   Marker(
-                    //       markerId: const MarkerId("Self"),
-                    //       icon: BitmapDescriptor.defaultMarker,
-                    //       position: _center),
-                    //   Marker(
-                    //       markerId: const MarkerId("Other"),
-                    //       icon: BitmapDescriptor.defaultMarker,
-                    //       position: _centerOtherUser),
-                    // },
-                    //mapType: MapType.normal,
+                    mapType: MapType.normal,
                   ),
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 15.0),
                 //Selected user details
                 if (_displayOtherUserInfo)
                   Padding(
@@ -587,15 +581,38 @@ class CurrentLocationState extends State<CurrentLocation> {
                             letterSpacing: 1.0,
                             fontSize: 16.0,
                           ))),
-                // const SizedBox(height: 20.0),
-                //Select location button
-                // ElevatedButton(
-                //     child:
-                //         Text("Get Location", style: TextStyle(color: Colors.black)),
-                //     onPressed: () async {
-                //       await getLocation();
-                //     }),
-                // const SizedBox(height: 20.0),
+                const SizedBox(height: 15.0),
+                //Button to display tasker profile page if current user is customer
+                if (widget.userType == "Customers" && _displayOtherUserInfo)
+                  ElevatedButton(
+                      child: Text("View Tasker Profile Page",
+                          style: TextStyle(color: Colors.black)),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TaskerProfilePage(
+                                    userEmail: selectedEmail,
+                                    isOwnProfilePage: false,
+                                  )), //Customer viewing tasker pfp
+                        );
+                      }),
+                //Button to display customer profile page if current user is tasker
+                if (widget.userType == "Taskers" && _displayOtherUserInfo)
+                  ElevatedButton(
+                      child: Text("View Customer Profile Page",
+                          style: TextStyle(color: Colors.black)),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CustomerProfilePage(
+                                    userEmail: selectedEmail,
+                                    isOwnProfilePage: false,
+                                  )), //Tasker viewing customer pfp
+                        );
+                      }),
+                const SizedBox(height: 20.0),
               ]),
             ),
     );
