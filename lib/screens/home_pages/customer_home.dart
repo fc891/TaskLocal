@@ -199,7 +199,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CustomerProfilePage()),
+                  MaterialPageRoute(builder: (context) => CustomerProfilePage(userEmail: "", isOwnProfilePage: true,)),
                 );
               },
             ),

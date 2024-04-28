@@ -12,7 +12,8 @@ import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 class TaskerSelectionPage extends StatefulWidget {
   final String jobCategory;
 
-  const TaskerSelectionPage({Key? key, required this.jobCategory}) : super(key: key);
+  const TaskerSelectionPage({Key? key, required this.jobCategory})
+      : super(key: key);
 
   @override
   _TaskerSelectionPageState createState() => _TaskerSelectionPageState();
@@ -89,13 +90,15 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
               itemCount: taskers.length,
               itemBuilder: (BuildContext context, int index) {
                 var taskerData = taskers[index].data() as Map<String, dynamic>;
-                String username = taskerData['username'] ?? 'No username';
                 String firstName = taskerData['first name'] ?? '';
                 String lastName = taskerData['last name'] ?? '';
+                String username = taskerData['username'] ?? 'None';
+                String email = taskerData['email'] ?? '';
 
                 return ListTile(
                   title: Text(username, style: TextStyle(color: Colors.white)),
-                  subtitle: Text('$firstName $lastName', style: TextStyle(color:Colors.white)),
+                  subtitle: Text('$firstName $lastName',
+                      style: TextStyle(color: Colors.white)),
                   trailing: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
@@ -105,7 +108,8 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TaskerProfilePage()),
+                      MaterialPageRoute(
+                          builder: (context) => TaskerProfilePage(userEmail: email, isOwnProfilePage: false,)),
                     );
                   },
                 );
@@ -151,7 +155,8 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                       value: value,
                       child: Text(
                         value,
-                        style: TextStyle(color: Colors.white), // Change text color to black
+                        style: TextStyle(
+                            color: Colors.white), // Change text color to black
                       ),
                     );
                   }).toList(),
@@ -165,7 +170,8 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                 },
                 child: Text(
                   'Apply Filters',
-                  style: TextStyle(color: Colors.black), // Change text color to black
+                  style: TextStyle(
+                      color: Colors.black), // Change text color to black
                 ),
               ),
             ],
@@ -180,9 +186,15 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
     if (email != null) {
       String currentUserEmail = FirebaseAuth.instance.currentUser!.email!;
 
-      FirebaseFirestore.instance.collection('Customers').doc(currentUserEmail).collection('Selected Taskers').doc(email).set({
+      FirebaseFirestore.instance
+          .collection('Customers')
+          .doc(currentUserEmail)
+          .collection('Selected Taskers')
+          .doc(email)
+          .set({
         'name': taskerData['username'] ?? 'No username',
-        'description': '${taskerData['first name'] ?? ''} ${taskerData['last name'] ?? ''}',
+        'description':
+            '${taskerData['first name'] ?? ''} ${taskerData['last name'] ?? ''}',
         'email': email,
       }).then((value) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -18,7 +18,10 @@ FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 //Bill's Customer Profile Page Screen
 class CustomerProfilePage extends StatefulWidget {
-  const CustomerProfilePage({super.key});
+  const CustomerProfilePage(
+      {super.key, required this.userEmail, required this.isOwnProfilePage});
+  final String userEmail;
+  final bool isOwnProfilePage;
   @override
   State<CustomerProfilePage> createState() => _CustomerProfilePageState();
 }
@@ -98,6 +101,9 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     var current = FirebaseAuth.instance
         .currentUser!; //Use to get the info of the currently logged in user
     String testid = current.email!; //Get email of current user
+    if (widget.isOwnProfilePage == false) {
+      testid = widget.userEmail;
+    }
     if (globals.checkProfilePictureCustomer) {
       getProfilePicture(testid);
     }
@@ -126,6 +132,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
           //backgroundColor: Colors.green[800],
           elevation: 0.0,
           actions: [
+            if(widget.isOwnProfilePage)
             IconButton(
               onPressed: () {
                 Navigator.push(

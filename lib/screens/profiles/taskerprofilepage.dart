@@ -28,7 +28,10 @@ final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
 //Bill's Tasker Profile Page Screen
 class TaskerProfilePage extends StatefulWidget {
-  const TaskerProfilePage({super.key});
+  const TaskerProfilePage(
+      {super.key, required this.userEmail, required this.isOwnProfilePage});
+  final String userEmail;
+  final bool isOwnProfilePage;
   @override
   State<TaskerProfilePage> createState() => _TaskerProfilePageState();
 }
@@ -223,6 +226,9 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     var current = FirebaseAuth.instance
         .currentUser!; //Use to get the info of the currently logged in user
     String testid = current.email!; //Get email of current user
+    if (widget.isOwnProfilePage == false) {
+      testid = widget.userEmail; //Use email passed in
+    }
     if (globals.checkProfilePictureTasker) {
       getProfilePicture(testid);
     }
@@ -258,20 +264,21 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
           //backgroundColor: Colors.green[800],
           elevation: 0.0,
           actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            SettingsPage(userType: "Taskers")));
-              },
-              icon: Icon(
-                //Icons.edit_outlined,
-                Icons.settings_outlined,
-                color: Colors.grey[300],
+            if (widget.isOwnProfilePage)
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SettingsPage(userType: "Taskers")));
+                },
+                icon: Icon(
+                  //Icons.edit_outlined,
+                  Icons.settings_outlined,
+                  color: Colors.grey[300],
+                ),
               ),
-            ),
           ],
         ),
         //Tasker profile picture
@@ -505,7 +512,14 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                             //Getting file type using url extension
                             type = getUrlType(mediaList[index - 1]);
                           }
-                          if (index == 0) {
+                          if (index == 0 && widget.isOwnProfilePage == false) {
+                            return Card(
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: Text("$username's Uploaded Media:")
+                            ));
+                          }
+                          else if (index == 0 && widget.isOwnProfilePage) {
                             //Upload media card will always be displayed first
                             return Card(
                                 child: Wrap(children: <Widget>[

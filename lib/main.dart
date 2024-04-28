@@ -69,8 +69,8 @@ class MyApp extends ConsumerWidget {
         '/taskerregistration': (context) => TaskerRegistration(onTap: () {}),
         '/customerhomepage': (context) => CustomerHomePage(),
         '/taskerhomepage': (context) => TaskerHomePage(),
-        '/customerprofilepage': (context) => CustomerProfilePage(),
-        '/taskerprofilepage': (context) => TaskerProfilePage(),
+        //'/customerprofilepage': (context) => CustomerProfilePage(),
+        //'/taskerprofilepage': (context) => TaskerProfilePage(),
         '/customertaskinfopage': (context) =>
             CustomerTaskInfoPage(taskinfo: defaultinfo),
         '/taskertaskinfopage': (context) =>
