@@ -149,7 +149,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                   'Sign Up for a Service!',
                   style: TextStyle(
                     //color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -201,7 +201,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                   'Task Categories',
                   style: TextStyle(
                     //color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -248,45 +248,54 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Richard's code
-              // Displays the preview of discussion board, so tasker can navigate to the main page
               Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.tertiary,
-                  borderRadius: BorderRadius.circular(20)),
-                padding: EdgeInsets.only(left: 25, bottom: 15, top: 15),
-                margin: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start, 
-                      children: [
-                        Text(
-                          "Discussion Board",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => DiscussionBoardHome()),
-                            );
-                          },
-                          child: Text(
-                            "View More",
-                            style: TextStyle(
-                              
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  borderRadius: BorderRadius.circular(20)
                 ),
+                padding: EdgeInsets.only(left: 25, bottom: 60, top: 15),
+                margin: EdgeInsets.only(left: 20, right: 20),
               ),
+              // Richard's code
+              // Displays the preview of discussion board, so tasker can navigate to the main page
+              // Container(
+              //   decoration: BoxDecoration(
+              //     color: Theme.of(context).colorScheme.tertiary,
+              //     borderRadius: BorderRadius.circular(20)
+              //   ),
+              //   padding: EdgeInsets.only(left: 25, bottom: 15, top: 15),
+              //   margin: EdgeInsets.only(left: 20, right: 20),
+              //   child: Row(
+              //     children: [
+              //       Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start, 
+              //         children: [
+              //           Text(
+              //             "Discussion Board",
+              //             style: TextStyle(
+              //               fontSize: 20,
+              //               fontWeight: FontWeight.bold,
+              //             ),
+              //           ),
+              //           GestureDetector(
+              //             onTap: () {
+              //               Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(builder: (context) => DiscussionBoardHome()),
+              //               );
+              //             },
+              //             child: Text(
+              //               "View More",
+              //               style: TextStyle(
+                              
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -301,8 +310,8 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
           // Richard's code
           // navigates to home page
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.forum),
+            label: 'Forums',
           ),
           // Richard's code
           // navigates to tasker's past, current, and future tasks
@@ -336,9 +345,9 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
           switch (index) {
             case 0:
               // navigates to the home page
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerHomePage()),
+                MaterialPageRoute(builder: (context) => DiscussionBoardHome()),
               );
               break;
             case 1:
