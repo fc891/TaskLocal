@@ -21,8 +21,11 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-//import 'package:location/location.dart' as loc;
+import 'package:location/location.dart' as loc;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:google_maps_flutter_platform_interface/src/types/marker_updates.dart';
+import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
+import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
 
 final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
@@ -37,15 +40,19 @@ class CurrentLocation extends StatefulWidget {
 
 //Bill's Current Location Screen
 class CurrentLocationState extends State<CurrentLocation> {
-  //loc.Location _locationController = new loc.Location();
+  loc.Location _locationController = new loc.Location();
 
   bool hasLocationSelected = false;
   bool _displayOtherUserInfo = false;
+  bool _hasCheckLocationRan = false;
+  bool _hasGetOwnProfilePictureRan = false;
+  bool _hasGetOtherProfilePictureRan = false;
   String? currentAddress;
   Position? currentPosition;
   String selectedUserName = "Loading user info...";
   String selectedFirstName = "";
   String selectedLastName = "";
+  String selectedEmail = "";
   double selectedDistance = 0.0;
 
   late GoogleMapController mapController;
@@ -57,25 +64,19 @@ class CurrentLocationState extends State<CurrentLocation> {
   List<LatLng> _positionsOtherUser = [];
   LatLng _centerOtherUser = LatLng(33.7854, -118.1086);
   LatLng _center = LatLng(33.7791, -118.1128);
+  late BitmapDescriptor iconSelf;
+  late BitmapDescriptor iconOtherUser;
 
   Map<PolylineId, Polyline> polylines = {};
 
   @override
   void initState() {
     super.initState();
-    getLocation().then((_) => {
-          print("DONE1"),
-          getPolylinePoints().then((coordinates) => {
-                print("DONE2"),
-                createPolyline(coordinates),
-              })
-        });
-    //getLocationUpdates();
+    getLocationUpdates(); //Keep running listener for any location updates
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-    loadMarkerData();
+    _mapController.complete(controller);
   }
 
   //Check for GPS services on the current device. If permissions are disabled, prompt user to enable.
@@ -114,86 +115,103 @@ class CurrentLocationState extends State<CurrentLocation> {
     return true;
   }
 
-  //Function to get user's current location
-  Future<void> getLocation() async {
-    final hasPermission = await checkLocationPermission();
-    if (hasPermission == false) return;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
-      setState(() {
-        currentPosition = position;
-        getAddressFromLatLong(currentPosition!);
-        hasLocationSelected = true;
-        _center = LatLng(position.latitude, position.longitude);
-      });
-      loadMarkerData();
-      setState(() {
-        //refresh ui
-      });
-    }).catchError((e) {
-      print("Error Detected while Getting Location: $e");
-      debugPrint(e);
-    });
-  }
-
-  // Future<void> getLocationUpdates() async {
-  //   bool _serviceEnabled;
-  //   loc.PermissionStatus _permissionGranted;
-
-  //   _serviceEnabled = await _locationController.serviceEnabled();
-  //   if (_serviceEnabled) {
-  //     _serviceEnabled = await _locationController.requestService();
-  //   } else {
-  //     return;
-  //   }
-
-  //   _permissionGranted = await _locationController.hasPermission();
-  //   if (_permissionGranted == loc.PermissionStatus.denied) {
-  //     _permissionGranted = await _locationController.requestPermission();
-  //     if (_permissionGranted != loc.PermissionStatus.granted) {
-  //       return;
-  //     }
-  //   }
-
-  //   _locationController.onLocationChanged.listen((loc.LocationData currentLoc) {
-  //     if (currentLoc.latitude != null && currentLoc.longitude != null) {
-  //       setState(() {
-  //         _center = LatLng(currentLoc.latitude!, currentLoc.longitude!);
-  //       });
-  //       print(_center);
-  //     }
+  // //Function to get user's current location
+  // Future<void> getLocation() async {
+  //   final hasPermission = await checkLocationPermission();
+  //   if (hasPermission == false) return;
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+  //       .then((Position position) {
+  //     setState(() {
+  //       currentPosition = position;
+  //       getAddressFromLatLong(currentPosition!);
+  //       hasLocationSelected = true;
+  //       _center = LatLng(position.latitude, position.longitude);
+  //     });
+  //     loadMarkerData();
+  //     setState(() {
+  //       //refresh ui
+  //     });
+  //   }).catchError((e) {
+  //     print("Error Detected while Getting Location: $e");
+  //     debugPrint(e);
   //   });
   // }
 
+  //Function to get user's current LIVE location and update the map
+  Future<void> getLocationUpdates() async {
+    bool _serviceEnabled;
+    loc.PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await _locationController.serviceEnabled();
+    if (_serviceEnabled) {
+      _serviceEnabled = await _locationController.requestService();
+    } else {
+      return;
+    }
+
+    _permissionGranted = await _locationController.hasPermission();
+    if (_permissionGranted == loc.PermissionStatus.denied) {
+      _permissionGranted = await _locationController.requestPermission();
+      if (_permissionGranted != loc.PermissionStatus.granted) {
+        return;
+      }
+    }
+    _locationController.onLocationChanged.listen((loc.LocationData currentLoc) {
+      if (currentLoc.latitude != null && currentLoc.longitude != null) {
+        if (mounted) {
+          setState(() async {
+            _hasCheckLocationRan = true;
+            _center = LatLng(currentLoc.latitude!, currentLoc.longitude!);
+            List<LatLng> res = await getPolylinePoints();
+            _cameraToPosition(_center);
+            createPolyline(res);
+            loadMarkerData();
+            selectedDistance = double.parse(calculateDistance(
+                    _center.latitude,
+                    _center.longitude,
+                    _centerOtherUser.latitude,
+                    _centerOtherUser.longitude)
+                .toStringAsFixed(2));
+          });
+          print(_center);
+        }
+      }
+    });
+  }
+
+  //Get the points the polyline (route line) will be made of and return as a list of LatLng coordinates
   Future<List<LatLng>> getPolylinePoints() async {
     List<LatLng> polylineCoords = [];
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        globals.mapsAPIKey,
-        PointLatLng(_center.latitude, _center.longitude),
-        PointLatLng(_centerOtherUser.latitude, _centerOtherUser.longitude),
-        travelMode: TravelMode.walking);
+      globals.mapsAPIKey,
+      PointLatLng(_center.latitude, _center.longitude),
+      PointLatLng(_centerOtherUser.latitude, _centerOtherUser.longitude),
+      travelMode: TravelMode.driving,
+    );
 
-    if (result.points.isNotEmpty) {
+    if (result.points.isNotEmpty && _hasCheckLocationRan) {
       result.points.forEach((PointLatLng point) {
         polylineCoords.add(LatLng(point.latitude, point.longitude));
       });
     } else {
       print(result.errorMessage);
     }
-    print("Got polyline coords: $polylineCoords");
     return polylineCoords;
   }
 
+  //Create polyline (route line) from current user to target user
   void createPolyline(List<LatLng> polylineCoords) async {
     PolylineId id = PolylineId("poly");
     Polyline polyline = Polyline(
-        polylineId: id, color: Colors.green, points: polylineCoords, width: 8);
-    setState(() {
-      polylines[id] = polyline;
-    });
+        polylineId: id, color: Colors.green, points: polylineCoords, width: 5);
+    if (mounted && _hasCheckLocationRan) {
+      //print("Drawing new polyline");
+      setState(() => polylines[id] = polyline);
+    }
   }
 
+  //Move camera to current user (Tasker or Customer) location
   Future<void> _cameraToPosition(LatLng pos) async {
     final GoogleMapController cont = await _mapController.future;
     CameraPosition _newCamPos = CameraPosition(
@@ -213,20 +231,22 @@ class CurrentLocationState extends State<CurrentLocation> {
     await placemarkFromCoordinates(position.latitude, position.longitude)
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
-      setState(() {
-        street = "${place.street}";
-        city = "${place.locality}";
-        state = "${place.administrativeArea}";
-        zip = "${place.postalCode}";
-        country = "${place.country}";
-        currentAddress =
-            street + ", " + city + ", " + state + ", " + zip + ", " + country;
-      });
+      if (mounted)
+        setState(() {
+          street = "${place.street}";
+          city = "${place.locality}";
+          state = "${place.administrativeArea}";
+          zip = "${place.postalCode}";
+          country = "${place.country}";
+          currentAddress =
+              street + ", " + city + ", " + state + ", " + zip + ", " + country;
+        });
     }).catchError((e) {
       debugPrint(e);
     });
   }
 
+  // //Add marker to map
   // void addMarker(String id, LatLng loc) async {
   //   final dB = FirebaseStorage.instance;
   //   final ref = dB.ref().child(
@@ -298,7 +318,7 @@ class CurrentLocationState extends State<CurrentLocation> {
         ),
         shadowPaint);
 
-    // Add border circle
+    // Add border circle - Green for self
     if (type == "Self") {
       final Paint borderPaint = Paint()..color = Colors.green;
       canvas.drawRRect(
@@ -314,6 +334,7 @@ class CurrentLocationState extends State<CurrentLocation> {
             bottomRight: radius,
           ),
           borderPaint);
+      // Add border circle - Red for other (if Tasker, other is Customer, vice versa)
     } else if (type == "Other") {
       final Paint borderPaint = Paint()..color = Colors.red;
       canvas.drawRRect(
@@ -406,11 +427,13 @@ class CurrentLocationState extends State<CurrentLocation> {
     }
     var docSnapshot = await collection.doc(id).get();
     Map<String, dynamic> data = docSnapshot.data()!;
-    setState(() {
-      selectedUserName = data['username'];
-      selectedFirstName = data['first name'];
-      selectedLastName = data['last name'];
-    });
+    if (mounted)
+      setState(() {
+        selectedUserName = data['username'];
+        selectedFirstName = data['first name'];
+        selectedLastName = data['last name'];
+        selectedEmail = data['email'];
+      });
   }
 
   //Calculate distance between two points (current user and selected user on map) in kilometers (km)
@@ -426,72 +449,80 @@ class CurrentLocationState extends State<CurrentLocation> {
   //Load marker data
   void loadMarkerData() async {
     //User's marker on map (always load)
-    String pfpPath = await getProfilePicturePath();
+
+    //Only run once to save resources
+    if (_hasGetOwnProfilePictureRan == false) {
+      String pfpPath = await getProfilePicturePath();
+      iconSelf = await getMarkerIcon(pfpPath, Size(120.0, 120.0), "Self");
+      setState(() {
+        _hasGetOwnProfilePictureRan = true; //Set to true to never run again
+      });
+    }
+
     _markers.add(Marker(
         markerId: MarkerId("Self"),
         position: _center,
-        icon: await getMarkerIcon(pfpPath, Size(120.0, 120.0), "Self"),
+        icon: iconSelf,
         onTap: () {
           setState(() {
             _displayOtherUserInfo = false;
           });
         }));
 
-    //TODO: Add all customers to map based on certain distance and if they have posted a request (add button to show request details too)
+    //For Taskers, track their customer
     //Test (temporary)
     if (widget.userType == "Taskers") {
-      String id = "test1234@gmail.com";
-      String pfpPathOtherUser = await getProfilePicturePathOtherUser(id);
+      String id = "test1234@gmail.com"; //Test
+
+      if (_hasGetOtherProfilePictureRan == false) {
+        String pfpPathOtherUser = await getProfilePicturePathOtherUser(id);
+        iconOtherUser =
+            await getMarkerIcon(pfpPathOtherUser, Size(120.0, 120.0), "Other");
+        setState(() {
+          _hasGetOtherProfilePictureRan = true;
+        });
+      }
+
       _markers.add(
         Marker(
-            markerId: MarkerId(id),
-            icon: await getMarkerIcon(
-                pfpPathOtherUser, Size(120.0, 120.0), "Other"),
+            markerId: MarkerId("Other"),
+            icon: iconOtherUser,
             position: _centerOtherUser,
             onTap: () {
-              //TODO: Add a call to a method here that draws a route to selected customer
-              //drawRoute();
+              getUserInfo(id);
               setState(() {
-                getUserInfo(id);
                 _displayOtherUserInfo = true;
-                selectedDistance = double.parse(calculateDistance(
-                        _center.latitude,
-                        _center.longitude,
-                        _centerOtherUser.latitude,
-                        _centerOtherUser.longitude)
-                    .toStringAsFixed(2));
               });
             }),
       );
 
-      //TODO: Add tasker that is completing task to the map for customer to track
+      //For Customers, track their tasker
       //Test (temporary)
     } else if (widget.userType == "Customers") {
-      String id = "test123@gmail.com";
-      String pfpPathOtherUser = await getProfilePicturePathOtherUser(id);
+      String id = "test123@gmail.com"; //Test
+
+      if (_hasGetOtherProfilePictureRan == false) {
+        String pfpPathOtherUser = await getProfilePicturePathOtherUser(id);
+        iconOtherUser =
+            await getMarkerIcon(pfpPathOtherUser, Size(120.0, 120.0), "Other");
+        setState(() {
+          _hasGetOtherProfilePictureRan = true;
+        });
+      }
+
       _markers.add(
         Marker(
             markerId: MarkerId(id),
-            icon: await getMarkerIcon(
-                pfpPathOtherUser, Size(120.0, 120.0), "Other"),
+            icon: iconOtherUser,
             position: _centerOtherUser,
             onTap: () {
-              //TODO: Add a call to a method here that tracks tasker
-              //drawRoute();
+              getUserInfo(id);
               setState(() {
-                getUserInfo(id);
                 _displayOtherUserInfo = true;
-                selectedDistance = double.parse(calculateDistance(
-                        _center.latitude,
-                        _center.longitude,
-                        _centerOtherUser.latitude,
-                        _centerOtherUser.longitude)
-                    .toStringAsFixed(2));
               });
             }),
       );
     }
-    setState(() {});
   }
 
   @override
@@ -517,18 +548,18 @@ class CurrentLocationState extends State<CurrentLocation> {
                 //Display a map
                 //if (hasLocationSelected)
                 SizedBox(
-                  width: 400.0,
-                  height: 600.0,
+                  width: 410.0,
+                  height: 570.0,
                   child: GoogleMap(
                     onMapCreated: _onMapCreated,
                     initialCameraPosition:
                         CameraPosition(target: _center, zoom: 14.0),
                     markers: Set<Marker>.of(_markers),
-                    mapType: MapType.normal,
                     polylines: Set<Polyline>.of(polylines.values),
+                    mapType: MapType.normal,
                   ),
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 15.0),
                 //Selected user details
                 if (_displayOtherUserInfo)
                   Padding(
@@ -550,15 +581,38 @@ class CurrentLocationState extends State<CurrentLocation> {
                             letterSpacing: 1.0,
                             fontSize: 16.0,
                           ))),
-                // const SizedBox(height: 20.0),
-                //Select location button
-                // ElevatedButton(
-                //     child:
-                //         Text("Get Location", style: TextStyle(color: Colors.black)),
-                //     onPressed: () async {
-                //       await getLocation();
-                //     }),
-                // const SizedBox(height: 20.0),
+                const SizedBox(height: 15.0),
+                //Button to display tasker profile page if current user is customer
+                if (widget.userType == "Customers" && _displayOtherUserInfo)
+                  ElevatedButton(
+                      child: Text("View Tasker Profile Page",
+                          style: TextStyle(color: Colors.black)),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TaskerProfilePage(
+                                    userEmail: selectedEmail,
+                                    isOwnProfilePage: false,
+                                  )), //Customer viewing tasker pfp
+                        );
+                      }),
+                //Button to display customer profile page if current user is tasker
+                if (widget.userType == "Taskers" && _displayOtherUserInfo)
+                  ElevatedButton(
+                      child: Text("View Customer Profile Page",
+                          style: TextStyle(color: Colors.black)),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CustomerProfilePage(
+                                    userEmail: selectedEmail,
+                                    isOwnProfilePage: false,
+                                  )), //Tasker viewing customer pfp
+                        );
+                      }),
+                const SizedBox(height: 20.0),
               ]),
             ),
     );

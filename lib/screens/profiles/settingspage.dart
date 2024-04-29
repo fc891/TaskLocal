@@ -203,20 +203,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          AppThemeCustomization())); //Replace with actual screen name
+                          AppThemeCustomization()));
             },
           ),
-          //Get current location (temp)
+          //show Map view (temp)
           ListTile(
             leading: Icon(
               Icons.location_pin,
               color: Theme.of(context).colorScheme.secondary,
             ),
-            title: Text("(temp) Get Location",
+            title: Text("Map View (test)",
                 style: TextStyle(
                     fontSize: 16.0,
                     color: Theme.of(context).colorScheme.secondary)),
-            subtitle: Text("Testing get current location",
+            subtitle: Text("Map View for Users",
                 style: TextStyle(
                     fontSize: 12.0,
                     color: Theme.of(context).colorScheme.secondary)),
@@ -227,7 +227,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   MaterialPageRoute(
                       builder: (context) => CurrentLocation(
                           userType: widget
-                              .userType))); //Replace with actual screen name
+                              .userType)));
             },
           ),
           //Manage notifications (turn on/off)
