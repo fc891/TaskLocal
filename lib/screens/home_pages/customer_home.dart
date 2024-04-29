@@ -168,7 +168,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.secondary),
+              icon: Icon(Icons.star, color: Theme.of(context).colorScheme.secondary),
               onPressed: () {
                 Navigator.push(
                   context,
