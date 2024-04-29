@@ -64,7 +64,6 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
         ),
       ),
       body: Container(
-        //color: Theme.of(context).colorScheme.tertiary,
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('Task Categories')
@@ -92,13 +91,24 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                 var taskerData = taskers[index].data() as Map<String, dynamic>;
                 String firstName = taskerData['first name'] ?? '';
                 String lastName = taskerData['last name'] ?? '';
-                String username = taskerData['username'] ?? 'None';
                 String email = taskerData['email'] ?? '';
+                String askingRate = taskerData['askingRate'] ?? '';
+                String experience = taskerData['experience'] ?? '';
+                String location = taskerData['location'] ?? '';
+
+                String name = (firstName.isNotEmpty || lastName.isNotEmpty)
+                    ? '$firstName $lastName'
+                    : 'No Name Available';
 
                 return ListTile(
-                  title: Text(username, style: TextStyle(color: Colors.white)),
-                  subtitle: Text('$firstName $lastName',
-                      style: TextStyle(color: Colors.white)),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name, style: TextStyle(color: Colors.white)),
+                      Text('Asking Rate: $askingRate | Experience: $experience | Location: $location', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  subtitle: Text('Email: $email', style: TextStyle(color: Colors.white)),
                   trailing: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {

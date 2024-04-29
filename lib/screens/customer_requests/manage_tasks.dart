@@ -17,7 +17,7 @@ class _ManageTasksState extends State<ManageTasks> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Tasks', style: TextStyle(color: Colors.white)),
+        title: Text('Manage Your Tasks', style: TextStyle(color: Colors.white)),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
