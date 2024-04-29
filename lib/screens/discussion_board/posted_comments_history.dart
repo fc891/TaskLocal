@@ -111,77 +111,82 @@ class _PostedCommentsHistoryState extends State<PostedCommentsHistory> {
                               return Text('Error: ${snapshot.error}');
                             } else {
                               final postedTopicData = snapshot.data!;
-                              return GestureDetector(
-                                onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => DiscussionPage(
-                                    dateAndTime: postedTopicData['date'].toDate(),
-                                    topicPosterEmail: postedTopicData['email'], taskCategory: postedTopicData['task category'], topicTitle: postedTopicData['topic title'], 
-                                    text: postedTopicData['text'], username: postedTopicData['username'],
-                                    numOfMsg: postedTopicData['num of msg'], usersLiked: postedTopicData['liked by users'], mmddyy: postedTopicData['formatted date'], 
-                                    time: postedTopicData['time'], timeWithSeconds: postedTopicData['time with seconds'], 
-                                    onLikeUpdated: () {
-                                      setState(() {});
-                                      if (widget.onLikeUpdated != null) {
-                                        widget.onLikeUpdated();
+                              // ensures that there is comment data stored in db
+                              if (postedTopicData.exists) {
+                                return GestureDetector(
+                                  onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => DiscussionPage(
+                                      dateAndTime: postedTopicData['date'].toDate(),
+                                      topicPosterEmail: postedTopicData['email'], taskCategory: postedTopicData['task category'], topicTitle: postedTopicData['topic title'], 
+                                      text: postedTopicData['text'], username: postedTopicData['username'],
+                                      numOfMsg: postedTopicData['num of msg'], usersLiked: postedTopicData['liked by users'], mmddyy: postedTopicData['formatted date'], 
+                                      time: postedTopicData['time'], timeWithSeconds: postedTopicData['time with seconds'], 
+                                      onLikeUpdated: () {
+                                        setState(() {});
+                                        if (widget.onLikeUpdated != null) {
+                                          widget.onLikeUpdated();
+                                        }
+                                      }, 
+                                      isTextFieldVisible: false
+                                      )),
+                                    ).then((updatedData) {                    
+                                      if (updatedData) {
+                                        setState(() {});
                                       }
-                                    }, 
-                                    isTextFieldVisible: false
-                                    )),
-                                  ).then((updatedData) {                    
-                                    if (updatedData) {
-                                      setState(() {});
-                                    }
-                                  });
-                                },
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.all(0),
-                                  subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${postedTopicData['task category']} • ${postedTopicData['topic title']}',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Theme.of(context).colorScheme.secondary,
+                                    });
+                                  },
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.all(0),
+                                    subtitle: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${postedTopicData['task category']} • ${postedTopicData['topic title']}',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      // Text(
-                                      //   '${postedTopicData['topic title']}',
-                                      //   style: TextStyle(
-                                      //     fontSize: 16,
-                                      //     color: Theme.of(context).colorScheme.secondary,
-                                      //   ),
-                                      // ),
-                                      Text(
-                                        '@$username commented $formattedDate $time',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context).colorScheme.secondary,
+                                        SizedBox(height: 5),
+                                        // Text(
+                                        //   '${postedTopicData['topic title']}',
+                                        //   style: TextStyle(
+                                        //     fontSize: 16,
+                                        //     color: Theme.of(context).colorScheme.secondary,
+                                        //   ),
+                                        // ),
+                                        Text(
+                                          '@$username commented $formattedDate $time',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        '$text',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Theme.of(context).colorScheme.secondary,
+                                        SizedBox(height: 5),
+                                        Text(
+                                          '$text',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
                                         ),
-                                      ),
-                                      // SizedBox(height: 5),
-                                      // Text(
-                                      //   '$formattedDate $time',
-                                      //   style: TextStyle(
-                                      //     fontSize: 12,
-                                      //     color: Theme.of(context).colorScheme.secondary,
-                                      //   ),
-                                      // ),
-                                    ],
+                                        // SizedBox(height: 5),
+                                        // Text(
+                                        //   '$formattedDate $time',
+                                        //   style: TextStyle(
+                                        //     fontSize: 12,
+                                        //     color: Theme.of(context).colorScheme.secondary,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              } else {
+                                return Container();
+                              }
                             }
                           },
                         );
