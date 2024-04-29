@@ -4,6 +4,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/customer_requests/address_input.dart';
+import 'package:tasklocal/screens/customer_requests/manage_tasks.dart';
 import 'package:tasklocal/screens/customer_requests/my_taskers.dart';
 import 'package:tasklocal/screens/home_pages/customer_search_plus.dart';
 import 'package:tasklocal/screens/messages/messages_home.dart';
@@ -176,6 +177,18 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                 );
               },
             ),
+            IconButton(
+              icon: Icon(Icons.list, color: Theme.of(context).colorScheme.secondary),
+              onPressed: () {
+              // Navigate to the screen where customers can view current and pending tasks
+              // Replace `YourTaskScreen()` with the actual screen widget
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ManageTasks()),
+                );
+              },
+            ),
+
             IconButton(
               icon: Icon(Icons.message, color: Theme.of(context).colorScheme.secondary),
               onPressed: () {
