@@ -2,50 +2,67 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-class NotifyUser {
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+class NotificationService {
+  static final NotificationService _notificationService = NotificationService._internal();
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  static Future<void> init() async {
-    tz.initializeTimeZones(); 
-    final AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid, iOS: null, macOS: null);
-
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  factory NotificationService() {
+    return _notificationService;
   }
 
-  static Future<void> scheduleReminder(DateTime taskDateTime, int remindMinutes) async {
-    final AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
-      importance: Importance.max,
-      priority: Priority.high,
-      showWhen: true,
+  NotificationService._internal();
+
+  Future<void> init() async {
+    tz.initializeTimeZones();
+
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+    final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification: onDidReceiveLocalNotification
     );
 
-    final NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      'Task Reminder',
-      'Upcoming task in 5 minutes',
-      _nextInstanceOfTaskTime(taskDateTime, remindMinutes),
-      platformChannelSpecifics,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+    await _flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: selectNotification,
+    );
+  }
+
+  Future onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) async {
+    // Handle your logic here for iOS notifications
+  }
+
+  Future selectNotification(String? payload) async {
+    if (payload != null) {
+      // Handle your notification tapped logic here
+    }
+  }
+
+  Future<void> scheduleNotification(int id, String title, String body, DateTime scheduledDate) async {
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      title,
+      body,
+      tz.TZDateTime.from(scheduledDate, tz.local),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'your_channel_id',
+          'your_channel_name',
+          channelDescription: 'your_channel_description',
+          importance: Importance.max,
+          priority: Priority.high,
+          icon: 'app_icon',
+        ),
+      ),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
-  }
-
-  static tz.TZDateTime _nextInstanceOfTaskTime(DateTime taskDateTime, int remindMinutes) {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    final Duration duration = Duration(minutes: remindMinutes);
-    final tz.TZDateTime scheduledDate = tz.TZDateTime.from(taskDateTime.subtract(duration), tz.local);
-    return scheduledDate.isBefore(now) ? now.add(Duration(seconds: 5)) : scheduledDate;
   }
 }

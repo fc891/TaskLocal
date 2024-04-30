@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:tasklocal/screens/rate_and_review/review_page.dart';
+import 'package:tasklocal/screens/supportpage/supportpage.dart';
 import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// import 'package:tasklocal/screens/calendar/calendarfront.dart';
-// import 'package:tasklocal/screens/notifications/notification_services.dart';
-//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// Notification service import
+import 'package:tasklocal/screens/notifications/notification_services.dart';
 
-//AUTHORIZATION-RELATED IMPORTS
+// AUTHORIZATION-RELATED IMPORTS
 import 'package:tasklocal/Screens/authorization/onboardingpage.dart';
 
-//THEME-RELATED IMPORTS
+// THEME-RELATED IMPORTS
 import 'package:tasklocal/Screens/app_theme/app_themes.dart';
 import 'package:tasklocal/Screens/app_theme/appthemecustomization.dart';
 import 'package:tasklocal/screens/app_theme/theme_provider.dart';
 
-//MESSAGES-RELATED IMPORTS
+// MESSAGES-RELATED IMPORTS
 import 'package:tasklocal/screens/messages/messages_home.dart';
 
-//CUSTOMER IMPORTS
+// CUSTOMER IMPORTS
 import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:tasklocal/Screens/authorization/customerregistration.dart';
 import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
 import 'package:tasklocal/Screens/profiles/customertaskinfopage.dart';
-import 'package:tasklocal/screens/profiles/taskinfo.dart';
 
-//TASKER IMPORTS
+// TASKER IMPORTS
 import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
 import 'package:tasklocal/Screens/authorization/tasker_registration.dart';
 import 'package:tasklocal/Screens/profiles/taskerprofilepage.dart';
@@ -40,6 +40,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize notification service
+  await NotificationService().init();
 
   runApp(ProviderScope(overrides: [
     sharedPreferencesProvider.overrideWithValue(sharedPreferences),
@@ -64,20 +67,18 @@ class MyApp extends ConsumerWidget {
       routes: {
         //'/': (context) => LoadScreen(), //loading screen (WIP)
         '/home': (context) => OnboardingPage(),
-        '/customerregistration': (context) =>
-            CustomerRegistration(onTap: () {}),
+        '/customerregistration': (context) => CustomerRegistration(onTap: () {}),
         '/taskerregistration': (context) => TaskerRegistration(onTap: () {}),
         '/customerhomepage': (context) => CustomerHomePage(),
         '/taskerhomepage': (context) => TaskerHomePage(),
-        //'/customerprofilepage': (context) => CustomerProfilePage(),
-        //'/taskerprofilepage': (context) => TaskerProfilePage(),
-        '/customertaskinfopage': (context) =>
-            CustomerTaskInfoPage(taskinfo: defaultinfo),
-        '/taskertaskinfopage': (context) =>
-            TaskerTaskInfoPage(taskinfo: defaultinfo),
+        '/customerprofilepage': (context) => CustomerProfilePage(),
+        '/taskerprofilepage': (context) => TaskerProfilePage(),
+        '/customertaskinfopage': (context) => CustomerTaskInfoPage(taskinfo: defaultinfo),
+        '/taskertaskinfopage': (context) => TaskerTaskInfoPage(taskinfo: defaultinfo),
         '/messageshome': (context) => MessagesHome(),
         '/reviewspage': (context) => ReviewsPage(taskerEmail: "joe@gmail.com"),
       },
     );
   }
 }
+
