@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:tasklocal/screens/reservations/confirmation.dart';
 
 class ReservationFormScreen extends StatefulWidget {
@@ -17,7 +18,8 @@ class ReservationFormScreen extends StatefulWidget {
 
 class _ReservationFormScreenState extends State<ReservationFormScreen> {
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
+  TimeOfDay _selectedTime = TimeOfDay(hour: 9, minute: 0); // Default start time at 9:00 AM
+  String _taskDescription = '';
 
   Future<void> _selectTime(BuildContext context) async {
     final pickedTime = await showModalBottomSheet<TimeOfDay>(
@@ -101,6 +103,10 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     }
   }
 
+  String _formatDateTime(DateTime dateTime) {
+    return DateFormat('MMM dd, yyyy - hh:mm a').format(dateTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,6 +166,35 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               ],
             ),
             SizedBox(height: 16),
+            // Display selected date and time
+            if (_selectedDate != null && _selectedTime != null)
+              Text(
+                'Selected Date and Time: ${_formatDateTime(DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, _selectedTime.hour, _selectedTime.minute))}',
+                style: TextStyle(fontSize: 16),
+              ),
+            SizedBox(height: 16),
+            // Task description input field
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Task Description',
+                  hintText: 'Enter a description of the task...',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(16.0),
+                ),
+                style: TextStyle(color: Colors.black), // Change text color to black
+                onChanged: (value) {
+                  setState(() {
+                    _taskDescription = value;
+                  });
+                },
+              ),
+            ),
+            SizedBox(height: 16),
             Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -172,6 +207,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                         taskerData: widget.taskerData,
                         selectedDate: _selectedDate,
                         selectedTime: _selectedTime,
+                        taskDescription: _taskDescription,
                       ),
                     ),
                   );
