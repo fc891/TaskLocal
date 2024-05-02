@@ -1,3 +1,8 @@
+// Contributors: Eric C., 
+
+// Code for storing the customer's previously used addresses
+// Customer can select an address and autofill the fields on AddressInputPage
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -147,7 +152,10 @@ class _AddressBookState extends State<AddressBook> {
                     ),
                   ),
                   child: ListTile(
-                    title: Text(_addresses[index]),
+                    title: Text(
+                      _addresses[index],
+                      style: TextStyle(color: Colors.white), // Set text color to white
+                    ),
                     onTap: () {
                       // Pass selected address back to previous screen
                       Navigator.pop(context, _addresses[index]);
