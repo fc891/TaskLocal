@@ -12,6 +12,8 @@ bool checkProfilePictureTasker =
 bool checkMedia = true;
 bool checkCategories = true;
 
+const String mapsAPIKey = "AIzaSyDepdCQYqGY9lwllCpKx99uuxSgGyiHiMg";
+
 // class ProfilePageGlobals {
 //   static bool _hasProfilePicture = false;
 

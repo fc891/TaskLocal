@@ -375,7 +375,7 @@ class _TaskerHomePageState extends State<TaskerHomePage> {
               // Redirect to Profile
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskerProfilePage()),
+                MaterialPageRoute(builder: (context) => TaskerProfilePage(userEmail: "", isOwnProfilePage: true,)), //userEmail unnecessary if accessing own profile page
               );
               break;
           }
