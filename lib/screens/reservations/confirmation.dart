@@ -16,7 +16,7 @@ class ReservationConfirmationScreen extends StatelessWidget {
   ReservationConfirmationScreen({
     required this.taskerData,
     required this.selectedDate,
-    required this.selectedTime,
+    required this.selectedTime, required String taskDescription,
   });
 
   @override

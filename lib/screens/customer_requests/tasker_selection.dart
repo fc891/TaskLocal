@@ -4,6 +4,8 @@
 
 // TODO: After, display the tasker's information (Task Categories -> docs -> Signed Up Tasks -> tasker emails -> fields)
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,6 +30,34 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
     'Price (Highest to Lowest)',
     'Rating (Highest to Lowest)',
   ];
+
+  late StreamController<QuerySnapshot> _streamController;
+
+  @override
+  void initState() {
+    super.initState();
+    _streamController = StreamController<QuerySnapshot>();
+    // Initially, load the taskers data
+    _loadTaskers();
+  }
+
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
+  }
+
+  void _loadTaskers() {
+    // Load taskers data without any filters
+    FirebaseFirestore.instance
+        .collection('Task Categories')
+        .doc(widget.jobCategory)
+        .collection('Signed Up Taskers')
+        .snapshots()
+        .listen((snapshot) {
+      _streamController.add(snapshot);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +94,8 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
         ),
       ),
       body: Container(
-        //color: Theme.of(context).colorScheme.tertiary,
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('Task Categories')
-              .doc(widget.jobCategory)
-              .collection('Signed Up Taskers')
-              .snapshots(),
+          stream: _streamController.stream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -92,13 +117,24 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                 var taskerData = taskers[index].data() as Map<String, dynamic>;
                 String firstName = taskerData['first name'] ?? '';
                 String lastName = taskerData['last name'] ?? '';
-                String username = taskerData['username'] ?? 'None';
                 String email = taskerData['email'] ?? '';
+                String askingRate = taskerData['askingRate'] ?? '';
+                String experience = taskerData['experience'] ?? '';
+                String location = taskerData['location'] ?? '';
+
+                String name = (firstName.isNotEmpty || lastName.isNotEmpty)
+                    ? '$firstName $lastName'
+                    : 'No Name Available';
 
                 return ListTile(
-                  title: Text(username, style: TextStyle(color: Colors.white)),
-                  subtitle: Text('$firstName $lastName',
-                      style: TextStyle(color: Colors.white)),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name, style: TextStyle(color: Colors.white)),
+                      Text('Asking Rate: $askingRate | Experience: $experience | Location: $location', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  subtitle: Text('Email: $email', style: TextStyle(color: Colors.white)),
                   trailing: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
@@ -148,6 +184,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
                     setState(() {
                       _selectedFilter = newValue!;
                     });
+                    _applyFilters();
                   },
                   items: _filterOptions
                       .map<DropdownMenuItem<String>>((String value) {
@@ -165,7 +202,6 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  _applyFilters();
                   Navigator.pop(context);
                 },
                 child: Text(
@@ -192,7 +228,7 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
           .collection('Selected Taskers')
           .doc(email)
           .set({
-        'name': taskerData['username'] ?? 'No username',
+        'name': '${taskerData['first name'] ?? ''} ${taskerData['last name'] ?? ''}',
         'description':
             '${taskerData['first name'] ?? ''} ${taskerData['last name'] ?? ''}',
         'email': email,
@@ -222,13 +258,29 @@ class _TaskerSelectionPageState extends State<TaskerSelectionPage> {
     // Implement filter/sort functionality based on selected filter (_selectedFilter)
     switch (_selectedFilter) {
       case 'Years of Experience (Most to Least)':
-        // Implement filtering logic
+        setState(() {
+          // Update the stream with the ordered query
+          _streamController.sink.addStream(FirebaseFirestore.instance
+              .collection('Task Categories')
+              .doc(widget.jobCategory)
+              .collection('Signed Up Taskers')
+              .orderBy('experience', descending: true)
+              .snapshots());
+        });
         break;
       case 'Location (Closest to Farthest)':
         // Implement filtering logic
         break;
       case 'Price (Highest to Lowest)':
-        // Implement filtering logic
+        setState(() {
+          // Update the stream with the ordered query
+          _streamController.sink.addStream(FirebaseFirestore.instance
+              .collection('Task Categories')
+              .doc(widget.jobCategory)
+              .collection('Signed Up Taskers')
+              .orderBy('askingRate', descending: true)
+              .snapshots());
+        });
         break;
       case 'Rating (Highest to Lowest)':
         // Implement filtering logic
