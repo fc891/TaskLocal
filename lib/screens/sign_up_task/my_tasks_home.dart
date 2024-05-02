@@ -24,7 +24,7 @@ class _MyTasksHomeState extends State<MyTasksHome> {
           //backgroundColor: Colors.green[800],
           bottom: TabBar(
             // have color based on user selecting the tab
-            unselectedLabelColor: Colors.grey[400],
+            unselectedLabelColor: Colors.white,
             labelColor: Colors.green[300],
             // labels for each tab
             tabs: const [
