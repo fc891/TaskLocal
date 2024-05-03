@@ -74,28 +74,6 @@ class _InProgressTaskState extends State<InProgressTask> {
                                             padding: const EdgeInsets.only(left: 20.0),
                                             child: Text(
                                               categoryName, 
-//                           children: [
-//                             ListView.builder(
-//                               shrinkWrap: true,
-//                               physics: NeverScrollableScrollPhysics(),
-//                               itemCount: taskCategory.length,
-//                               itemBuilder: (context, index) {
-//                                 final taskData = taskCategory[index];
-//                                 return Padding(
-//                                   padding: const EdgeInsets.only(top: 8.0),
-//                                   // display the information of the signed up task in a ListTile
-//                                   child: Column(
-//                                     crossAxisAlignment:
-//                                         CrossAxisAlignment.start,
-//                                     children: [
-//                                       ListTile(
-//                                         // default padding
-//                                         minVerticalPadding: 0,
-//                                         contentPadding: EdgeInsets.all(0),
-//                                         title: Padding(
-//                                           padding:
-//                                               const EdgeInsets.only(left: 20.0),
-//                                           child: Text(categoryName,
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -511,104 +489,6 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   ),
                                                 ) 
                                               else ElevatedButton(
-// =======
-//                                               )
-//                                             else if (taskData[
-//                                                     'task accepted'] &&
-//                                                 !taskData['task started'])
-//                                               ElevatedButton(
-//                                                 onPressed: () async {
-//                                                   bool confirmed =
-//                                                       await showDialog(
-//                                                     context: context,
-//                                                     builder: (context) =>
-//                                                         AlertDialog(
-//                                                       title:
-//                                                           Text('Confirm Start'),
-//                                                       content: Text(
-//                                                           'Are you sure you want to start the task?'),
-//                                                       backgroundColor:
-//                                                           Theme.of(context)
-//                                                               .colorScheme
-//                                                               .tertiary,
-//                                                       actions: [
-//                                                         TextButton(
-//                                                           onPressed: () =>
-//                                                               Navigator.of(
-//                                                                       context)
-//                                                                   .pop(true),
-//                                                           child:
-//                                                               Text('Confirm'),
-//                                                         ),
-//                                                         TextButton(
-//                                                           onPressed: () =>
-//                                                               Navigator.of(
-//                                                                       context)
-//                                                                   .pop(false),
-//                                                           child: Text('Cancel'),
-//                                                         ),
-//                                                       ],
-//                                                     ),
-//                                                   );
-//                                                   if (confirmed == true) {
-//                                                     try {
-//                                                       // update the UI
-//                                                       setState(() {
-//                                                         _firestore
-//                                                             .collection(
-//                                                                 'Task Categories')
-//                                                             .doc(categoryName)
-//                                                             .collection(
-//                                                                 'Hired Taskers')
-//                                                             .doc(_auth
-//                                                                 .currentUser!
-//                                                                 .email)
-//                                                             .collection(
-//                                                                 'In Progress Tasks')
-//                                                             .doc(taskData[
-//                                                                 'customer email'])
-//                                                             .update({
-//                                                           'task started': true
-//                                                         });
-//                                                       });
-//                                                       ScaffoldMessenger.of(
-//                                                               context)
-//                                                           .showSnackBar(
-//                                                         SnackBar(
-//                                                           content: Text(
-//                                                               'Successfully started task.'),
-//                                                         ),
-//                                                       );
-//                                                     } catch (error) {
-//                                                       ScaffoldMessenger.of(
-//                                                               context)
-//                                                           .showSnackBar(
-//                                                         SnackBar(
-//                                                           content: Text(
-//                                                               'An error occurred while starting the task.'),
-//                                                         ),
-//                                                       );
-//                                                     }
-//                                                   }
-//                                                 },
-//                                                 style: ElevatedButton.styleFrom(
-//                                                   backgroundColor:
-//                                                       Colors.green[800],
-//                                                 ),
-//                                                 child: Padding(
-//                                                   padding: const EdgeInsets
-//                                                       .symmetric(
-//                                                       horizontal: 0.0,
-//                                                       vertical: 0),
-//                                                   child: Text("Start",
-//                                                       style: TextStyle(
-//                                                           color: Colors.white,
-//                                                           fontSize: 14)),
-//                                                 ),
-//                                               )
-//                                             else
-//                                               ElevatedButton(
-// >>>>>>> main
                                                 onPressed: () async {
                                                   // give user a warning if they really want to delete the task category
                                                   bool confirmed =
@@ -681,29 +561,12 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       //     transact.set(amntCompDoc, {'amount completed': 1});
                                                       //   }
                                                       // });
-
-// =======
-//                                                       final signedUpGeneral = _firestore
-//                                                           .collection(
-//                                                               'Task Categories')
-//                                                           .doc(categoryName)
-//                                                           .collection(
-//                                                               'Hired Taskers')
-//                                                           .doc(_auth
-//                                                               .currentUser!
-//                                                               .email)
-//                                                           .collection(
-//                                                               'In Progress Tasks')
-//                                                           .doc(taskData[
-//                                                               'customer email']);
-//                                                       await signedUpGeneral
-//                                                           .delete();
-// >>>>>>> main
                                                       // update the UI
                                                       setState(() {
                                                         taskCategory
                                                             .removeAt(index);
                                                       });
+                                                      // ignore: use_build_context_synchronously
                                                       ScaffoldMessenger.of(
                                                               context)
                                                           .showSnackBar(
@@ -714,6 +577,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       );
                                                     } catch (error) {
                                                       // print('There was an error deleting the signed up task: $error');
+                                                      // ignore: use_build_context_synchronously
                                                       ScaffoldMessenger.of(
                                                               context)
                                                           .showSnackBar(
