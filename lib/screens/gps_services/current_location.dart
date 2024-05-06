@@ -36,8 +36,6 @@ class CurrentLocation extends StatefulWidget {
   State<CurrentLocation> createState() => CurrentLocationState();
 }
 
-//enum UrlType { IMAGE, VIDEO, UNKNOWN }
-
 //Bill's Current Location Screen
 class CurrentLocationState extends State<CurrentLocation> {
   loc.Location _locationController = new loc.Location();
@@ -53,7 +51,9 @@ class CurrentLocationState extends State<CurrentLocation> {
   String selectedFirstName = "";
   String selectedLastName = "";
   String selectedEmail = "";
-  double selectedDistance = 0.0;
+  //double selectedDistance = 0.0;
+  String distanceInMiles = "";
+  String distanceInTime = "";
 
   late GoogleMapController mapController;
   final Completer<GoogleMapController> _mapController =
@@ -115,28 +115,6 @@ class CurrentLocationState extends State<CurrentLocation> {
     return true;
   }
 
-  // //Function to get user's current location
-  // Future<void> getLocation() async {
-  //   final hasPermission = await checkLocationPermission();
-  //   if (hasPermission == false) return;
-  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-  //       .then((Position position) {
-  //     setState(() {
-  //       currentPosition = position;
-  //       getAddressFromLatLong(currentPosition!);
-  //       hasLocationSelected = true;
-  //       _center = LatLng(position.latitude, position.longitude);
-  //     });
-  //     loadMarkerData();
-  //     setState(() {
-  //       //refresh ui
-  //     });
-  //   }).catchError((e) {
-  //     print("Error Detected while Getting Location: $e");
-  //     debugPrint(e);
-  //   });
-  // }
-
   //Function to get user's current LIVE location and update the map
   Future<void> getLocationUpdates() async {
     bool _serviceEnabled;
@@ -166,12 +144,12 @@ class CurrentLocationState extends State<CurrentLocation> {
             _cameraToPosition(_center);
             createPolyline(res);
             loadMarkerData();
-            selectedDistance = double.parse(calculateDistance(
-                    _center.latitude,
-                    _center.longitude,
-                    _centerOtherUser.latitude,
-                    _centerOtherUser.longitude)
-                .toStringAsFixed(2));
+            // selectedDistance = double.parse(calculateDistance(
+            //         _center.latitude,
+            //         _center.longitude,
+            //         _centerOtherUser.latitude,
+            //         _centerOtherUser.longitude)
+            //     .toStringAsFixed(2));
           });
           print(_center);
         }
@@ -180,6 +158,7 @@ class CurrentLocationState extends State<CurrentLocation> {
   }
 
   //Get the points the polyline (route line) will be made of and return as a list of LatLng coordinates
+  //Distance metrics to be shown (time away and distance away) will also be obtained and updated here
   Future<List<LatLng>> getPolylinePoints() async {
     List<LatLng> polylineCoords = [];
     PolylinePoints polylinePoints = PolylinePoints();
@@ -189,7 +168,6 @@ class CurrentLocationState extends State<CurrentLocation> {
       PointLatLng(_centerOtherUser.latitude, _centerOtherUser.longitude),
       travelMode: TravelMode.driving,
     );
-
     if (result.points.isNotEmpty && _hasCheckLocationRan) {
       result.points.forEach((PointLatLng point) {
         polylineCoords.add(LatLng(point.latitude, point.longitude));
@@ -197,6 +175,10 @@ class CurrentLocationState extends State<CurrentLocation> {
     } else {
       print(result.errorMessage);
     }
+    setState(() {
+      distanceInMiles = result.distance!;
+      distanceInTime = result.duration!;
+    });
     return polylineCoords;
   }
 
@@ -545,8 +527,7 @@ class CurrentLocationState extends State<CurrentLocation> {
             )
           : Center(
               child: Column(children: [
-                //Display a map
-                //if (hasLocationSelected)
+                //Display the map
                 SizedBox(
                   width: 410.0,
                   height: 570.0,
@@ -560,7 +541,7 @@ class CurrentLocationState extends State<CurrentLocation> {
                   ),
                 ),
                 const SizedBox(height: 15.0),
-                //Selected user details
+                //Selected user details (first name, last name, @username)
                 if (_displayOtherUserInfo)
                   Padding(
                       padding: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 10.0),
@@ -572,10 +553,11 @@ class CurrentLocationState extends State<CurrentLocation> {
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                           ))),
+                //Selected user time away and distance away
                 if (_displayOtherUserInfo)
                   Padding(
                       padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                      child: Text("$selectedDistance km away",
+                      child: Text("$distanceInTime away ($distanceInMiles)",
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.secondary,
                             letterSpacing: 1.0,
