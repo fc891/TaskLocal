@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tasklocal/Screens/authorization/loginpagecustomer.dart';
 import 'package:tasklocal/components/customer_selection_button.dart';
@@ -21,21 +22,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkNotificationPermission();
+      notificationVerification();
     });
   }
 
-  void _checkNotificationPermission() async {
+  // create function to see if user has given permission to notifications
+  void notificationVerification() async {
     var notificationStatus = await Permission.notification.status;
     if (!notificationStatus.isGranted) {
-      _showNotificationPermissionDialog();
+      notificationVerificationDialog();
     }
   }
 
-  void _showNotificationPermissionDialog() {
+  // create function for dialog pop up when user doesn't have notifications on
+  void notificationVerificationDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false, // User must tap button!
+      barrierDismissible: false, 
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Enable Notifications'),
@@ -68,26 +71,36 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+  // build layout
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Image.asset('lib/images/tasklocaltransparent.png'),
-                ),
-                Text(
-                  'TaskLocal',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontSize: 32,
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              Stack(
+                alignment: Alignment.center,  
+                children: [
+                  // image of TaskLocal
+                  Image.asset('lib/images/tasklocaltransparent.png'),
+                  Positioned(
+                    bottom: 10, 
+                    // name
+                    child: Text(
+                      'TaskLocal',
+                      style: GoogleFonts.oswald(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 52,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 25),
+                ],
+              ),
+              const SizedBox(height: 100),
+
+                // tasker sign in
                 SelectionButtonTasker(
                   onTap: () {
                     Navigator.push(
@@ -97,7 +110,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     );
                   },
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
+
+                // customer sign in
                 SelectionButtonCustomer(
                   onTap: () {
                     Navigator.push(
@@ -107,7 +122,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     );
                   },
                 ),
-                const SizedBox(height: 160),
+                const SizedBox(height: 125),
+
+                // register 
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
