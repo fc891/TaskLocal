@@ -270,9 +270,10 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     }
     runGetters(); //Run all getter functions
     return Scaffold(
-      //Appbar
+        //Appbar
         appBar: AppBar(
-          title: Text('${username}\'s profile page'),
+          title: Text('@${username}',
+              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold)),
           centerTitle: true,
           elevation: 0.0,
           actions: [
@@ -362,6 +363,49 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               ),
               Row(children: <Widget>[
                 Container(
+                  height: 80.0,
+                  width: 95.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.tertiary),
+                    child: Text("View Task History",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: _taskHistorySelected ? FontWeight.bold : FontWeight.normal,
+                            shadows: _taskHistorySelected ? 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                              ),] 
+                              : 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 0.0,
+                                color: Color.fromARGB(0, 0, 0, 0),
+                              ),] 
+                            )),
+                    onPressed: () {
+                      setState(() {
+                        _taskCategoriesSelected = false;
+                        _uploadedMediaSelected = false;
+                        _taskHistorySelected = true;
+                      });
+                    },
+                  )),
+                VerticalDivider(
+                  //color: Colors.green[500],
+                  width: 30.0,
+                ),
+                Container(
                     height: 80.0,
                     width: 95.0,
                     decoration: BoxDecoration(
@@ -375,7 +419,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                               Theme.of(context).colorScheme.tertiary),
                       child: Text("View Task Categories",
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary)),
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: _taskCategoriesSelected ? FontWeight.bold : FontWeight.normal,
+                              shadows: _taskCategoriesSelected ? 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                              ),] 
+                              : 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 0.0,
+                                color: Color.fromARGB(0, 0, 0, 0),
+                              ),] 
+                            )),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = true;
@@ -402,7 +462,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                               Theme.of(context).colorScheme.tertiary),
                       child: Text("View and Upload Media",
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary)),
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: _uploadedMediaSelected ? FontWeight.bold : FontWeight.normal,
+                              shadows: _uploadedMediaSelected ? 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                              ),] 
+                              : 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 0.0,
+                                color: Color.fromARGB(0, 0, 0, 0),
+                              ),] 
+                            )),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = false;
@@ -411,33 +487,6 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                         });
                       },
                     )),
-                VerticalDivider(
-                  //color: Colors.green[500],
-                  width: 30.0,
-                ),
-                Container(
-                    height: 80.0,
-                    width: 95.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.tertiary),
-                      child: Text("View Task History",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary)),
-                      onPressed: () {
-                        setState(() {
-                          _taskCategoriesSelected = false;
-                          _uploadedMediaSelected = false;
-                          _taskHistorySelected = true;
-                        });
-                      },
-                    ))
               ]),
               //Divider (line)
               Divider(
@@ -469,16 +518,16 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                             itemBuilder: (context, index) {
                               return Card(
                                   child: ListTile(
-                                onTap: () {
-                                  TaskInfo info =
-                                      TaskInfo(taskCategoryList[index], index);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TaskerTaskCategory(
-                                                  taskinfo: info)));
-                                },
+                                // onTap: () {
+                                //   TaskInfo info =
+                                //       TaskInfo(taskCategoryList[index], index);
+                                //   Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //           builder: (context) =>
+                                //               TaskerTaskCategory(
+                                //                   taskinfo: info)));
+                                // },
                                 title: Text(taskCategoryList[index],
                                     style: TextStyle(
                                         color: Theme.of(context)
@@ -665,14 +714,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                   child: ListTile(
                                 onTap: () {
                                   CompletedTask info = CompletedTask(
-                                      taskCompletedList[index].get("customer email"), 
-                                      taskCompletedList[index].get("customer first name"),
-                                      taskCompletedList[index].get("customer last name"),
-                                      taskCompletedList[index].get("description"),
+                                      taskCompletedList[index]
+                                          .get("customer email"),
+                                      taskCompletedList[index]
+                                          .get("customer first name"),
+                                      taskCompletedList[index]
+                                          .get("customer last name"),
+                                      taskCompletedList[index]
+                                          .get("customer username"),
+                                      taskCompletedList[index]
+                                          .get("description"),
                                       taskCompletedList[index].get("location"),
                                       taskCompletedList[index].get("pay rate"),
-                                      taskCompletedList[index].get("start date"),
-                                      index+1); //Placeholder
+                                      taskCompletedList[index]
+                                          .get("start date"),
+                                      taskCompletedList[index]
+                                          .get("task category"),
+                                      index + 1); //Placeholder
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -680,7 +738,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                               //Change to tasker specific later
                                               taskinfo: info)));
                                 },
-                                title: Text("${taskCompletedList[index].get("customer email")} (${taskCompletedList[index].get("start date")})",
+                                title: Text(
+                                    "${taskCompletedList[index].get("task category")}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                                subtitle: Text(
+                                    "@${taskCompletedList[index].get("customer username")} (${taskCompletedList[index].get("start date")})",
                                     style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
