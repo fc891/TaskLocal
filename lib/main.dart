@@ -25,7 +25,7 @@ import 'package:tasklocal/Screens/home_pages/customer_home.dart';
 import 'package:tasklocal/Screens/authorization/customerregistration.dart';
 import 'package:tasklocal/Screens/profiles/customerprofilepage.dart';
 import 'package:tasklocal/Screens/profiles/customertaskinfopage.dart';
-import 'package:tasklocal/screens/profiles/taskinfo.dart';
+import 'package:tasklocal/screens/profiles/completedtask.dart';
 
 //TASKER IMPORTS
 import 'package:tasklocal/Screens/home_pages/tasker_home.dart';
@@ -51,7 +51,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    TaskInfo defaultinfo = TaskInfo("Default", 0);
     final isDarkMode = ref.watch(isDarkProvider);
     return MaterialApp(
       title: 'TaskLocal',
@@ -71,10 +70,10 @@ class MyApp extends ConsumerWidget {
         '/taskerhomepage': (context) => TaskerHomePage(),
         //'/customerprofilepage': (context) => CustomerProfilePage(),
         //'/taskerprofilepage': (context) => TaskerProfilePage(),
-        '/customertaskinfopage': (context) =>
-            CustomerTaskInfoPage(taskinfo: defaultinfo),
-        '/taskertaskinfopage': (context) =>
-            TaskerTaskInfoPage(taskinfo: defaultinfo),
+        // '/customertaskinfopage': (context) =>
+        //     CustomerTaskInfoPage(taskinfo: defaultinfo),
+        // '/taskertaskinfopage': (context) =>
+        //     TaskerTaskInfoPage(taskinfo: defaultinfo),
         '/messageshome': (context) => MessagesHome(),
         '/reviewspage': (context) => ReviewsPage(taskerEmail: "joe@gmail.com"),
       },
