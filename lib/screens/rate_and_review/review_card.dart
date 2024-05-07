@@ -29,7 +29,7 @@ class ReviewCard extends StatelessWidget {
 
                     // display customer profile
                     CircleAvatar(
-                      backgroundImage: NetworkImage(reviewData['customerProfilePicture'] ?? 'https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836'),
+                      backgroundImage: NetworkImage(reviewData['profile picture'] ?? 'https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836'),
                       radius: 20,
                     ),
                     SizedBox(width: 8),

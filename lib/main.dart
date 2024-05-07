@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tasklocal/screens/rate_and_review/review_card.dart';
 import 'package:tasklocal/screens/rate_and_review/review_page.dart';
 import 'package:tasklocal/screens/supportpage/supportpage.dart';
 import 'firebase_options.dart';
