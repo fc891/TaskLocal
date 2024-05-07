@@ -15,9 +15,11 @@ class TaskerTaskInfoPage extends StatelessWidget {
 //Bill's Tasker Task Info Screen
   @override
   Widget build(BuildContext context) {
+    String category = taskinfo.taskCategory;
     String email = taskinfo.customerEmail;
     String first = taskinfo.customerFirstName;
     String last = taskinfo.customerLastName;
+    String username = taskinfo.customerUsername;
     String desc = taskinfo.description;
     String loc = taskinfo.location;
     String payRate = taskinfo.payRate;
@@ -38,6 +40,23 @@ class TaskerTaskInfoPage extends StatelessWidget {
           child: Column(children: [
         Column(children: <Widget>[
           const SizedBox(height: 10.0),
+          //Display task category
+          Text('Task Category:',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                letterSpacing: 1.0,
+                fontSize: 26.0,
+                fontWeight: FontWeight.bold,
+              )),
+          Text('$category',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                letterSpacing: 1.0,
+                fontSize: 18.0,
+              )),
+          //Display user that task was completed for
+          const SizedBox(height: 20.0),
           Text('Task Completed For User:',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary,
@@ -45,13 +64,14 @@ class TaskerTaskInfoPage extends StatelessWidget {
                 fontSize: 26.0,
                 fontWeight: FontWeight.bold,
               )),
-          Text('$first $last ($email)',
+          Text('$first $last (@$username)',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary,
                 letterSpacing: 1.0,
                 fontSize: 18.0,
               )),
+          //Display task description
           const SizedBox(height: 20.0),
           Text('Task Description:',
               style: TextStyle(
@@ -67,6 +87,7 @@ class TaskerTaskInfoPage extends StatelessWidget {
                 letterSpacing: 1.0,
                 fontSize: 18.0,
               )),
+          //Display task location
           const SizedBox(height: 20.0),
           Text('Task Location:',
               style: TextStyle(
@@ -82,6 +103,7 @@ class TaskerTaskInfoPage extends StatelessWidget {
                 letterSpacing: 1.0,
                 fontSize: 18.0,
               )),
+          //Display date that task was accepted
           const SizedBox(height: 20.0),
           Text('Start Date:',
               style: TextStyle(
@@ -97,6 +119,7 @@ class TaskerTaskInfoPage extends StatelessWidget {
                 letterSpacing: 1.0,
                 fontSize: 18.0,
               )),
+          //Display pay rate ($/hr)
           const SizedBox(height: 20.0),
           Text('Pay Rate:',
               style: TextStyle(

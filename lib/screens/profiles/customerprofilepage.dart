@@ -127,7 +127,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
         //Background color of UI
         //backgroundColor: Colors.green[500],
         appBar: AppBar(
-          title: Text('$username\'s profile page'),
+          title: Text('@$username', style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold)),
           centerTitle: true,
           //backgroundColor: Colors.green[800],
           elevation: 0.0,
