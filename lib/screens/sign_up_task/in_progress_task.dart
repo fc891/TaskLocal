@@ -501,23 +501,15 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       content: Text(
                                                           'Are you sure you are completed with the task?'),
                                                       backgroundColor:
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .tertiary,
+                                                          Theme.of(context).colorScheme.tertiary,
                                                       actions: [
                                                         TextButton(
-                                                          onPressed: () =>
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop(true),
+                                                          onPressed: () => Navigator.of(context).pop(true),
                                                           child:
-                                                              Text('Confirm'),
+                                                            Text('Confirm'),
                                                         ),
                                                         TextButton(
-                                                          onPressed: () =>
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop(false),
+                                                          onPressed: () => Navigator.of(context).pop(false),
                                                           child: Text('Cancel'),
                                                         ),
                                                       ],
@@ -526,13 +518,49 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   // proceed with the removal process if true
                                                   if (confirmed == true) {
                                                     try {
+                                                      // task request's data to be used for both tasker and customer's collections
                                                       final taskRequestData = await _firestore.collection('Task Categories').doc(categoryName)
                                                                                 .collection('Hired Taskers').doc(_auth.currentUser!.email)
                                                                                 .collection('In Progress Tasks').doc(taskData['customer email']).get();
-                                                      var data = taskRequestData.data();
+                                                      final data = taskRequestData.data();
+                                                      final customerEmail = data?['customer email'];
+                                                      final description = data?['description'];
+                                                      final location = data?['location'];
+                                                      final payRate = data?['pay rate'];
+                                                      final startDate = data?['start date'];
+                                                      final taskAccepted = data?['task accepted'];
+                                                      final taskStarted = data?['task started'];
+                                                      
+                                                      // retrieve tasker data to be used for cutomer's collection
+                                                      final taskerData = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
+                                                      final taskerFirstName = taskerData['first name'];
+                                                      final taskerLastName = taskerData['last name'];
+                                                      final taskerUserName = taskerData['username'];
+                                                                                
+
                                                       if (data != null) {
+                                                        // storing task request into tasker's collection
                                                         await _firestore.collection('Taskers').doc(_auth.currentUser!.email)
-                                                                                      .collection('Completed Tasks').add(data);
+                                                          .collection('Completed Tasks').add({
+                                                            ...data,
+                                                            'task category': categoryName,
+                                                        });
+
+                                                        // storing task request into customer's collection
+                                                        await _firestore.collection('Customers').doc(customerEmail)
+                                                          .collection('Completed Tasks').add({
+                                                            'tasker email': _auth.currentUser!.email,
+                                                            'tasker first name': taskerFirstName,
+                                                            'tasker last name': taskerLastName,
+                                                            'tasker username': taskerUserName,
+                                                            'task category': categoryName,
+                                                            'description': description,
+                                                            'location': location,
+                                                            'pay rate': payRate,
+                                                            'startDate': startDate,
+                                                            'task accepted': taskAccepted,
+                                                            'task started': taskStarted,
+                                                        });
                                                       }
                                                                                       
                                                       // removing from the collection
@@ -540,27 +568,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                                                 .collection('Hired Taskers').doc(_auth.currentUser!.email)
                                                                                 .collection('In Progress Tasks').doc(taskData['customer email']);
 
-                                                      // await signedUpGeneral.delete();
-
-                                                      
-                                                      // // update the number of completed task in personal tasker's collection
-                                                      // final amntCompDoc = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Completed Tasks').doc('amount completed');
-                                                      // // transaction used to update the value atomically
-                                                      // await _firestore.runTransaction((transact) async {
-                                                      //   // Retrieve current value of 'amount completed'
-                                                      //   final docSnapshot = await transact.get(amntCompDoc);
-                                                      //   if (docSnapshot.exists) {
-                                                      //     // if there is data retrieve it, else assign variable to 0. And increment by 1
-                                                      //     final currentAmount = docSnapshot.data()?['amount completed'] ?? 0;
-                                                      //     final newAmount = currentAmount + 1;
-
-                                                      //     // Update 'amount completed' to plus 1
-                                                      //     transact.update(amntCompDoc, {'amount completed': newAmount});
-                                                      //   } else {
-                                                      //     // If doc is not present, create it along with 'amount completed' assigned to 1
-                                                      //     transact.set(amntCompDoc, {'amount completed': 1});
-                                                      //   }
-                                                      // });
+                                                      await signedUpGeneral.delete();
                                                       // update the UI
                                                       setState(() {
                                                         taskCategory
