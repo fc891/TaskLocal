@@ -129,7 +129,7 @@ class _MyTaskersPageState extends State<MyTaskersPage> {
                             );
                           },
                           trailing: IconButton(
-                            icon: Icon(Icons.message), // Add message icon
+                            icon: Icon(Icons.message, color: Colors.white), // Add message icon
                             onPressed: () {
                               // Navigate to the messages screen
                               Navigator.push(
