@@ -12,6 +12,7 @@ class UserPassInput extends StatelessWidget {
     required this.obscureText,
   });
 
+  // create input box for username and password
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -5,6 +5,7 @@ class RegisterButtonCustomer extends StatelessWidget {
 
   const RegisterButtonCustomer({super.key, required this.onTap});
 
+  // create button for customer register
   @override
   Widget build(BuildContext context) {
     Color buttonColor = Theme.of(context).colorScheme.tertiary;

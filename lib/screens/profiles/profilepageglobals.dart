@@ -12,6 +12,6 @@ bool checkProfilePictureTasker =
 bool checkMedia = true;
 bool checkCategories = true;
 bool checkTasks = true;
+bool checkTasksCustomer = true;
 
 const String mapsAPIKey = "AIzaSyDepdCQYqGY9lwllCpKx99uuxSgGyiHiMg";
-

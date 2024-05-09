@@ -10,11 +10,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasklocal/screens/profiles/customertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
+import 'package:tasklocal/screens/profiles/completedtask.dart';
 import 'package:tasklocal/screens/profiles/customereditprofile.dart';
 import 'package:tasklocal/screens/profiles/settingspage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 
-FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
 //Bill's Customer Profile Page Screen
 class CustomerProfilePage extends StatefulWidget {
@@ -39,6 +42,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   late String profilePictureURL;
   bool _hasProfilePicture = false;
   bool runOnce = true;
+
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> requestCompletedList = [];
 
   //WIP
   //Bill's get user's info using testid (user email right now)
@@ -72,10 +77,25 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     }
   }
 
-  //WIP
   //Bill's get user's number of requested tasks completed using id
   void getRequestsCompleted(String id) async {
-    requestscompleted = 1;
+    globals.checkTasksCustomer = false;
+
+    //Query all documents under "Completed Tasks" for taskers in database, add to list to display later
+    await firebaseFirestore
+        .collection("Customers")
+        .doc(id)
+        .collection("Completed Tasks")
+        .get()
+        .then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          requestCompletedList.add(docSnapshot);
+          requestscompleted += 1;
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
   }
 
   //Bill's get user's profile picture using id
@@ -104,12 +124,14 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     if (widget.isOwnProfilePage == false) {
       testid = widget.userEmail;
     }
+    if (globals.checkTasksCustomer) {
+      getRequestsCompleted(testid);
+    }
     if (globals.checkProfilePictureCustomer) {
       getProfilePicture(testid);
     }
     getUserInfo(testid);
     getJoinDate(testid);
-    getRequestsCompleted(testid);
   }
 
   void editProfilePage() {}
@@ -120,6 +142,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     if (runOnce) {
       globals.checkProfilePictureCustomer =
           true; //Check once in case user has a profile page set but did not set a new one
+      globals.checkTasksCustomer = true;
       runOnce = false;
     }
     runGetters();
@@ -127,25 +150,26 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
         //Background color of UI
         //backgroundColor: Colors.green[500],
         appBar: AppBar(
-          title: Text('@$username', style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold)),
+          title: Text('@$username',
+              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold)),
           centerTitle: true,
           //backgroundColor: Colors.green[800],
           elevation: 0.0,
           actions: [
-            if(widget.isOwnProfilePage)
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            SettingsPage(userType: "Customers")));
-              },
-              icon: Icon(
-                Icons.settings_outlined,
-                //color: Colors.grey[300],
+            if (widget.isOwnProfilePage)
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SettingsPage(userType: "Customers")));
+                },
+                icon: Icon(
+                  Icons.settings_outlined,
+                  //color: Colors.grey[300],
+                ),
               ),
-            ),
           ],
         ),
         //Customer profile picture
@@ -226,12 +250,29 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                   child: SizedBox(
                       height: 50.0,
                       child: ListView.builder(
-                          itemCount: 20,
+                          itemCount: requestscompleted,
                           itemBuilder: (context, index) {
                             return Card(
                                 child: ListTile(
                               onTap: () {
-                                TaskInfo info = TaskInfo("Test", index);
+                                CompletedTask info = CompletedTask(
+                                    requestCompletedList[index]
+                                        .get("tasker email"),
+                                    requestCompletedList[index]
+                                        .get("tasker first name"),
+                                    requestCompletedList[index]
+                                        .get("tasker last name"),
+                                    requestCompletedList[index]
+                                        .get("tasker username"),
+                                    requestCompletedList[index]
+                                        .get("description"),
+                                    requestCompletedList[index].get("location"),
+                                    requestCompletedList[index].get("pay rate"),
+                                    requestCompletedList[index]
+                                        .get("startDate"),
+                                    requestCompletedList[index]
+                                        .get("task category"),
+                                    index + 1);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -239,7 +280,15 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                                             CustomerTaskInfoPage(
                                                 taskinfo: info)));
                               },
-                              title: Text("test$index",
+                              title: Text(
+                                  "${requestCompletedList[index].get("task category")}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary)),
+                              subtitle: Text(
+                                  "@${requestCompletedList[index].get("tasker username")} (${requestCompletedList[index].get("startDate")})",
                                   style: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme

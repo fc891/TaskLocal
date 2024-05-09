@@ -423,10 +423,10 @@ Future<void> _submitReview() async {
                   ),
                   SizedBox(height: 32),
             
-            // Task Performed
+            // task Performed
             Text('Task Completed', style: GoogleFonts.lato(textStyle: Theme.of(context).textTheme.titleLarge)),
             SizedBox(height: 8),
-            // Inputbox 
+            // inputbox 
             TextFormField(
               controller: _taskTypeController,
               style: TextStyle(
@@ -442,12 +442,11 @@ Future<void> _submitReview() async {
             ),
             SizedBox(height: 24),
 
-            // Star Rating
+            // rating
             Text('Your Rating', style: GoogleFonts.lato(textStyle: Theme.of(context).textTheme.titleLarge)),
             SizedBox(height: 8),
-            // Implement rating bar
             RatingBar.builder(
-              unratedColor: Theme.of(context).colorScheme.tertiary, //Default star color will be this
+              unratedColor: Theme.of(context).colorScheme.tertiary, 
               initialRating: _rating, 
               minRating: 1,
               direction: Axis.horizontal,
@@ -463,10 +462,9 @@ Future<void> _submitReview() async {
             ),
             SizedBox(height: 24),
 
-            // Write Review
+            // write review
             Text('Your Review', style: GoogleFonts.lato(textStyle: Theme.of(context).textTheme.titleLarge)),
             SizedBox(height: 8),
-            // Inputbox
             TextFormField(
               controller: _reviewController,
               style: TextStyle(
@@ -487,7 +485,7 @@ Future<void> _submitReview() async {
             ),
             SizedBox(height: 24),
 
-            // Upload Images
+            // upload Images
             Text('Upload Images', style: GoogleFonts.lato(textStyle: Theme.of(context).textTheme.titleLarge)),
             SizedBox(height: 8),
             ElevatedButton.icon(
@@ -495,18 +493,18 @@ Future<void> _submitReview() async {
               icon: Icon(Icons.add_a_photo, color: Colors.black),
               label: Text(
                 "Add Images",
-                style: GoogleFonts.lato(color: Colors.black), // Apply Lato font here
+                style: GoogleFonts.lato(color: Colors.black), 
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                textStyle: GoogleFonts.lato(), // Optionally, apply Lato font to all text within the button
+                textStyle: GoogleFonts.lato(), 
               ),
             ),
             SizedBox(height: 8),
             _imageDisplay(),
             SizedBox(height: 65),
 
-            // Submit Button
+            // submit Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

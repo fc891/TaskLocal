@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SelectionButtonCustomer extends StatelessWidget {
   final Function()? onTap;
 
   const SelectionButtonCustomer({super.key, required this.onTap});
 
+  // create button for customer selection
   @override
   Widget build(BuildContext context) {
     Color buttonColor = Theme.of(context).colorScheme.tertiary;
@@ -20,11 +22,11 @@ class SelectionButtonCustomer extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            "Login As Customer",
-            style: TextStyle(
+            "Login As a Customer",
+            style: GoogleFonts.lato(
               color: buttonTextColor,
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 15,
             ),
           ),
         ),

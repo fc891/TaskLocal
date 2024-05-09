@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SelectionButtonTasker extends StatelessWidget {
   final Function()? onTap;
 
   const SelectionButtonTasker({super.key, required this.onTap});
 
+  // create button for tasker selection 
   @override
   Widget build(BuildContext context) {
     Color buttonColor = Theme.of(context).colorScheme.tertiary;
@@ -20,8 +22,8 @@ class SelectionButtonTasker extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            "Login As Tasker",
-            style: TextStyle(
+            "Login As a Tasker",
+            style: GoogleFonts.lato(
               color: buttonTextColor,
               fontWeight: FontWeight.bold,
               fontSize: 16,

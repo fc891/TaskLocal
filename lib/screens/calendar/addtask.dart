@@ -20,8 +20,6 @@ class _AddTaskState extends State<AddTask> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
-  // HINTS for below
-
   // to set date and time to current
   DateTime _selectedDate = DateTime.now();
   // format date to be current date 
@@ -162,7 +160,7 @@ class _AddTaskState extends State<AddTask> {
                                 color = Color.fromARGB(255, 239, 223, 80);
                                 break;
                               default:
-                                color = Colors.grey; // Handle additional indices if needed
+                                color = Colors.grey; 
                             }
                             return GestureDetector(
                               onTap: () {
@@ -206,6 +204,17 @@ class _AddTaskState extends State<AddTask> {
   if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      // schedule the reminder notification
+      DateTime startTime = DateFormat("hh:mm a").parse(_startTime);
+      DateTime scheduledNotificationDateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        startTime.hour,
+        startTime.minute,
+      ).subtract(Duration(minutes: _selectedRemind));
+
+      // add the task to our database
       await FirebaseFirestore.instance.collection('Taskers').doc(user.email).collection('Tasks').add({
         'title': _titleController.text,
         'note': _noteController.text,
@@ -215,21 +224,28 @@ class _AddTaskState extends State<AddTask> {
         'remind': _selectedRemind,
         'colorIndex': _selectedColor,
       });
-        Navigator.of(context).pop(); 
-      } 
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "All fields must be filled out",
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
+
+      // schedule our notification
+      NotificationService().scheduleNotification(
+        user.hashCode, 
+        "Task Reminder",
+        "Your task ${_titleController.text} is starting in $_selectedRemind minutes.",
+        scheduledNotificationDateTime
       );
-    }
+
+      Navigator.of(context).pop();
+    } 
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("All fields must be filled out"),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
+}
+
 
 
   // allow the user to select what date the task is to be completed on
