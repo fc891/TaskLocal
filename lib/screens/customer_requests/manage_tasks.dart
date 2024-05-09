@@ -86,6 +86,10 @@ class _ManageTasksState extends State<ManageTasks> {
         ListTile(
           title: Text('Active Task 1', style: TextStyle(color: Colors.white)),
           subtitle: Text('Details of active task 1', style: TextStyle(color: Colors.white)),
+          trailing: IconButton(
+            icon: Icon(Icons.check_circle, color: Colors.white),
+            onPressed: () => _showCompleteConfirmationDialog('Active Task 1'),
+          ),
         ),
         // Repeat for other active tasks...
       ],
@@ -106,7 +110,7 @@ class _ManageTasksState extends State<ManageTasks> {
                 onPressed: () => _showCancelConfirmationDialog('Pending Task 1'),
               ),
               IconButton(
-                icon: Icon(Icons.calendar_today, color: Colors.blue),
+                icon: Icon(Icons.calendar_today, color: Colors.white),
                 onPressed: () => _showDatePicker(context, 'Pending Task 1'),
               ),
             ],
@@ -135,6 +139,33 @@ class _ManageTasksState extends State<ManageTasks> {
               child: Text('Yes'),
               onPressed: () {
                 // Here you would add your logic to handle the cancellation
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showCompleteConfirmationDialog(String taskName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Complete Task'),
+          content: Text('Are you sure you want to mark $taskName as complete?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Yes'),
+              onPressed: () {
+                // Here you would add your logic to handle the task completion
                 Navigator.of(context).pop();
               },
             ),
