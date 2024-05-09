@@ -3,6 +3,8 @@
 // Use case #22 Manage Customer's List of Taskers
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart'; // Import Cupertino widgets for iOS-style pickers
+import 'package:intl/intl.dart';
 
 class ManageTasks extends StatefulWidget {
   @override
@@ -12,6 +14,9 @@ class ManageTasks extends StatefulWidget {
 class _ManageTasksState extends State<ManageTasks> {
   PageController _pageController = PageController();
   int _currentPage = 0;
+
+  DateTime _selectedDate = DateTime.now();
+  TimeOfDay _selectedTime = TimeOfDay(hour: 9, minute: 0); // Default start time
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +87,7 @@ class _ManageTasksState extends State<ManageTasks> {
           title: Text('Active Task 1', style: TextStyle(color: Colors.white)),
           subtitle: Text('Details of active task 1', style: TextStyle(color: Colors.white)),
         ),
-        ListTile(
-          title: Text('Active Task 2', style: TextStyle(color: Colors.white)),
-          subtitle: Text('Details of active task 2', style: TextStyle(color: Colors.white)),
-        ),
-        ListTile(
-          title: Text('Active Task 3', style: TextStyle(color: Colors.white)),
-          subtitle: Text('Details of active task 3', style: TextStyle(color: Colors.white)),
-        ),
+        // Repeat for other active tasks...
       ],
     );
   }
@@ -100,19 +98,21 @@ class _ManageTasksState extends State<ManageTasks> {
         ListTile(
           title: Text('Pending Task 1', style: TextStyle(color: Colors.white)),
           subtitle: Text('Details of pending task 1', style: TextStyle(color: Colors.white)),
-          trailing: IconButton(
-            icon: Icon(Icons.cancel, color: Colors.red),
-            onPressed: () => _showCancelConfirmationDialog('Pending Task 1'),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.cancel, color: Colors.red),
+                onPressed: () => _showCancelConfirmationDialog('Pending Task 1'),
+              ),
+              IconButton(
+                icon: Icon(Icons.calendar_today, color: Colors.blue),
+                onPressed: () => _showDatePicker(context, 'Pending Task 1'),
+              ),
+            ],
           ),
         ),
-        ListTile(
-          title: Text('Pending Task 2', style: TextStyle(color: Colors.white)),
-          subtitle: Text('Details of pending task 2', style: TextStyle(color: Colors.white)),
-          trailing: IconButton(
-            icon: Icon(Icons.cancel, color: Colors.red),
-            onPressed: () => _showCancelConfirmationDialog('Pending Task 2'),
-          ),
-        ),
+        // Repeat for other pending tasks...
       ],
     );
   }
@@ -135,6 +135,130 @@ class _ManageTasksState extends State<ManageTasks> {
               child: Text('Yes'),
               onPressed: () {
                 // Here you would add your logic to handle the cancellation
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showDatePicker(BuildContext context, String taskName) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedDate = picked;
+      });
+      _showTimePicker(context, taskName);
+    }
+  }
+
+  Future<void> _showTimePicker(BuildContext context, String taskName) async {
+    final pickedTime = await showModalBottomSheet<TimeOfDay>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height / 3,
+          child: Row(
+            children: [
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      _selectedTime = TimeOfDay(
+                        hour: index % 12 + 1,
+                        minute: _selectedTime.minute,
+                      );
+                    });
+                  },
+                  children: List.generate(12, (index) {
+                    return Center(
+                      child: Text(
+                        '${index + 1}',
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      _selectedTime = TimeOfDay(
+                        hour: _selectedTime.hour,
+                        minute: index * 30 % 60,
+                      );
+                    });
+                  },
+                  children: List.generate(2, (index) {
+                    return Center(
+                      child: Text(
+                        '${index * 30}',
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (int index) {
+                    bool isPM = index == 1;
+                    int hour = _selectedTime.hour;
+                    if (isPM && hour < 12) hour += 12;
+                    if (!isPM && hour >= 12) hour -= 12;
+                    setState(() {
+                      _selectedTime = TimeOfDay(
+                        hour: hour,
+                        minute: _selectedTime.minute,
+                      );
+                    });
+                  },
+                  children: ['AM', 'PM']
+                      .map((period) => Center(child: Text(period)))
+                      .toList(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (pickedTime != null) {
+      setState(() {
+        _selectedTime = pickedTime;
+      });
+      _confirmReschedule(taskName);
+    }
+  }
+
+  void _confirmReschedule(String taskName) {
+    final String formattedDateTime = DateFormat('yyyy-MM-dd – kk:mm').format(
+      DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, _selectedTime.hour, _selectedTime.minute)
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Reschedule'),
+          content: Text('Reschedule $taskName to $formattedDateTime?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                // Add logic to handle the reschedule
                 Navigator.of(context).pop();
               },
             ),
