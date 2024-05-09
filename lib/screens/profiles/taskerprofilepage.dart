@@ -48,7 +48,9 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   String date = 'dd-MM-yyyy';
   String email = '';
   int taskscompleted = 0;
-  double rating = 5.0;
+  double rating = 0.0;
+  String ratingDisplayed = "N/A";
+  int numberReviews = 0;
   final dB = FirebaseStorage.instance;
   String defaultProfilePictureURL =
       "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836";
@@ -87,20 +89,38 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     });
   }
 
-  //Bill's get user's rating using id (email)
+  //Bill's get user's rating-related information using id (email)
   void getUserRating(String id) async {
     var collection = FirebaseFirestore.instance.collection('Taskers');
     var docSnapshot = await collection.doc(id).get();
     Map<String, dynamic> data = docSnapshot.data()!;
-    if (data['rating'] != null) { //If the current tasker user has a 'rating' field
+    try {
       rating = data['rating'];
-    } else if (data['rating'] == null) { //If 'rating' field not found, set a default one for the tasker
+      numberReviews = data['numberReviews'];
+      //If the current tasker user has any reviews at all, display, otherwise keep as N/A
+      if ((rating != 0.0 && numberReviews != 0) && (!rating.isNaN && !numberReviews.isNaN)) {
+        ratingDisplayed = data['rating'].toString();
+      }
+    } catch (err) {
+      //If 'rating' field not found, set a default one for the tasker
+      print("$id has no ratings yet, setting to 0.0 (default)");
       FirebaseFirestore.instance
           .collection('Taskers')
           .doc(id)
           .set({'rating': 0.0}, SetOptions(merge: true)).then((value) {
-        rating = data['rating'];
       });
+      //If 'numberReviews' field not found, set a default one for the tasker
+      FirebaseFirestore.instance
+          .collection('Taskers')
+          .doc(id)
+          .set({'numberReviews': 0}, SetOptions(merge: true)).then((value) {
+        numberReviews = data['numberReviews'];
+      });
+      //If 'overallRating' field not found, set a default one for the tasker
+      FirebaseFirestore.instance
+          .collection('Taskers')
+          .doc(id)
+          .set({'overallRating': 0}, SetOptions(merge: true)).then((value) {});
     }
   }
 
@@ -381,7 +401,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                   ReviewsPage(taskerEmail: email)));
                     },
                     child: Text(
-                      'User Rating: $rating',
+                      'User Rating: $ratingDisplayed ($numberReviews)',
                       style: TextStyle(
                         color: Colors.white,
                         letterSpacing: 1.0,

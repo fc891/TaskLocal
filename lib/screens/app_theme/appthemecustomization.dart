@@ -30,8 +30,6 @@ class _AppThemeCustomizationState extends ConsumerState<AppThemeCustomization> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //Background color of UI
-        //backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
           title: Text('App Theme Customization'),
@@ -71,24 +69,6 @@ class _AppThemeCustomizationState extends ConsumerState<AppThemeCustomization> {
               ref.read(isDarkProvider.notifier).toggleTheme(true);
             },
           ),
-          // ListTile(
-          //   leading: Icon(
-          //     Icons.settings,
-          //     color: Colors.white,
-          //   ),
-          //   title: Text("settings option",
-          //       style: TextStyle(fontSize: 16.0, color: Colors.white)),
-          //   subtitle: Text("settings option description",
-          //       style: TextStyle(fontSize: 12.0, color: Colors.white)),
-          //   trailing: Text("trailing option",
-          //       style: TextStyle(fontSize: 8.0, color: Colors.white)),
-          //   onTap: () {
-          //     // Navigator.push(
-          //     //     context,
-          //     //     MaterialPageRoute(
-          //     //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-          //   },
-          // ),
         ])));
   }
 }
