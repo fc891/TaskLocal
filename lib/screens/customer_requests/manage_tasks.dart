@@ -100,12 +100,47 @@ class _ManageTasksState extends State<ManageTasks> {
         ListTile(
           title: Text('Pending Task 1', style: TextStyle(color: Colors.white)),
           subtitle: Text('Details of pending task 1', style: TextStyle(color: Colors.white)),
+          trailing: IconButton(
+            icon: Icon(Icons.cancel, color: Colors.red),
+            onPressed: () => _showCancelConfirmationDialog('Pending Task 1'),
+          ),
         ),
         ListTile(
           title: Text('Pending Task 2', style: TextStyle(color: Colors.white)),
           subtitle: Text('Details of pending task 2', style: TextStyle(color: Colors.white)),
+          trailing: IconButton(
+            icon: Icon(Icons.cancel, color: Colors.red),
+            onPressed: () => _showCancelConfirmationDialog('Pending Task 2'),
+          ),
         ),
       ],
+    );
+  }
+
+  void _showCancelConfirmationDialog(String taskName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Cancel Reservation'),
+          content: Text('Are you sure you want to cancel the reservation for $taskName?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Yes'),
+              onPressed: () {
+                // Here you would add your logic to handle the cancellation
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
