@@ -27,8 +27,6 @@ class CustomerTaskInfoPage extends StatelessWidget {
     String date = taskinfo.startDate;
     int tasknumber = taskinfo.taskNumber;
     return Scaffold(
-      //Background color of UI
-      //backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
         title: Text('Requested Task#$tasknumber'),

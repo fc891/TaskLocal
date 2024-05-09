@@ -34,12 +34,6 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
 
   Uint8List? _image;
 
-  //WIP: Controllers to edit password
-  // var passwordController = TextEditingController();
-  // var confirmPasswordController = TextEditingController();
-  // bool _obscurePassword = true;
-  // bool _obscureConfirmPassword = true;
-
   //Prompt user to select image from device gallery
   void selectImage() async {
     //Pick image from device and convert to Uint8List type
@@ -128,8 +122,6 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
     var current = FirebaseAuth.instance.currentUser!;
     getProfilePicture(current.email!);
     return Scaffold(
-        //Background color of UI
-        //backgroundColor: Colors.green[500],
         //UI Appbar (bar at top of screen)
         appBar: AppBar(
           title: Text('Edit Customer Profile Page'),
@@ -240,83 +232,7 @@ class _CustomerEditProfileState extends State<CustomerEditProfile> {
                 ),
               ),
             ),
-            // //Email entry field
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 37, vertical: 10),
-            //   child: SizedBox(
-            //     width: 400,
-            //     child: TextField(
-            //       controller: emailController,
-            //       decoration: InputDecoration(
-            //         border: OutlineInputBorder(),
-            //         filled: true,
-            //         fillColor: Colors.grey[250],
-            //         labelText: "Email Address",
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // //Password entry field
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 37, vertical: 10),
-            //   child: SizedBox(
-            //     width: 400,
-            //     child: TextField(
-            //       obscureText: _obscurePassword,
-            //       controller: passwordController,
-            //       decoration: InputDecoration(
-            //         border: OutlineInputBorder(),
-            //         filled: true,
-            //         fillColor: Colors.grey[250],
-            //         labelText: "Password",
-            //         suffixIcon: IconButton(
-            //           icon: Icon(
-            //             _obscurePassword
-            //                 ? Icons.visibility
-            //                 : Icons.visibility_off,
-            //             color: Colors.grey[500],
-            //           ),
-            //           onPressed: () {
-            //             setState(() {
-            //               _obscurePassword = !_obscurePassword;
-            //             });
-            //           },
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // //CONFIRM Password entry field
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 37, vertical: 10),
-            //   child: SizedBox(
-            //     width: 400,
-            //     child: TextField(
-            //       obscureText: _obscureConfirmPassword,
-            //       controller: confirmPasswordController,
-            //       decoration: InputDecoration(
-            //         border: OutlineInputBorder(),
-            //         filled: true,
-            //         fillColor: Colors.grey[250],
-            //         labelText: "Confirm Password",
-            //         suffixIcon: IconButton(
-            //           icon: Icon(
-            //             _obscureConfirmPassword
-            //                 ? Icons.visibility
-            //                 : Icons.visibility_off,
-            //             color: Colors.grey[500],
-            //           ),
-            //           onPressed: () {
-            //             setState(() {
-            //               _obscureConfirmPassword = !_obscureConfirmPassword;
-            //             });
-            //           },
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            //Register account button
+            //Confirm changes button
             ElevatedButton(
               onPressed: () {
                 confirmChanges();

@@ -13,7 +13,7 @@ import 'package:tasklocal/screens/profiles/customereditprofile.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
-//import 'package:tasklocal/supportpage/profiles/supportpage.dart';
+import 'package:tasklocal/screens/supportpage/supportpage.dart';
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -207,31 +207,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           AppThemeCustomization()));
             },
           ),
-          //show Map view (temp)
-          ListTile(
-            leading: Icon(
-              Icons.location_pin,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-            title: Text("Map View",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    color: Theme.of(context).colorScheme.secondary)),
-            subtitle: Text("Map View for Users",
-                style: TextStyle(
-                    fontSize: 12.0,
-                    color: Theme.of(context).colorScheme.secondary)),
-            trailing: Text(""),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CurrentLocation(
-                          userType: widget
-                              .userType)));
-            },
-          ),
-          //Manage notifications (turn on/off)
+          //Support Page
           ListTile(
             leading: Icon(
               Icons.contact_support,
@@ -249,12 +225,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 style: TextStyle(
                     fontSize: 8.0,
                     color: Theme.of(context).colorScheme.secondary)),
-            // onTap: () {
-            //   Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //           builder: (context) => SupportPage())); //Replace with actual screen name
-            // },
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SupportPage()));
+            },
           ),
         ])));
   }
