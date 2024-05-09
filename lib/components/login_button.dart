@@ -5,6 +5,7 @@ class LoginButton extends StatelessWidget {
 
   const LoginButton({super.key, required this.onTap});
 
+  // create a login button
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

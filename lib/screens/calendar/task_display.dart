@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// use class to create ui for the task in calendar features page 
-
 // create variables for the different features we want to display
 class Task {
   final String? title;

@@ -160,7 +160,7 @@ class _AddTaskState extends State<AddTask> {
                                 color = Color.fromARGB(255, 239, 223, 80);
                                 break;
                               default:
-                                color = Colors.grey; // Handle additional indices if needed
+                                color = Colors.grey; 
                             }
                             return GestureDetector(
                               onTap: () {
@@ -204,7 +204,7 @@ class _AddTaskState extends State<AddTask> {
   if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // Schedule the reminder notification
+      // schedule the reminder notification
       DateTime startTime = DateFormat("hh:mm a").parse(_startTime);
       DateTime scheduledNotificationDateTime = DateTime(
         _selectedDate.year,
@@ -214,7 +214,7 @@ class _AddTaskState extends State<AddTask> {
         startTime.minute,
       ).subtract(Duration(minutes: _selectedRemind));
 
-      // Adding the task to Firestore
+      // add the task to our database
       await FirebaseFirestore.instance.collection('Taskers').doc(user.email).collection('Tasks').add({
         'title': _titleController.text,
         'note': _noteController.text,
@@ -225,9 +225,9 @@ class _AddTaskState extends State<AddTask> {
         'colorIndex': _selectedColor,
       });
 
-      // Schedule the notification
+      // schedule our notification
       NotificationService().scheduleNotification(
-        user.hashCode, // Just an example, you might want a better ID system
+        user.hashCode, 
         "Task Reminder",
         "Your task ${_titleController.text} is starting in $_selectedRemind minutes.",
         scheduledNotificationDateTime

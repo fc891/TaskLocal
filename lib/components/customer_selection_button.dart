@@ -6,6 +6,7 @@ class SelectionButtonCustomer extends StatelessWidget {
 
   const SelectionButtonCustomer({super.key, required this.onTap});
 
+  // create button for customer selection
   @override
   Widget build(BuildContext context) {
     Color buttonColor = Theme.of(context).colorScheme.tertiary;

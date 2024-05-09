@@ -5,6 +5,7 @@ class RegisterButtonTasker extends StatelessWidget {
 
   const RegisterButtonTasker({super.key, required this.onTap});
 
+  // create button for tasker registration
   @override
   Widget build(BuildContext context) {
     Color buttonColor = Theme.of(context).colorScheme.tertiary;
