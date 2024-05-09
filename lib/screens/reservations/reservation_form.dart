@@ -92,26 +92,40 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
       _selectedTime.minute,
     );
 
-    _firestore.collection('Reservations').doc('Pending Reservations')
-      .collection('All Pending Reservations').add({
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final customerEmail = user.email;
+
+      _firestore
+          .collection('Reservations')
+          .doc(customerEmail)
+          .collection('All Pending Reservations')
+          .add({
         'taskerEmail': widget.taskerData['email'],
-        'customerEmail': FirebaseAuth.instance.currentUser!.email,
         'date': reservationDateTime,
         'description': _taskDescription,
-        'status': 'pending'
+        'status': 'pending',
       }).then((value) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ReservationConfirmationScreen(
-            taskerData: widget.taskerData,
-            selectedDate: _selectedDate,
-            selectedTime: _selectedTime,
-            taskDescription: _taskDescription,
-          )),
+          MaterialPageRoute(
+            builder: (context) => ReservationConfirmationScreen(
+              taskerData: widget.taskerData,
+              selectedDate: _selectedDate,
+              selectedTime: _selectedTime,
+              taskDescription: _taskDescription,
+            ),
+          ),
         );
       }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to make a reservation: $error')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to make a reservation: $error')));
       });
+    } else {
+      // Handle the case when the user is not logged in
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User not logged in. Please log in.')));
+    }
   }
 
   @override
