@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart'; // Import Cupertino widgets for iOS-style pickers
 import 'package:intl/intl.dart';
+import 'package:tasklocal/screens/messages/chat_page.dart';  // Ensure the import path is correct
 
 class ManageTasks extends StatefulWidget {
   @override
@@ -86,9 +87,28 @@ class _ManageTasksState extends State<ManageTasks> {
         ListTile(
           title: Text('Active Task 1', style: TextStyle(color: Colors.white)),
           subtitle: Text('Details of active task 1', style: TextStyle(color: Colors.white)),
-          trailing: IconButton(
-            icon: Icon(Icons.check_circle, color: Colors.white),
-            onPressed: () => _showCompleteConfirmationDialog('Active Task 1'),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.check_circle, color: Colors.green),
+                onPressed: () => _showCompleteConfirmationDialog('Active Task 1'),
+              ),
+              IconButton(
+                icon: Icon(Icons.message, color: Colors.white),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(
+                      receiverFirstName: 'John',
+                      receiverLastName: 'Doe',
+                      receiverEmail: 'johndoe@example.com',
+                      taskersOrCustomersCollection: 'users',
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         // Repeat for other active tasks...
@@ -112,6 +132,20 @@ class _ManageTasksState extends State<ManageTasks> {
               IconButton(
                 icon: Icon(Icons.calendar_today, color: Colors.white),
                 onPressed: () => _showDatePicker(context, 'Pending Task 1'),
+              ),
+              IconButton(
+                icon: Icon(Icons.message, color: Colors.white),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(
+                      receiverFirstName: 'Jane',
+                      receiverLastName: 'Doe',
+                      receiverEmail: 'janedoe@example.com',
+                      taskersOrCustomersCollection: 'users',
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -159,14 +193,14 @@ class _ManageTasksState extends State<ManageTasks> {
             TextButton(
               child: Text('No'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context). pop();
               },
             ),
             TextButton(
               child: Text('Yes'),
               onPressed: () {
                 // Here you would add your logic to handle the task completion
-                Navigator.of(context).pop();
+                Navigator.of(context). pop();
               },
             ),
           ],

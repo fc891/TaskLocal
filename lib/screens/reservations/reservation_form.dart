@@ -1,7 +1,5 @@
 // Contributors: Eric C., 
 
-// TODO: Route to/from tasker_details.dart, confirmation.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
