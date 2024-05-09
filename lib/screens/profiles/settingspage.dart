@@ -13,6 +13,7 @@ import 'package:tasklocal/screens/profiles/customereditprofile.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
+//import 'package:tasklocal/supportpage/profiles/supportpage.dart';
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -233,14 +234,14 @@ class _SettingsPageState extends State<SettingsPage> {
           //Manage notifications (turn on/off)
           ListTile(
             leading: Icon(
-              Icons.notifications_active_outlined,
+              Icons.contact_support,
               color: Theme.of(context).colorScheme.secondary,
             ),
-            title: Text("Manage Notifications",
+            title: Text("Support Page",
                 style: TextStyle(
                     fontSize: 16.0,
                     color: Theme.of(context).colorScheme.secondary)),
-            subtitle: Text("Turn notifications on/off",
+            subtitle: Text("Contact support",
                 style: TextStyle(
                     fontSize: 12.0,
                     color: Theme.of(context).colorScheme.secondary)),
@@ -248,12 +249,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 style: TextStyle(
                     fontSize: 8.0,
                     color: Theme.of(context).colorScheme.secondary)),
-            onTap: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SettingsPageName())); //Replace with actual screen name
-            },
+            // onTap: () {
+            //   Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => SupportPage())); //Replace with actual screen name
+            // },
           ),
         ])));
   }

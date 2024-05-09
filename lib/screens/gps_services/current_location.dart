@@ -374,12 +374,18 @@ class CurrentLocationState extends State<CurrentLocation> {
 
   //Getting current user's profile picture URL from database, returns a string as URL
   Future<String> getProfilePicturePath() async {
-    var current = FirebaseAuth.instance
-        .currentUser!; //Use to get the info of the currently logged in user
-    String userID = current.email!; //Get email of current user
-    final dB = FirebaseStorage.instance;
-    final ref = dB.ref().child("profilepictures/$userID/profilepicture.jpg");
-    final url = await ref.getDownloadURL();
+    String url = "https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836";
+    try {
+      var current = FirebaseAuth.instance
+          .currentUser!; //Use to get the info of the currently logged in user
+      String userID = current.email!; //Get email of current user
+      final dB = FirebaseStorage.instance;
+      final ref = dB.ref().child("profilepictures/$userID/profilepicture.jpg");
+      url = await ref.getDownloadURL();
+    } catch (err) {
+      print("Error fetching profile picture: $err");
+      print("User has no profile picture set, displaying app default instead");
+    }
     return url;
   }
 
@@ -392,7 +398,7 @@ class CurrentLocationState extends State<CurrentLocation> {
       final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
       final url = await ref.getDownloadURL();
       returnVal = url;
-    } on FirebaseAuthException catch (e) {
+    } catch (e) {
       print("Error fetching profile picture: $e");
       print("$id has no profile picture set, displaying app default instead");
     }
@@ -454,7 +460,7 @@ class CurrentLocationState extends State<CurrentLocation> {
     //For Taskers, track their customer
     //Test (temporary)
     if (widget.userType == "Taskers") {
-      String id = "test1234@gmail.com"; //Test
+      String id = "ash@gmail.com"; //Test
 
       if (_hasGetOtherProfilePictureRan == false) {
         String pfpPathOtherUser = await getProfilePicturePathOtherUser(id);
@@ -481,7 +487,7 @@ class CurrentLocationState extends State<CurrentLocation> {
       //For Customers, track their tasker
       //Test (temporary)
     } else if (widget.userType == "Customers") {
-      String id = "test123@gmail.com"; //Test
+      String id = "richard@gmail.com"; //Test
 
       if (_hasGetOtherProfilePictureRan == false) {
         String pfpPathOtherUser = await getProfilePicturePathOtherUser(id);

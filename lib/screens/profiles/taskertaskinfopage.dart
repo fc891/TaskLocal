@@ -30,7 +30,7 @@ class TaskerTaskInfoPage extends StatelessWidget {
       //backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
-        title: Text('Task #$tasknumber'),
+        title: Text('Completed Task #$tasknumber'),
         centerTitle: true,
         //backgroundColor: Colors.green[800],
         elevation: 0.0,
