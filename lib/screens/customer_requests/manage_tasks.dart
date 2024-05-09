@@ -9,6 +9,8 @@
 
    - have different buttons show up when a task is pending vs accepted
    - grab from tasker (/Taskers/richard@gmail.com/Completed Tasks/xZBKvJS1fKl8VDzTlsRl)
+
+   - do not allow customer to edit once a task is accepted by a tasker
 */
 
 import 'package:flutter/material.dart';

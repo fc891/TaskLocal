@@ -1,5 +1,7 @@
 // Contributors: Eric C., 
 
+// add a pay rate for customer's budget for a task
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
