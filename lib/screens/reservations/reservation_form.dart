@@ -1,10 +1,10 @@
 // Contributors: Eric C., 
 
-// TODO: Route to/from tasker_details.dart, confirmation.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tasklocal/screens/reservations/confirmation.dart';
 
 class ReservationFormScreen extends StatefulWidget {
@@ -18,8 +18,9 @@ class ReservationFormScreen extends StatefulWidget {
 
 class _ReservationFormScreenState extends State<ReservationFormScreen> {
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay(hour: 9, minute: 0); // Default start time at 9:00 AM
+  TimeOfDay _selectedTime = TimeOfDay(hour: 9, minute: 0);
   String _taskDescription = '';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _selectTime(BuildContext context) async {
     final pickedTime = await showModalBottomSheet<TimeOfDay>(
@@ -41,12 +42,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                     });
                   },
                   children: List.generate(12, (index) {
-                    final hour = index == 0 ? 12 : index;
-                    return Center(
-                      child: Text(
-                        '${hour.toString().padLeft(2, '0')}',
-                      ),
-                    );
+                    return Center(child: Text('${index == 0 ? 12 : index}'));
                   }),
                 ),
               ),
@@ -61,14 +57,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                       );
                     });
                   },
-                  children: List.generate(2, (index) {
-                    final minute = index == 0 ? '00' : '30';
-                    return Center(
-                      child: Text(
-                        '$minute',
-                      ),
-                    );
-                  }),
+                  children: List.generate(2, (index) => Center(child: Text('${index * 30}'))),
                 ),
               ),
               Expanded(
@@ -76,18 +65,10 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                   itemExtent: 40.0,
                   onSelectedItemChanged: (int index) {
                     setState(() {
-                      // toggle between AM and PM based on the selected index
-                      if (index == 0 && _selectedTime.period == DayPeriod.pm) {
-                        _selectedTime = TimeOfDay(hour: _selectedTime.hour - 12, minute: _selectedTime.minute);
-                      } else if (index == 1 && _selectedTime.period == DayPeriod.am) {
-                        _selectedTime = TimeOfDay(hour: _selectedTime.hour + 12, minute: _selectedTime.minute);
-                      }
+                      _selectedTime = index == 1 ? TimeOfDay(hour: _selectedTime.hour + 12, minute: _selectedTime.minute) : TimeOfDay(hour: _selectedTime.hour - 12, minute: _selectedTime.minute);
                     });
                   },
-                  children: [
-                    Center(child: Text('AM')),
-                    Center(child: Text('PM')),
-                  ],
+                  children: const [Center(child: Text('AM')), Center(child: Text('PM'))],
                 ),
               ),
             ],
@@ -95,7 +76,6 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
         );
       },
     );
-
     if (pickedTime != null) {
       setState(() {
         _selectedTime = pickedTime;
@@ -103,8 +83,49 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     }
   }
 
-  String _formatDateTime(DateTime dateTime) {
-    return DateFormat('MMM dd, yyyy - hh:mm a').format(dateTime);
+  void _submitReservation() {
+    final DateTime reservationDateTime = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      _selectedTime.hour,
+      _selectedTime.minute,
+    );
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final customerEmail = user.email;
+
+      _firestore
+          .collection('Reservations')
+          .doc(customerEmail)
+          .collection('All Pending Reservations')
+          .add({
+        'taskerEmail': widget.taskerData['email'],
+        'date': reservationDateTime,
+        'description': _taskDescription,
+        'status': 'pending',
+      }).then((value) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReservationConfirmationScreen(
+              taskerData: widget.taskerData,
+              selectedDate: _selectedDate,
+              selectedTime: _selectedTime,
+              taskDescription: _taskDescription,
+            ),
+          ),
+        );
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to make a reservation: $error')));
+      });
+    } else {
+      // Handle the case when the user is not logged in
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User not logged in. Please log in.')));
+    }
   }
 
   @override
@@ -113,109 +134,55 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
       appBar: AppBar(
         title: Text('Reservation Form'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Tasker: ${widget.taskerData['name'] ?? ''}',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Select Date and Time:',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
+            Text('Tasker: ${widget.taskerData['name'] ?? ''}', style: TextStyle(fontSize: 20)),
+            SizedBox(height: 20),
+            Text('Select Date and Time:', style: TextStyle(fontSize: 16)),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: _selectedDate,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime(DateTime.now().year + 1),
-                      );
-                      if (pickedDate != null && pickedDate != _selectedDate) {
-                        setState(() {
-                          _selectedDate = pickedDate;
-                        });
-                      }
-                    },
-                    child: Text(
-                      'Select Date',
-                      style: TextStyle(color: Colors.black), // Change text color to black
-                    ),
-                  ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedDate,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(DateTime.now().year + 1),
+                    );
+                    if (pickedDate != null && pickedDate != _selectedDate) {
+                      setState(() {
+                        _selectedDate = pickedDate;
+                      });
+                    }
+                  },
+                  child: Text('Select Date', style: TextStyle(color: Colors.black)),
+                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),
                 ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      _selectTime(context);
-                    },
-                    child: Text(
-                      'Select Time',
-                      style: TextStyle(color: Colors.black), // Change text color to black
-                    ),
-                  ),
+                ElevatedButton(
+                  onPressed: () => _selectTime(context),
+                  child: Text('Select Time', style: TextStyle(color: Colors.black)),
+                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),
                 ),
               ],
             ),
-            SizedBox(height: 16),
-            // Display selected date and time
-            if (_selectedDate != null && _selectedTime != null)
-              Text(
-                'Selected Date and Time: ${_formatDateTime(DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, _selectedTime.hour, _selectedTime.minute))}',
-                style: TextStyle(fontSize: 16),
+            SizedBox(height: 20),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Task Description',
+                border: OutlineInputBorder(),
               ),
-            SizedBox(height: 16),
-            // Task description input field
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Task Description',
-                  hintText: 'Enter a description of the task...',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16.0),
-                ),
-                style: TextStyle(color: Colors.black), // Change text color to black
-                onChanged: (value) {
-                  setState(() {
-                    _taskDescription = value;
-                  });
-                },
-              ),
+              onChanged: (value) => setState(() => _taskDescription = value),
             ),
-            SizedBox(height: 16),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Submit reservation form
-                  // Implement submission logic here
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReservationConfirmationScreen(
-                        taskerData: widget.taskerData,
-                        selectedDate: _selectedDate,
-                        selectedTime: _selectedTime,
-                        taskDescription: _taskDescription,
-                      ),
-                    ),
-                  );
-                },
-                child: Text(
-                  'Submit Reservation',
-                  style: TextStyle(color: Colors.black), // Change text color to black
-                ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _submitReservation,
+              child: Text('Submit Reservation', style: TextStyle(color: Colors.black)),  // Changed to black for visibility
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor, // background
               ),
             ),
           ],

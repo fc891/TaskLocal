@@ -15,6 +15,7 @@ import 'package:tasklocal/screens/profiles/taskertaskinfopage.dart';
 import 'package:tasklocal/screens/profiles/taskeruploadedmedia.dart';
 import 'package:tasklocal/screens/profiles/taskertaskcategory.dart';
 import 'package:tasklocal/screens/profiles/taskinfo.dart';
+import 'package:tasklocal/screens/profiles/completedtask.dart';
 import 'package:tasklocal/screens/profiles/settingspage.dart';
 import 'package:tasklocal/screens/profiles/profilepageglobals.dart' as globals;
 import 'package:tasklocal/screens/profiles/uploadmediapage.dart';
@@ -55,6 +56,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   int numMediaUploaded = 0;
   int taskCategories = 0;
   List<String> mediaList = [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> taskCompletedList = [];
   List<String> taskCategoryList = [];
 
   bool _taskCategoriesSelected = false;
@@ -71,8 +73,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
 
   PlatformFile? selected;
 
-  //WIP
-  //Bill's get user's info using testid (username right now)
+  //Bill's get user's info using testid (email)
   void getUserInfo(String testid) async {
     var collection = FirebaseFirestore.instance.collection('Taskers');
     var docSnapshot = await collection.doc(testid).get();
@@ -84,7 +85,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     });
   }
 
-  //Bill's get user's profile picture using id
+  //Bill's get user's profile picture using id (email)
   void getProfilePicture(String id) async {
     try {
       final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
@@ -102,7 +103,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     }
   }
 
-  //Bill's get user's join date using id
+  //Bill's get user's join date using id (email)
   void getJoinDate(String id) async {
     var collection = FirebaseFirestore.instance.collection('Taskers');
     var docSnapshot = await collection.doc(id).get();
@@ -120,13 +121,28 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     }
   }
 
-  //WIP
-  //Bill's get user's number of requested tasks completed using id
+  //Bill's get user's completed task details and number using id (email)
   void getTasksCompleted(String id) async {
-    taskscompleted = 10;
+    globals.checkTasks = false;
+
+    //Query all documents under "Completed Tasks" for taskers in database, add to list to display later
+    await firebaseFirestore
+        .collection("Taskers")
+        .doc(id)
+        .collection("Completed Tasks")
+        .get()
+        .then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          taskCompletedList.add(docSnapshot);
+          taskscompleted += 1;
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
   }
 
-  //Bill's get user's task categories using id
+  //Bill's get user's task categories using id (email)
   void getTaskCategories(String id) async {
     taskCategories = 0;
     globals.checkCategories = false;
@@ -148,10 +164,9 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
       },
       onError: (e) => print("Error completing: $e"),
     );
-    //print(taskCategoryList);
   }
 
-  //Bill's get links of tasker's uploaded media using id
+  //Bill's get links of tasker's uploaded media using id (email)
   void getUploadedMedia(String id) async {
     mediaList = [];
     mediaFileList = [];
@@ -161,11 +176,6 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     final storageRef =
         dB.ref().child("taskermedia/$id"); //Folder in Firebase storage
     final listResult = await storageRef.listAll(); //Convert media to link
-    // for (var prefix in listResult.prefixes) {
-    //   final url = await prefix.getDownloadURL();
-    //   mediaList[numMediaUploaded] = url;
-    //   numMediaUploaded += 1;
-    // }
     for (var item in listResult.items) {
       //Loop through all files found in Firebase storage folder
       final url = await item.getDownloadURL();
@@ -234,7 +244,9 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     }
     getUserInfo(testid);
     getJoinDate(testid);
-    getTasksCompleted(testid);
+    if (globals.checkTasks) {
+      getTasksCompleted(testid);
+    }
     if (globals.checkCategories) {
       getTaskCategories(testid);
     }
@@ -246,22 +258,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   //Bill's Tasker profile page screen/UI code
   @override
   Widget build(BuildContext context) {
+    //All functions below are to run once so that it will not continuously check for updates (only run again once something new is added to database)
     if (runOnce) {
       globals.checkProfilePictureTasker =
           true; //Check once in case user has a profile page set but did not set a new one
       globals.checkCategories = true;
       globals.checkMedia = true;
+      globals.checkTasks = true;
 
       runOnce = false;
     }
     runGetters(); //Run all getter functions
     return Scaffold(
-        //Background color of UI
-        //backgroundColor: Colors.green[500],
+        //Appbar
         appBar: AppBar(
-          title: Text('${username}\'s profile page'),
+          title: Text('@${username}',
+              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold)),
           centerTitle: true,
-          //backgroundColor: Colors.green[800],
           elevation: 0.0,
           actions: [
             if (widget.isOwnProfilePage)
@@ -350,6 +363,49 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               ),
               Row(children: <Widget>[
                 Container(
+                  height: 80.0,
+                  width: 95.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.tertiary),
+                    child: Text("View Task History",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: _taskHistorySelected ? FontWeight.bold : FontWeight.normal,
+                            shadows: _taskHistorySelected ? 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                              ),] 
+                              : 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 0.0,
+                                color: Color.fromARGB(0, 0, 0, 0),
+                              ),] 
+                            )),
+                    onPressed: () {
+                      setState(() {
+                        _taskCategoriesSelected = false;
+                        _uploadedMediaSelected = false;
+                        _taskHistorySelected = true;
+                      });
+                    },
+                  )),
+                VerticalDivider(
+                  //color: Colors.green[500],
+                  width: 30.0,
+                ),
+                Container(
                     height: 80.0,
                     width: 95.0,
                     decoration: BoxDecoration(
@@ -363,7 +419,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                               Theme.of(context).colorScheme.tertiary),
                       child: Text("View Task Categories",
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary)),
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: _taskCategoriesSelected ? FontWeight.bold : FontWeight.normal,
+                              shadows: _taskCategoriesSelected ? 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                              ),] 
+                              : 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 0.0,
+                                color: Color.fromARGB(0, 0, 0, 0),
+                              ),] 
+                            )),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = true;
@@ -390,7 +462,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                               Theme.of(context).colorScheme.tertiary),
                       child: Text("View and Upload Media",
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary)),
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: _uploadedMediaSelected ? FontWeight.bold : FontWeight.normal,
+                              shadows: _uploadedMediaSelected ? 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                              ),] 
+                              : 
+                              <Shadow>[
+                              Shadow(
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 0.0,
+                                color: Color.fromARGB(0, 0, 0, 0),
+                              ),] 
+                            )),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = false;
@@ -399,33 +487,6 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                         });
                       },
                     )),
-                VerticalDivider(
-                  //color: Colors.green[500],
-                  width: 30.0,
-                ),
-                Container(
-                    height: 80.0,
-                    width: 95.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.tertiary),
-                      child: Text("View Task History",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary)),
-                      onPressed: () {
-                        setState(() {
-                          _taskCategoriesSelected = false;
-                          _uploadedMediaSelected = false;
-                          _taskHistorySelected = true;
-                        });
-                      },
-                    ))
               ]),
               //Divider (line)
               Divider(
@@ -457,16 +518,16 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                             itemBuilder: (context, index) {
                               return Card(
                                   child: ListTile(
-                                onTap: () {
-                                  TaskInfo info =
-                                      TaskInfo(taskCategoryList[index], index);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TaskerTaskCategory(
-                                                  taskinfo: info)));
-                                },
+                                // onTap: () {
+                                //   TaskInfo info =
+                                //       TaskInfo(taskCategoryList[index], index);
+                                //   Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //           builder: (context) =>
+                                //               TaskerTaskCategory(
+                                //                   taskinfo: info)));
+                                // },
                                 title: Text(taskCategoryList[index],
                                     style: TextStyle(
                                         color: Theme.of(context)
@@ -514,12 +575,11 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                           }
                           if (index == 0 && widget.isOwnProfilePage == false) {
                             return Card(
-                              child: Padding(
-                                padding: EdgeInsets.all(20.0),
-                                child: Text("$username's Uploaded Media:")
-                            ));
-                          }
-                          else if (index == 0 && widget.isOwnProfilePage) {
+                                child: Padding(
+                                    padding: EdgeInsets.all(20.0),
+                                    child:
+                                        Text("$username's Uploaded Media:")));
+                          } else if (index == 0 && widget.isOwnProfilePage) {
                             //Upload media card will always be displayed first
                             return Card(
                                 child: Wrap(children: <Widget>[
@@ -648,13 +708,29 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                     child: SizedBox(
                         //height: 100.0,
                         child: ListView.builder(
-                            itemCount: 20,
+                            itemCount: taskscompleted,
                             itemBuilder: (context, index) {
                               return Card(
                                   child: ListTile(
                                 onTap: () {
-                                  TaskInfo info = TaskInfo(
-                                      "Task History", index); //Placeholder
+                                  CompletedTask info = CompletedTask(
+                                      taskCompletedList[index]
+                                          .get("customer email"),
+                                      taskCompletedList[index]
+                                          .get("customer first name"),
+                                      taskCompletedList[index]
+                                          .get("customer last name"),
+                                      taskCompletedList[index]
+                                          .get("customer username"),
+                                      taskCompletedList[index]
+                                          .get("description"),
+                                      taskCompletedList[index].get("location"),
+                                      taskCompletedList[index].get("pay rate"),
+                                      taskCompletedList[index]
+                                          .get("start date"),
+                                      taskCompletedList[index]
+                                          .get("task category"),
+                                      index + 1); //Placeholder
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -662,7 +738,15 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                               //Change to tasker specific later
                                               taskinfo: info)));
                                 },
-                                title: Text("test$index",
+                                title: Text(
+                                    "${taskCompletedList[index].get("task category")}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                                subtitle: Text(
+                                    "@${taskCompletedList[index].get("customer username")} (${taskCompletedList[index].get("start date")})",
                                     style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme

@@ -212,7 +212,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Icons.location_pin,
               color: Theme.of(context).colorScheme.secondary,
             ),
-            title: Text("Map View (test)",
+            title: Text("Map View",
                 style: TextStyle(
                     fontSize: 16.0,
                     color: Theme.of(context).colorScheme.secondary)),

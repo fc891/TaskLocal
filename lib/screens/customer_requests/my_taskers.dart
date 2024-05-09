@@ -1,6 +1,6 @@
 // Contributors: Eric C.,
 
-// TODO: Allow customer to interact (message, etc.) from list.
+// - display additional information of tasker (task category, )
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -131,7 +131,7 @@ class _MyTaskersPageState extends State<MyTaskersPage> {
                             );
                           },
                           trailing: IconButton(
-                            icon: Icon(Icons.message), // Add message icon
+                            icon: Icon(Icons.message, color: Colors.white), // Add message icon
                             onPressed: () {
                               // Navigate to the messages screen
                               Navigator.push(
