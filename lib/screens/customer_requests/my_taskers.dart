@@ -1,7 +1,5 @@
 // Contributors: Eric C.,
 
-// TODO: Allow customer to interact (message, etc.) from list.
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -131,7 +129,7 @@ class _MyTaskersPageState extends State<MyTaskersPage> {
                             );
                           },
                           trailing: IconButton(
-                            icon: Icon(Icons.message), // Add message icon
+                            icon: Icon(Icons.message, color: Colors.white), // Add message icon
                             onPressed: () {
                               // Navigate to the messages screen
                               Navigator.push(
