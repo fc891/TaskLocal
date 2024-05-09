@@ -2,6 +2,15 @@
 
 // Use case #22 Manage Customer's List of Taskers
 
+/* - remove 'active tasks' and just keep 'pending' tasks
+   - when customer clicks on task, it takes to separate page with more info/actions
+   - on first screen, display just task category, tasker name
+   - on second screen, display task category, tasker name, task details, asking rate, reservation details
+
+   - have different buttons show up when a task is pending vs accepted
+   - grab from tasker (/Taskers/richard@gmail.com/Completed Tasks/xZBKvJS1fKl8VDzTlsRl)
+*/
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart'; // Import Cupertino widgets for iOS-style pickers
 import 'package:intl/intl.dart';
