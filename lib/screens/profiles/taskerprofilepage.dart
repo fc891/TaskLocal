@@ -22,6 +22,7 @@ import 'package:tasklocal/screens/profiles/uploadmediapage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tasklocal/screens/rate_and_review/review_page.dart';
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -45,6 +46,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
   String firstname = "First";
   String lastname = "Last";
   String date = 'dd-MM-yyyy';
+  String email = '';
   int taskscompleted = 0;
   double rating = 5.0;
   final dB = FirebaseStorage.instance;
@@ -83,6 +85,23 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
       firstname = data['first name'];
       lastname = data['last name'];
     });
+  }
+
+  //Bill's get user's rating using id (email)
+  void getUserRating(String id) async {
+    var collection = FirebaseFirestore.instance.collection('Taskers');
+    var docSnapshot = await collection.doc(id).get();
+    Map<String, dynamic> data = docSnapshot.data()!;
+    if (data['rating'] != null) { //If the current tasker user has a 'rating' field
+      rating = data['rating'];
+    } else if (data['rating'] == null) { //If 'rating' field not found, set a default one for the tasker
+      FirebaseFirestore.instance
+          .collection('Taskers')
+          .doc(id)
+          .set({'rating': 0.0}, SetOptions(merge: true)).then((value) {
+        rating = data['rating'];
+      });
+    }
   }
 
   //Bill's get user's profile picture using id (email)
@@ -236,14 +255,17 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
     var current = FirebaseAuth.instance
         .currentUser!; //Use to get the info of the currently logged in user
     String testid = current.email!; //Get email of current user
+    email = testid;
     if (widget.isOwnProfilePage == false) {
       testid = widget.userEmail; //Use email passed in
+      email = widget.userEmail;
     }
     if (globals.checkProfilePictureTasker) {
       getProfilePicture(testid);
     }
     getUserInfo(testid);
     getJoinDate(testid);
+    getUserRating(testid);
     if (globals.checkTasks) {
       getTasksCompleted(testid);
     }
@@ -350,11 +372,21 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       letterSpacing: 1.0,
                       fontSize: 16.0,
                     )),
-                Text('User Rating: $rating',
-                    style: TextStyle(
-                      color: Colors.white,
-                      letterSpacing: 1.0,
-                      fontSize: 16.0,
+                InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ReviewsPage(taskerEmail: email)));
+                    },
+                    child: Text(
+                      'User Rating: $rating',
+                      style: TextStyle(
+                        color: Colors.white,
+                        letterSpacing: 1.0,
+                        fontSize: 16.0,
+                      ),
                     )),
               ]),
               Divider(
@@ -363,44 +395,46 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
               ),
               Row(children: <Widget>[
                 Container(
-                  height: 80.0,
-                  width: 95.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.tertiary),
-                    child: Text("View Task History",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontWeight: _taskHistorySelected ? FontWeight.bold : FontWeight.normal,
-                            shadows: _taskHistorySelected ? 
-                              <Shadow>[
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 10.0,
-                                color: Colors.black,
-                              ),] 
-                              : 
-                              <Shadow>[
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 0.0,
-                                color: Color.fromARGB(0, 0, 0, 0),
-                              ),] 
-                            )),
-                    onPressed: () {
-                      setState(() {
-                        _taskCategoriesSelected = false;
-                        _uploadedMediaSelected = false;
-                        _taskHistorySelected = true;
-                      });
-                    },
-                  )),
+                    height: 80.0,
+                    width: 95.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.tertiary),
+                      child: Text("View Task History",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: _taskHistorySelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              shadows: _taskHistorySelected
+                                  ? <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 10.0,
+                                        color: Colors.black,
+                                      ),
+                                    ]
+                                  : <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 0.0,
+                                        color: Color.fromARGB(0, 0, 0, 0),
+                                      ),
+                                    ])),
+                      onPressed: () {
+                        setState(() {
+                          _taskCategoriesSelected = false;
+                          _uploadedMediaSelected = false;
+                          _taskHistorySelected = true;
+                        });
+                      },
+                    )),
                 VerticalDivider(
                   //color: Colors.green[500],
                   width: 30.0,
@@ -420,22 +454,24 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       child: Text("View Task Categories",
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.secondary,
-                              fontWeight: _taskCategoriesSelected ? FontWeight.bold : FontWeight.normal,
-                              shadows: _taskCategoriesSelected ? 
-                              <Shadow>[
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 10.0,
-                                color: Colors.black,
-                              ),] 
-                              : 
-                              <Shadow>[
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 0.0,
-                                color: Color.fromARGB(0, 0, 0, 0),
-                              ),] 
-                            )),
+                              fontWeight: _taskCategoriesSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              shadows: _taskCategoriesSelected
+                                  ? <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 10.0,
+                                        color: Colors.black,
+                                      ),
+                                    ]
+                                  : <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 0.0,
+                                        color: Color.fromARGB(0, 0, 0, 0),
+                                      ),
+                                    ])),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = true;
@@ -463,22 +499,24 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                       child: Text("View and Upload Media",
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.secondary,
-                              fontWeight: _uploadedMediaSelected ? FontWeight.bold : FontWeight.normal,
-                              shadows: _uploadedMediaSelected ? 
-                              <Shadow>[
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 10.0,
-                                color: Colors.black,
-                              ),] 
-                              : 
-                              <Shadow>[
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 0.0,
-                                color: Color.fromARGB(0, 0, 0, 0),
-                              ),] 
-                            )),
+                              fontWeight: _uploadedMediaSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              shadows: _uploadedMediaSelected
+                                  ? <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 10.0,
+                                        color: Colors.black,
+                                      ),
+                                    ]
+                                  : <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 0.0,
+                                        color: Color.fromARGB(0, 0, 0, 0),
+                                      ),
+                                    ])),
                       onPressed: () {
                         setState(() {
                           _taskCategoriesSelected = false;
