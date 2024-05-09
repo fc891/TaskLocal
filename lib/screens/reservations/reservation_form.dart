@@ -83,7 +83,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     }
   }
 
-  void _submitReservation() {
+  void _submitReservation() async {
     final DateTime reservationDateTime = DateTime(
       _selectedDate.year,
       _selectedDate.month,
@@ -93,6 +93,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     );
 
     final user = FirebaseAuth.instance.currentUser;
+    final customerData = await _firestore.collection('Customers').doc(user?.email).get();
     if (user != null) {
       final customerEmail = user.email;
 
@@ -102,6 +103,12 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
           .collection('All Pending Reservations')
           .add({
         'taskerEmail': widget.taskerData['email'],
+        'customerEmail': customerEmail,
+        'customerFirstName': customerData['first name'],
+        'customerLastName': customerData['last name'],
+        'customerUserName': customerData['username'],
+        'taskAccepted': false,
+        'taskStarted': false, // for tasker use
         'date': reservationDateTime,
         'description': _taskDescription,
         'status': 'pending',
