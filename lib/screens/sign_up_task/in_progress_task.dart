@@ -1,5 +1,6 @@
 // Contributors: Richard N.
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,6 +63,29 @@ class _InProgressTaskState extends State<InProgressTask> {
                                   // task reservation's date and time
                                   DateTime dateTime = taskData['date'].toDate();
                                   final onlyDate = DateFormat('MM/dd/yy').format(dateTime);
+
+                                  DocumentReference reservation = _firestore.collection('Reservations').doc(taskData['customerEmail'])
+                                                                                                    .collection('All Pending Reservations').doc(categoryName);
+
+                                  // Randomly create a pay rate between 40 and 80 (evens only)
+                                  int payRate = (Random().nextInt(21) * 2) + 40;
+                                  reservation.get().then((docSnapshot) {
+                                    Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+                                    // 'payRate' field doesn't exist, so add it
+                                    if (!data.containsKey('payRate')) {
+                                      reservation.update({'payRate': payRate});
+                                    }
+                                  });
+
+                                  // Randomly create a address number
+                                  int addressNum = Random().nextInt(90000) + 10000;
+                                  reservation.get().then((docSnapshot) {
+                                    Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+                                    // 'payRate' field doesn't exist, so add it
+                                    if (!data.containsKey('address')) {
+                                      reservation.update({'address': '$addressNum address name'});
+                                    }
+                                  });
                                   
                                   // if (taskData['taskRejected']) {
                                     return Padding(
@@ -147,60 +171,59 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     ],
                                                   ),
                                                 ),
-                                                // Text.rich(
-                                                //   TextSpan(
-                                                //     children: [
-                                                //       TextSpan(
-                                                //         text: 'Location: ',
-                                                //         style: TextStyle(
-                                                //           fontWeight:
-                                                //               FontWeight.bold,
-                                                //           fontSize: 16,
-                                                //           color: Theme.of(context)
-                                                //               .colorScheme
-                                                //               .secondary,
-                                                //         ),
-                                                //       ),
-                                                //       TextSpan(
-                                                //         text:
-                                                //             '${taskData['location']}',
-                                                //         style: TextStyle(
-                                                //           fontSize: 16,
-                                                //           color: Theme.of(context)
-                                                //               .colorScheme
-                                                //               .secondary,
-                                                //         ),
-                                                //       ),
-                                                //     ],
-                                                //   ),
-                                                // ),
-                                                // Text.rich(
-                                                //   TextSpan(
-                                                //     children: [
-                                                //       TextSpan(
-                                                //         text: 'Pay Rate: ',
-                                                //         style: TextStyle(
-                                                //           fontWeight:
-                                                //               FontWeight.bold,
-                                                //           fontSize: 16,
-                                                //           color: Theme.of(context)
-                                                //               .colorScheme
-                                                //               .secondary,
-                                                //         ),
-                                                //       ),
-                                                //       TextSpan(
-                                                //         text:
-                                                //             '\$${taskData['pay rate']}',
-                                                //         style: TextStyle(
-                                                //           fontSize: 16,
-                                                //           color: Theme.of(context)
-                                                //               .colorScheme
-                                                //               .secondary,
-                                                //         ),
-                                                //       ),
-                                                //     ],
-                                                //   ),
-                                                // ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Location: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text:
+                                                            '${taskData['address']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Pay Rate: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: '\$${taskData['payRate']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                                 Text.rich(
                                                   TextSpan(
                                                     children: [
