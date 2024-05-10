@@ -108,6 +108,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
         'customerLastName': customerData['last name'],
         'customerUserName': customerData['username'],
         'taskAccepted': false,
+        'taskRejected': false, // for tasker use (could be used for customer)
         'taskStarted': false, // for tasker use
         'date': reservationDateTime,
         'description': _taskDescription,
