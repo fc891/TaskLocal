@@ -40,8 +40,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                     );
                   } else {
                     // a list contianing a list of the task categories from the user
-                    final Map<String, List<DocumentSnapshot>> signedUpTasks =
-                        snapshot.data!;
+                    final Map<String, List<DocumentSnapshot>> signedUpTasks = snapshot.data!;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: signedUpTasks.entries.map((entry) {
@@ -59,8 +58,8 @@ class _InProgressTaskState extends State<InProgressTask> {
                                   // get the current date and time
                                   DateTime currentDateTime = DateTime.now();
                                   final String date = DateFormat('MM/dd/yy').format(currentDateTime); 
-                                  
-                                  return Padding(
+                                  // if (taskData['taskRejected']) {
+                                    return Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     // display the information of the signed up task in a ListTile
                                     child: Column(
@@ -105,7 +104,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     ),
                                                     TextSpan(
                                                       text:
-                                                          '${taskData['customer first name']} ${taskData['customer last name']}',
+                                                          '${taskData['customerFirstName']} ${taskData['customerLastName']}',
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                         color: Theme.of(context)
@@ -143,11 +142,65 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   ],
                                                 ),
                                               ),
+                                              // Text.rich(
+                                              //   TextSpan(
+                                              //     children: [
+                                              //       TextSpan(
+                                              //         text: 'Location: ',
+                                              //         style: TextStyle(
+                                              //           fontWeight:
+                                              //               FontWeight.bold,
+                                              //           fontSize: 16,
+                                              //           color: Theme.of(context)
+                                              //               .colorScheme
+                                              //               .secondary,
+                                              //         ),
+                                              //       ),
+                                              //       TextSpan(
+                                              //         text:
+                                              //             '${taskData['location']}',
+                                              //         style: TextStyle(
+                                              //           fontSize: 16,
+                                              //           color: Theme.of(context)
+                                              //               .colorScheme
+                                              //               .secondary,
+                                              //         ),
+                                              //       ),
+                                              //     ],
+                                              //   ),
+                                              // ),
+                                              // Text.rich(
+                                              //   TextSpan(
+                                              //     children: [
+                                              //       TextSpan(
+                                              //         text: 'Pay Rate: ',
+                                              //         style: TextStyle(
+                                              //           fontWeight:
+                                              //               FontWeight.bold,
+                                              //           fontSize: 16,
+                                              //           color: Theme.of(context)
+                                              //               .colorScheme
+                                              //               .secondary,
+                                              //         ),
+                                              //       ),
+                                              //       TextSpan(
+                                              //         text:
+                                              //             '\$${taskData['pay rate']}',
+                                              //         style: TextStyle(
+                                              //           fontSize: 16,
+                                              //           color: Theme.of(context)
+                                              //               .colorScheme
+                                              //               .secondary,
+                                              //         ),
+                                              //       ),
+                                              //     ],
+                                              //   ),
+                                              // ),
                                               Text.rich(
                                                 TextSpan(
                                                   children: [
                                                     TextSpan(
-                                                      text: 'Location: ',
+                                                      text: 'Date: ',
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -159,61 +212,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     ),
                                                     TextSpan(
                                                       text:
-                                                          '${taskData['location']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Pay Rate: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
-                                                      ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '\$${taskData['pay rate']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Start Date: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
-                                                      ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '${taskData['start date']}',
+                                                          '${taskData['date']}',
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                         color: Theme.of(context)
@@ -232,7 +231,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            if (!taskData['task accepted'])
+                                            if (!taskData['taskAccepted'])
                                               Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
@@ -284,11 +283,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         try {
                                                           // Update database to mark task as accepted
                                                           setState(() {
-                                                            _firestore
-                                                                .collection(
-                                                                    'Task Categories')
-                                                                .doc(
-                                                                    categoryName)
+                                                            _firestore.collection('Task Categories').doc(categoryName)
                                                                 .collection(
                                                                     'Hired Taskers')
                                                                 .doc(_auth
@@ -299,13 +294,11 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                                 .doc(taskData[
                                                                     'customer email'])
                                                                 .update({
-                                                              'task accepted':
+                                                              'taskAccepted':
                                                                   true
                                                             });
                                                           });
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
+                                                          ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
                                                               content: Text(
                                                                   'Successfully accepted task request.'),
@@ -313,8 +306,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           );
                                                         } catch (error) {
                                                           // print('There was an error deleting the signed up task: $error');
-                                                          ScaffoldMessenger.of(
-                                                                  context)
+                                                          ScaffoldMessenger.of(context)
                                                               .showSnackBar(
                                                             SnackBar(
                                                               content: Text(
@@ -394,9 +386,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                                 .removeAt(
                                                                     index);
                                                           });
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
+                                                          ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
                                                               content: Text(
                                                                   'Successfully decline task request.'),
@@ -404,9 +394,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           );
                                                         } catch (error) {
                                                           // print('There was an error deleting the signed up task: $error');
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
+                                                          ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
                                                               content: Text(
                                                                   'An error occurred while declining the task request.'),
@@ -418,7 +406,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   ),
                                                 ],
                                               ) 
-                                              else if (taskData['task accepted'] && !taskData['task started']) 
+                                              else if (taskData['taskAccepted'] && !taskData['taskStarted']) 
                                                 ElevatedButton(
                                                   onPressed: () async {
                                                     if(taskData['start date'] == date) {
@@ -447,7 +435,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                               _firestore.collection('Task Categories').doc(categoryName)
                                                               .collection('Hired Taskers').doc(_auth.currentUser!.email)
                                                               .collection('In Progress Tasks').doc(taskData['customer email'])
-                                                              .update({'task started': true});
+                                                              .update({'taskStarted': true});
                                                             }
                                                           );
                                                           ScaffoldMessenger.of(context).showSnackBar(
@@ -614,7 +602,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           fontSize: 14)),
                                                 ),
                                               ),
-                                              if (taskData['task started']) 
+                                              if (taskData['taskStarted']) 
                                                 IconButton(
                                                   icon: Icon(Icons.location_on),
                                                   onPressed: () {
@@ -627,12 +615,13 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                                         "Taskers")));
                                                   },
                                                 ),
-                                          ],
-                                        ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                );
+                                    );
+                                  // }
                               },
                             ),
                           ],
@@ -649,38 +638,69 @@ class _InProgressTaskState extends State<InProgressTask> {
     );
   }
 
-  // retrieves the task categories that the user signed up for
+  // retrieves the tasker's customers who made reservation for tasker 
   Future<Map<String, List<DocumentSnapshot>>> _getSignedUpTasks() async {
-    // access the collection that stores user's signed up tasks
-    final taskerSignedUpTask = await _firestore
+    // access the collection that stores tasker's customers
+    final hiredByCustomers = await _firestore
         .collection('Taskers')
         .doc(_auth.currentUser!.email)
-        .collection('Signed Up Tasks')
+        .collection('Hired by Customers')
         .get();
-    final taskCategoryList = <String, List<DocumentSnapshot>>{};
+    final customerReservation = <String, List<DocumentSnapshot>>{};
+    final Set<String> uniqueReservation = {};
 
     // go through the collection of signed up task to view each task document
-    for (final taskCategory in taskerSignedUpTask.docs) {
-      final taskData = taskCategory.data();
-      final categoryName = taskData['task category'];
-      // go to task category doc in Task Categories collection
-      final taskCategory2 =
-          _firestore.collection('Task Categories').doc(categoryName);
-      // go to the Hired Taskers collection (from Task Categories Collection) which stores info of taskers sign up
-      final tasker = taskCategory2
-          .collection('Hired Taskers')
-          .doc(_auth.currentUser!.email);
-      final inProgressTaskDoc = await tasker
-          .collection('In Progress Tasks')
-          .where('customer email', isNotEqualTo: _auth.currentUser!.email)
-          .get();
+    for (final customer in hiredByCustomers.docs) {
+      final customerData = customer.data();
+      final customerEmail = customerData['customerEmail'];
 
-      // if categroy name is not stored in list, then create the key and assign it an empty list.
-      if (!taskCategoryList.containsKey(categoryName)) {
-        taskCategoryList[categoryName] = [];
+      // go to customer doc in Reservations collection
+      final customerEmail2 = _firestore.collection('Reservations').doc(customerEmail);
+      // go to 'All Pending Reservations' collection to retrieve reservation data
+      final pendingReservations = await customerEmail2.collection('All Pending Reservations').where('taskerEmail', isEqualTo: _auth.currentUser!.email).get();
+
+      for (final doc in pendingReservations.docs) {
+        final reservationId = doc.id;
+        // ensure unique reservations
+        if (!uniqueReservation.contains(reservationId)) {
+          uniqueReservation.add(reservationId);
+          // Add reservation to map
+          if (!customerReservation.containsKey(reservationId)) {
+            customerReservation[reservationId] = [];
+          }
+          customerReservation[reservationId]!.add(doc);
+        }
       }
-      taskCategoryList[categoryName]!.addAll(inProgressTaskDoc.docs);
     }
-    return taskCategoryList;
+    return customerReservation;
   }
+
+  // // retrieves the task categories that the user signed up for
+  // Future<Map<String, List<DocumentSnapshot>>> _getSignedUpTasks() async {
+  //   // access the collection that stores user's signed up tasks
+  //   final taskerSignedUpTask = await _firestore
+  //       .collection('Taskers')
+  //       .doc(_auth.currentUser!.email)
+  //       .collection('Signed Up Tasks')
+  //       .get();
+  //   final taskCategoryList = <String, List<DocumentSnapshot>>{};
+
+  //   // go through the collection of signed up task to view each task document
+  //   for (final taskCategory in taskerSignedUpTask.docs) {
+  //     final taskData = taskCategory.data();
+  //     final categoryName = taskData['task category'];
+  //     // go to task category doc in Task Categories collection
+  //     final taskCategory2 = _firestore.collection('Task Categories').doc(categoryName);
+  //     // go to the Hired Taskers collection (from Task Categories Collection) which stores info of taskers sign up
+  //     final tasker = taskCategory2.collection('Hired Taskers').doc(_auth.currentUser!.email);
+  //     final inProgressTaskDoc = await tasker.collection('In Progress Tasks').where('customer email', isNotEqualTo: _auth.currentUser!.email).get();
+
+  //     // if categroy name is not stored in list, then create the key and assign it an empty list.
+  //     if (!taskCategoryList.containsKey(categoryName)) {
+  //       taskCategoryList[categoryName] = [];
+  //     }
+  //     taskCategoryList[categoryName]!.addAll(inProgressTaskDoc.docs);
+  //   }
+  //   return taskCategoryList;
+  // }
 }
