@@ -28,7 +28,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                 minHeight: constraints.maxHeight,
               ),
               child: FutureBuilder<Map<String, List<DocumentSnapshot>>>(
-                future: _getSignedUpTasks(),
+                future: _getReservations(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -58,6 +58,11 @@ class _InProgressTaskState extends State<InProgressTask> {
                                   // get the current date and time
                                   DateTime currentDateTime = DateTime.now();
                                   final String date = DateFormat('MM/dd/yy').format(currentDateTime); 
+
+                                  // task reservation's date and time
+                                  DateTime dateTime = taskData['date'].toDate();
+                                  final onlyDate = DateFormat('MM/dd/yy').format(dateTime);
+                                  
                                   // if (taskData['taskRejected']) {
                                     return Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
@@ -80,153 +85,152 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     .colorScheme
                                                     .secondary,
                                               )),
-                                        ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20.0, right: 15),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Customer Name: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                          ),
+                                          subtitle: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20.0, right: 15),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Customer Name: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '${taskData['customerFirstName']} ${taskData['customerLastName']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                      TextSpan(
+                                                        text:
+                                                            '${taskData['customerFirstName']} ${taskData['customerLastName']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Description: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Description: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '${taskData['description']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                      TextSpan(
+                                                        text:
+                                                            '${taskData['description']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              // Text.rich(
-                                              //   TextSpan(
-                                              //     children: [
-                                              //       TextSpan(
-                                              //         text: 'Location: ',
-                                              //         style: TextStyle(
-                                              //           fontWeight:
-                                              //               FontWeight.bold,
-                                              //           fontSize: 16,
-                                              //           color: Theme.of(context)
-                                              //               .colorScheme
-                                              //               .secondary,
-                                              //         ),
-                                              //       ),
-                                              //       TextSpan(
-                                              //         text:
-                                              //             '${taskData['location']}',
-                                              //         style: TextStyle(
-                                              //           fontSize: 16,
-                                              //           color: Theme.of(context)
-                                              //               .colorScheme
-                                              //               .secondary,
-                                              //         ),
-                                              //       ),
-                                              //     ],
-                                              //   ),
-                                              // ),
-                                              // Text.rich(
-                                              //   TextSpan(
-                                              //     children: [
-                                              //       TextSpan(
-                                              //         text: 'Pay Rate: ',
-                                              //         style: TextStyle(
-                                              //           fontWeight:
-                                              //               FontWeight.bold,
-                                              //           fontSize: 16,
-                                              //           color: Theme.of(context)
-                                              //               .colorScheme
-                                              //               .secondary,
-                                              //         ),
-                                              //       ),
-                                              //       TextSpan(
-                                              //         text:
-                                              //             '\$${taskData['pay rate']}',
-                                              //         style: TextStyle(
-                                              //           fontSize: 16,
-                                              //           color: Theme.of(context)
-                                              //               .colorScheme
-                                              //               .secondary,
-                                              //         ),
-                                              //       ),
-                                              //     ],
-                                              //   ),
-                                              // ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Date: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                // Text.rich(
+                                                //   TextSpan(
+                                                //     children: [
+                                                //       TextSpan(
+                                                //         text: 'Location: ',
+                                                //         style: TextStyle(
+                                                //           fontWeight:
+                                                //               FontWeight.bold,
+                                                //           fontSize: 16,
+                                                //           color: Theme.of(context)
+                                                //               .colorScheme
+                                                //               .secondary,
+                                                //         ),
+                                                //       ),
+                                                //       TextSpan(
+                                                //         text:
+                                                //             '${taskData['location']}',
+                                                //         style: TextStyle(
+                                                //           fontSize: 16,
+                                                //           color: Theme.of(context)
+                                                //               .colorScheme
+                                                //               .secondary,
+                                                //         ),
+                                                //       ),
+                                                //     ],
+                                                //   ),
+                                                // ),
+                                                // Text.rich(
+                                                //   TextSpan(
+                                                //     children: [
+                                                //       TextSpan(
+                                                //         text: 'Pay Rate: ',
+                                                //         style: TextStyle(
+                                                //           fontWeight:
+                                                //               FontWeight.bold,
+                                                //           fontSize: 16,
+                                                //           color: Theme.of(context)
+                                                //               .colorScheme
+                                                //               .secondary,
+                                                //         ),
+                                                //       ),
+                                                //       TextSpan(
+                                                //         text:
+                                                //             '\$${taskData['pay rate']}',
+                                                //         style: TextStyle(
+                                                //           fontSize: 16,
+                                                //           color: Theme.of(context)
+                                                //               .colorScheme
+                                                //               .secondary,
+                                                //         ),
+                                                //       ),
+                                                //     ],
+                                                //   ),
+                                                // ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Date: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '${taskData['date']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                      TextSpan(
+                                                        text: onlyDate,
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
                                       Center(
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -613,15 +617,15 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                                 CurrentLocation(
                                                                     userType:
                                                                         "Taskers")));
-                                                  },
-                                                ),
-                                              ],
+                                              },
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    );
-                                  // }
+                                    ],
+                                  ),
+                                );
+                              // }
                               },
                             ),
                           ],
@@ -639,7 +643,7 @@ class _InProgressTaskState extends State<InProgressTask> {
   }
 
   // retrieves the tasker's customers who made reservation for tasker 
-  Future<Map<String, List<DocumentSnapshot>>> _getSignedUpTasks() async {
+  Future<Map<String, List<DocumentSnapshot>>> _getReservations() async {
     // access the collection that stores tasker's customers
     final hiredByCustomers = await _firestore
         .collection('Taskers')
