@@ -121,12 +121,12 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
               },
             ),
           //Task details
-          Text('Task info here',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                letterSpacing: 1.0,
-                fontSize: 16.0,
-              )),
+          // Text('Task info here',
+          //     style: TextStyle(
+          //       color: Theme.of(context).colorScheme.secondary,
+          //       letterSpacing: 1.0,
+          //       fontSize: 16.0,
+          //     )),
       ])),
     );
   }

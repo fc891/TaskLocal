@@ -600,7 +600,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                 ),
               //List uploaded photos and videos by tasker
               if (_uploadedMediaSelected)
-                Text('Uploaded Photos and Videos($numMediaUploaded)',
+                Text('Uploaded Media($numMediaUploaded)',
                     style: TextStyle(
                         //color: Colors.white,
                         letterSpacing: 1.3,
