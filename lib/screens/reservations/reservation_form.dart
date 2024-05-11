@@ -28,41 +28,82 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _selectTime(BuildContext context) async {
-    final pickedTime = await showModalBottomSheet<TimeOfDay>(
+    final TimeOfDay? pickedTime = await showModalBottomSheet<TimeOfDay>(
       context: context,
       builder: (BuildContext context) {
         return Container(
           height: MediaQuery.of(context).size.height / 3,
-          child: CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.hm,
-            onTimerDurationChanged: (duration) {
+          child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.time,
+            initialDateTime: DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+              _selectedTime.hour,
+              _selectedTime.minute,
+            ),
+            use24hFormat: false,
+            minuteInterval: 30,
+            onDateTimeChanged: (DateTime dateTime) {
               setState(() {
-                _selectedTime = TimeOfDay(hour: duration.inHours, minute: duration.inMinutes % 60);
+                _selectedTime = TimeOfDay.fromDateTime(dateTime);
               });
             },
           ),
         );
       },
     );
-    if (pickedTime != null) {
-      setState(() {
-        _selectedTime = pickedTime;
-      });
-    }
   }
 
-  void _submitReservation() {
-    final DateTime reservationDateTime = DateTime(
+  String getFormattedDate() {
+    return DateFormat('yyyy-MM-dd – kk:mm').format(DateTime(
       _selectedDate.year,
       _selectedDate.month,
       _selectedDate.day,
       _selectedTime.hour,
       _selectedTime.minute,
-    );
+    ));
+  }
+
+  bool _validateInputs() {
+    if (_taskDescription.isEmpty || _payRate.isEmpty || _address.isEmpty || _category.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Missing Information'),
+            content: Text('Please fill out all fields before submitting.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return false;
+    }
+    return true;
+  }
+
+  void _submitReservation() {
+    if (!_validateInputs()) {
+      return;
+    }
 
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final customerEmail = user.email;
+      final DateTime reservationDateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        _selectedTime.hour,
+        _selectedTime.minute,
+      );
 
       _firestore
           .collection('Reservations')
@@ -70,12 +111,17 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
           .collection('All Pending Reservations')
           .add({
         'taskerEmail': widget.taskerData['email'],
+        'customerEmail': customerEmail,
         'date': reservationDateTime,
         'description': _taskDescription,
-        'payRate': _payRate,
+        'payRate': int.tryParse(_payRate) ?? 0,
         'address': _address,
-        'category': _category,
+        'categoryName': _category,
         'status': 'pending',
+        'taskAccepted': false,
+        'taskCompleted': false,
+        'taskRejected': false,
+        'taskStarted': false,
       }).then((value) {
         Navigator.push(
           context,
@@ -103,7 +149,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Reservation Form'),
-        backgroundColor: Colors.green, // Set to green to match the theme
+        backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -115,6 +161,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
             Text('Tasker: ${widget.taskerData['name']}', style: TextStyle(fontSize: 18)),
             Divider(height: 30),
             Text('Date and Time', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            Text('Selected Date: ${DateFormat('EEE, MMM d, yyyy').format(_selectedDate)}', style: TextStyle(fontSize: 18)),
+            Text('Selected Time: ${_selectedTime.format(context)}', style: TextStyle(fontSize: 18)),
             Row(
               children: [
                 Expanded(
@@ -157,9 +206,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 fillColor: Colors.white,
                 filled: true,
                 hintStyle: TextStyle(color: Colors.black),
-                labelStyle: TextStyle(color: Colors.black), // Added for visibility
+                labelStyle: TextStyle(color: Colors.black),
               ),
-              style: TextStyle(color: Colors.black), // Text color for input
+              style: TextStyle(color: Colors.black),
               onChanged: (value) => _taskDescription = value,
               maxLines: 3,
             ),
@@ -172,9 +221,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 fillColor: Colors.white,
                 filled: true,
                 hintStyle: TextStyle(color: Colors.black),
-                labelStyle: TextStyle(color: Colors.black), // Added for visibility
+                labelStyle: TextStyle(color: Colors.black),
               ),
-              style: TextStyle(color: Colors.black), // Text color for input
+              style: TextStyle(color: Colors.black),
               keyboardType: TextInputType.number,
               onChanged: (value) => _payRate = value,
             ),
@@ -186,9 +235,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 fillColor: Colors.white,
                 filled: true,
                 hintStyle: TextStyle(color: Colors.black),
-                labelStyle: TextStyle(color: Colors.black), // Added for visibility
+                labelStyle: TextStyle(color: Colors.black),
               ),
-              style: TextStyle(color: Colors.black), // Text color for input
+              style: TextStyle(color: Colors.black),
               onChanged: (value) => _address = value,
             ),
             SizedBox(height: 10),
@@ -199,9 +248,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 fillColor: Colors.white,
                 filled: true,
                 hintStyle: TextStyle(color: Colors.black),
-                labelStyle: TextStyle(color: Colors.black), // Added for visibility
+                labelStyle: TextStyle(color: Colors.black),
               ),
-              style: TextStyle(color: Colors.black), // Text color for input
+              style: TextStyle(color: Colors.black),
               items: <String>['Cleaning', 'Repair', 'Delivery', 'Tutoring'].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
