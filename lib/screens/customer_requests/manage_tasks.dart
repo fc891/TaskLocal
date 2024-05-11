@@ -42,7 +42,7 @@ class _ManageTasksState extends State<ManageTasks> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Manage Your Pending Tasks"),
+        title: Text("Manage Your Tasks"),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('Reservations')
@@ -70,6 +70,8 @@ class _ManageTasksState extends State<ManageTasks> {
   Widget _buildTaskTile(BuildContext context, Map<String, dynamic> task, String docId) {
     DateTime taskDate = (task['date'] as Timestamp).toDate();
     bool isCompleted = task['status'] == 'completed';
+    String taskStatus = _determineTaskerStatus(task['taskAccepted'], task['taskRejected']);
+
     return Card(
       child: ListTile(
         title: Text(task['categoryName'], style: TextStyle(color: Colors.white)),
@@ -79,9 +81,10 @@ class _ManageTasksState extends State<ManageTasks> {
             Text('Description: ${task['description']}', style: TextStyle(color: Colors.white)),
             Text('Address: ${task['address']}', style: TextStyle(color: Colors.white)),
             Text('Date: ${DateFormat('yyyy-MM-dd – kk:mm').format(taskDate)}', style: TextStyle(color: Colors.white)),
-            // Text('Rate: \$${task['payRate']} per hour', style: TextStyle(color: Colors.white)),
-            Text('Tasker: ${task['taskerEmail']} - Accepted: ${task['taskAccepted'] ? "Yes" : "No"}', style: TextStyle(color: Colors.white)),
-            Text('Status: ${task['status']}', style: TextStyle(color: Colors.white)),
+            Text('Rate: \$${task['payRate']} per hour', style: TextStyle(color: Colors.white)),
+            Text('Tasker: ${task['taskerEmail']}', style: TextStyle(color: Colors.white)),
+            Text('Tasker Status: $taskStatus', style: TextStyle(color: Colors.white)),
+            Text('Overall Status: ${task['status']}', style: TextStyle(color: Colors.white)),
           ],
         ),
         isThreeLine: true,
@@ -101,6 +104,17 @@ class _ManageTasksState extends State<ManageTasks> {
         ),
       ),
     );
+  }
+
+  // for whether the tasker has accepted, rejected, or not responded to reservation
+  String _determineTaskerStatus(bool? taskAccepted, bool? taskRejected) {
+    if (taskAccepted == true) {
+      return "Accepted";
+    } else if (taskRejected == true) {
+      return "Rejected";
+    } else {
+      return "No Response";
+    }
   }
 
   void _toggleTaskCompletion(String docId, bool isCompleted) {
