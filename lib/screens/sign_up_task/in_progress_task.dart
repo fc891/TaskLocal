@@ -58,11 +58,11 @@ class _InProgressTaskState extends State<InProgressTask> {
                                   final taskData = taskCategory[index];
                                   // get the current date and time
                                   DateTime currentDateTime = DateTime.now();
-                                  final String date = DateFormat('MM/dd/yy').format(currentDateTime); 
+                                  final String currentDateOnly = DateFormat('MM/dd/yy').format(currentDateTime); 
 
                                   // task reservation's date and time
                                   DateTime dateTime = taskData['date'].toDate();
-                                  final onlyDate = DateFormat('MM/dd/yy').format(dateTime);
+                                  final reservationDateOnly = DateFormat('MM/dd/yy').format(dateTime);
 
                                   DocumentReference reservation = _firestore.collection('Reservations').doc(taskData['customerEmail'])
                                                                                                     .collection('All Pending Reservations').doc(categoryName);
@@ -110,7 +110,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                     print("Error retrieving documents: $error");
                                   });
 
-                                  // if (taskData['taskRejected']) {
+                                  if (!taskData['taskRejected'] && !taskData['taskCompleted']) {
                                     return Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     // display the information of the signed up task in a ListTile
@@ -262,7 +262,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         ),
                                                       ),
                                                       TextSpan(
-                                                        text: onlyDate,
+                                                        text: reservationDateOnly,
                                                         style: TextStyle(
                                                           fontSize: 16,
                                                           color: Theme.of(context)
@@ -333,16 +333,13 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         try {
                                                           // Update database to mark task as accepted
                                                           setState(() {
-                                                            _firestore.collection('Task Categories').doc(categoryName)
+                                                            _firestore
                                                                 .collection(
-                                                                    'Hired Taskers')
-                                                                .doc(_auth
-                                                                    .currentUser!
-                                                                    .email)
+                                                                    'Reservations')
+                                                                .doc(taskData['customerEmail'])
                                                                 .collection(
-                                                                    'In Progress Tasks')
-                                                                .doc(taskData[
-                                                                    'customer email'])
+                                                                    'All Pending Reservations')
+                                                                .doc(categoryName)
                                                                 .update({
                                                               'taskAccepted':
                                                                   true
@@ -415,26 +412,35 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       if (confirmed == true) {
                                                         try {
                                                           // removing from the collection
-                                                          final signedUpGeneral = _firestore
-                                                              .collection(
-                                                                  'Task Categories')
-                                                              .doc(categoryName)
-                                                              .collection(
-                                                                  'Hired Taskers')
-                                                              .doc(_auth
-                                                                  .currentUser!
-                                                                  .email)
-                                                              .collection(
-                                                                  'In Progress Tasks')
-                                                              .doc(taskData[
-                                                                  'customer email']);
-                                                          await signedUpGeneral
-                                                              .delete();
+                                                          // final signedUpGeneral = _firestore
+                                                          //     .collection(
+                                                          //         'Task Categories')
+                                                          //     .doc(categoryName)
+                                                          //     .collection(
+                                                          //         'Hired Taskers')
+                                                          //     .doc(_auth
+                                                          //         .currentUser!
+                                                          //         .email)
+                                                          //     .collection(
+                                                          //         'In Progress Tasks')
+                                                          //     .doc(taskData[
+                                                          //         'customer email']);
+                                                          // await signedUpGeneral
+                                                          //     .delete();
                                                           // update the UI
                                                           setState(() {
-                                                            taskCategory
-                                                                .removeAt(
-                                                                    index);
+                                                            taskCategory.removeAt(index);
+                                                            _firestore
+                                                                .collection(
+                                                                    'Reservations')
+                                                                .doc(taskData['customerEmail'])
+                                                                .collection(
+                                                                    'All Pending Reservations')
+                                                                .doc(categoryName)
+                                                                .update({
+                                                              'taskRejected':
+                                                                  true
+                                                            });
                                                           });
                                                           ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
@@ -459,7 +465,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                               else if (taskData['taskAccepted'] && !taskData['taskStarted']) 
                                                 ElevatedButton(
                                                   onPressed: () async {
-                                                    if(taskData['start date'] == date) {
+                                                    if(reservationDateOnly == currentDateOnly) {
                                                       bool confirmed = await showDialog(
                                                         context: context,
                                                         builder: (context) => AlertDialog(
@@ -482,9 +488,8 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         try {
                                                           // update the UI
                                                           setState(() {
-                                                              _firestore.collection('Task Categories').doc(categoryName)
-                                                              .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                              .collection('In Progress Tasks').doc(taskData['customer email'])
+                                                              _firestore.collection('Reservations').doc(taskData['customerEmail'])
+                                                              .collection('All Pending Reservations').doc(categoryName)
                                                               .update({'taskStarted': true});
                                                             }
                                                           );
@@ -557,17 +562,18 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   if (confirmed == true) {
                                                     try {
                                                       // task request's data to be used for both tasker and customer's collections
-                                                      final taskRequestData = await _firestore.collection('Task Categories').doc(categoryName)
-                                                                                .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                                                .collection('In Progress Tasks').doc(taskData['customer email']).get();
-                                                      final data = taskRequestData.data();
-                                                      final customerEmail = data?['customer email'];
-                                                      final description = data?['description'];
-                                                      final location = data?['location'];
-                                                      final payRate = data?['pay rate'];
-                                                      final startDate = data?['start date'];
-                                                      final taskAccepted = data?['task accepted'];
-                                                      final taskStarted = data?['task started'];
+                                                      // final taskRequestData = await _firestore.collection('Reservations').doc(taskData['customerEmail'])
+                                                      //                           .collection('All Pending Reservations').doc(categoryName).get();
+                                                                                
+                                                      // final data = taskRequestData.data();
+                                                      // final customerEmail = data?['customerEmail'];
+                                                      // final description = data?['description'];
+                                                      // final location = data?['address'];
+                                                      // final payRate = data?['payRate'];
+                                                      // final reservationDate = data?['date'];
+                                                      // final taskAccepted = data?['taskAccepted'];
+                                                      // final taskStarted = data?['taskStarted'];
+                                                      // final taskCategory = data?['category name'];
                                                       
                                                       // retrieve tasker data to be used for cutomer's collection
                                                       final taskerData = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
@@ -576,41 +582,60 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       final taskerUserName = taskerData['username'];
                                                                                 
 
-                                                      if (data != null) {
+                                                      // if (data != null) {
                                                         // storing task request into tasker's collection
                                                         await _firestore.collection('Taskers').doc(_auth.currentUser!.email)
                                                           .collection('Completed Tasks').add({
-                                                            ...data,
-                                                            'task category': categoryName,
+                                                            'customer email': taskData['customerEmail'],
+                                                            'customer first name': taskerFirstName,
+                                                            'customer last name': taskerLastName,
+                                                            'customer username': taskerUserName,
+                                                            'task category': taskData['categoryName'],
+                                                            'description': taskData['description'],
+                                                            'location': taskData['address'],
+                                                            'pay rate': taskData['payRate'],
+                                                            'start date': reservationDateOnly,
+                                                            'task accepted': taskData['taskAccepted'],
+                                                            'task started': taskData['taskStarted'],
                                                         });
 
                                                         // storing task request into customer's collection
-                                                        await _firestore.collection('Customers').doc(customerEmail)
+                                                        await _firestore.collection('Customers').doc(taskData['customerEmail'])
                                                           .collection('Completed Tasks').add({
                                                             'tasker email': _auth.currentUser!.email,
                                                             'tasker first name': taskerFirstName,
                                                             'tasker last name': taskerLastName,
                                                             'tasker username': taskerUserName,
-                                                            'task category': categoryName,
-                                                            'description': description,
-                                                            'location': location,
-                                                            'pay rate': payRate,
-                                                            'startDate': startDate,
-                                                            'task accepted': taskAccepted,
-                                                            'task started': taskStarted,
+                                                            'task category': taskData['categoryName'],
+                                                            'description': taskData['description'],
+                                                            'location': taskData['address'],
+                                                            'pay rate': taskData['payRate'],
+                                                            'start date': reservationDateOnly,
+                                                            'task accepted': taskData['taskAccepted'],
+                                                            'task started': taskData['taskStarted'],
                                                         });
-                                                      }
+                                                      // }
                                                                                       
                                                       // removing from the collection
-                                                      final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                                                                .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                                                .collection('In Progress Tasks').doc(taskData['customer email']);
+                                                      // final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                                      //                           .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                      //                           .collection('In Progress Tasks').doc(taskData['customer email']);
 
-                                                      await signedUpGeneral.delete();
+                                                      // await signedUpGeneral.delete();
                                                       // update the UI
                                                       setState(() {
-                                                        taskCategory
-                                                            .removeAt(index);
+                                                        taskCategory.removeAt(index);
+                                                        _firestore
+                                                                .collection(
+                                                                    'Reservations')
+                                                                .doc(taskData['customerEmail'])
+                                                                .collection(
+                                                                    'All Pending Reservations')
+                                                                .doc(categoryName)
+                                                                .update({
+                                                              'taskCompleted':
+                                                                  true
+                                                            });
                                                       });
                                                       // ignore: use_build_context_synchronously
                                                       ScaffoldMessenger.of(
@@ -629,7 +654,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           .showSnackBar(
                                                         SnackBar(
                                                           content: Text(
-                                                              'An error occurred while completing task.'),
+                                                              '${error}'),
                                                         ),
                                                       );
                                                     }
@@ -671,7 +696,8 @@ class _InProgressTaskState extends State<InProgressTask> {
                                     ],
                                   ),
                                 );
-                              // }
+                              }
+                                  return null;
                               },
                             ),
                           ],
