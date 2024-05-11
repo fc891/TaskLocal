@@ -157,7 +157,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 fillColor: Colors.white,
                 filled: true,
                 hintStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black), // Added for visibility
               ),
+              style: TextStyle(color: Colors.black), // Text color for input
               onChanged: (value) => _taskDescription = value,
               maxLines: 3,
             ),
@@ -170,7 +172,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 fillColor: Colors.white,
                 filled: true,
                 hintStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black), // Added for visibility
               ),
+              style: TextStyle(color: Colors.black), // Text color for input
               keyboardType: TextInputType.number,
               onChanged: (value) => _payRate = value,
             ),
@@ -182,7 +186,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 fillColor: Colors.white,
                 filled: true,
                 hintStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black), // Added for visibility
               ),
+              style: TextStyle(color: Colors.black), // Text color for input
               onChanged: (value) => _address = value,
             ),
             SizedBox(height: 10),
@@ -193,11 +199,13 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 fillColor: Colors.white,
                 filled: true,
                 hintStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black), // Added for visibility
               ),
+              style: TextStyle(color: Colors.black), // Text color for input
               items: <String>['Cleaning', 'Repair', 'Delivery', 'Tutoring'].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value, style: TextStyle(color: Colors.black)),
+                  child: Text(value),
                 );
               }).toList(),
               onChanged: (value) => _category = value!,
