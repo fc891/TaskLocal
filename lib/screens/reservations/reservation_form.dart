@@ -80,7 +80,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     return true;
   }
 
-  void _submitReservation() {
+  Future<void> _submitReservation() async {
     if (!_validateInputs()) {
       return;
     }
