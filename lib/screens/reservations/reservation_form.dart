@@ -25,7 +25,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
   String _taskDescription = '';
   String _payRate = '';
   String _address = '';
-  String _category = '';
+  String _category = 'Furniture Assembly'; // Default category
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _selectTime(BuildContext context) async {
@@ -54,16 +54,6 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
         );
       },
     );
-  }
-
-  String getFormattedDate() {
-    return DateFormat('yyyy-MM-dd – kk:mm').format(DateTime(
-      _selectedDate.year,
-      _selectedDate.month,
-      _selectedDate.day,
-      _selectedTime.hour,
-      _selectedTime.minute,
-    ));
   }
 
   bool _validateInputs() {
@@ -147,6 +137,14 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> categories = [
+      'Furniture Assembly', 'Mounting Services', 'Yard Work', 'Art Installations',
+      'Cleaning Services', 'Computer Services', 'Delivery Services', 'Event Planning',
+      'Fitness Training', 'Gardening Projects', 'Handyman Services', 'Moving Services',
+      'Music Productions', 'Organization', 'Photography Projects', 'Smart Home Installation',
+      'Tech Innovations', 'Wall Repair'
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Reservation Form'),
@@ -177,7 +175,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                         lastDate: DateTime.now().add(Duration(days: 365)),
                       );
                       if (pickedDate != null) {
-                        setState(() { _selectedDate = pickedDate; });
+                        setState(() {
+                          _selectedDate = pickedDate;
+                        });
                       }
                     },
                     child: Text('Select Date', style: TextStyle(color: Colors.black)),
@@ -251,14 +251,21 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 hintStyle: TextStyle(color: Colors.black),
                 labelStyle: TextStyle(color: Colors.black),
               ),
+              value: _category,
               style: TextStyle(color: Colors.black),
-              items: <String>['Cleaning', 'Repair', 'Delivery', 'Tutoring'].map<DropdownMenuItem<String>>((String value) {
+              items: categories.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
                 );
               }).toList(),
-              onChanged: (value) => _category = value!,
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _category = value;
+                  });
+                }
+              },
             ),
             SizedBox(height: 20),
             Center(
