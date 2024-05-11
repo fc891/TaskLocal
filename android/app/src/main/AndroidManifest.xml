@@ -29,8 +29,6 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-            <meta-data android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyA8pHZFIn_kRhOUKrgOp_wzZ_Nnp4bXcEE"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -41,5 +39,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Do not move or adjust the meta-data below.
+             This is used by the Google Geolocation dependency for Google Maps -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDepdCQYqGY9lwllCpKx99uuxSgGyiHiMg"/>
     </application>
 </manifest>

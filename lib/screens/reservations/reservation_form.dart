@@ -86,6 +86,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     }
 
     final user = FirebaseAuth.instance.currentUser;
+    final customerData = await _firestore.collection('Customers').doc(user?.email).get();
     if (user != null) {
       final customerEmail = user.email;
       final DateTime reservationDateTime = DateTime(

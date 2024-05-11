@@ -71,10 +71,7 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
     String mediaLink = widget.taskinfo.taskInfo;
     int tasknumber = widget.taskinfo.taskNumber + 1;
     UrlType type = getUrlType(mediaLink);
-    print(mediaLink);
     return Scaffold(
-      //Background color of UI
-      //backgroundColor: Colors.green[500],
       //UI Appbar (bar at top of screen)
       appBar: AppBar(
         title: Text('Uploaded Media#$tasknumber'),
@@ -124,12 +121,12 @@ class _TaskerUploadedMediaState extends State<TaskerUploadedMedia> {
               },
             ),
           //Task details
-          Text('Task info here',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                letterSpacing: 1.0,
-                fontSize: 16.0,
-              )),
+          // Text('Task info here',
+          //     style: TextStyle(
+          //       color: Theme.of(context).colorScheme.secondary,
+          //       letterSpacing: 1.0,
+          //       fontSize: 16.0,
+          //     )),
       ])),
     );
   }

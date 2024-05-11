@@ -12,9 +12,11 @@ class ReviewsPage extends StatefulWidget {
   _ReviewsPageState createState() => _ReviewsPageState();
 }
 
-
 class _ReviewsPageState extends State<ReviewsPage> {
-  
+  double averageRating = 0.0;
+  double overallRating = 0.0;
+  int numberReviews = 0;
+
   // build layout
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,10 @@ class _ReviewsPageState extends State<ReviewsPage> {
           children: [
             // gather the taskers info since we'll be using it for displaying the reviews
             FutureBuilder<DocumentSnapshot>(
-              future: FirebaseFirestore.instance.collection('Taskers').doc(widget.taskerEmail).get(),
+              future: FirebaseFirestore.instance
+                  .collection('Taskers')
+                  .doc(widget.taskerEmail)
+                  .get(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return CircularProgressIndicator();
                 var taskerData = snapshot.data?.data() as Map<String, dynamic>?;
@@ -41,12 +46,15 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     SizedBox(height: 16),
                     // display the taskers avatar
                     CircleAvatar(
-                      backgroundImage: NetworkImage(taskerData['profile picture'] ?? 'https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836'),
+                      backgroundImage: NetworkImage(taskerData[
+                              'profile picture'] ??
+                          'https://firebasestorage.googleapis.com/v0/b/authtutorial-a4202.appspot.com/o/profilepictures%2Ftasklocaltransparent.png?alt=media&token=31e20dcc-4b9a-41cb-85ed-bc82166ac836'),
                       radius: 50,
                     ),
                     SizedBox(height: 8),
                     // display the taskers username
-                    Text(taskerData['username'] ?? 'Username', style: TextStyle(fontSize: 24)),
+                    Text(taskerData['username'] ?? 'Username',
+                        style: TextStyle(fontSize: 24)),
                     // get the taskers review information
                     FutureBuilder<QuerySnapshot>(
                       future: FirebaseFirestore.instance
@@ -55,7 +63,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
                           .collection('Reviews')
                           .get(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return CircularProgressIndicator();
                         }
                         final reviews = snapshot.data?.docs ?? [];
@@ -63,22 +72,31 @@ class _ReviewsPageState extends State<ReviewsPage> {
                         if (reviews.isEmpty) {
                           return Text("Overall Rating: N/A");
                         }
-                        // create double to store overall rating for tasker
-                        double overallRating = 0;
+                        //Add all ratings to overallRating
                         for (var review in reviews) {
-                          overallRating += (review.data() as Map<String, dynamic>)['rating'];
+                          overallRating +=
+                              (review.data() as Map<String, dynamic>)['rating'];
                         }
-                        double averageRating = overallRating / reviews.length;
+
+                        //Calculate average rating using overallRating and total number of reviews
+                        averageRating = double.parse(
+                            (overallRating / reviews.length)
+                                .toStringAsFixed(1));
+                        //Set total number of reviews to display next to overall rating
+                        numberReviews = reviews.length;
 
                         return Column(
                           children: [
                             // display the taskers overall rating
-                            Text("Overall Rating: ${averageRating.toStringAsFixed(1)}"),
+                            Text(
+                                "Overall Rating: $averageRating ($numberReviews)"),
                             // use flutter rating bar API
                             RatingBarIndicator(
-                              unratedColor: Theme.of(context).colorScheme.tertiary,
+                              unratedColor:
+                                  Theme.of(context).colorScheme.tertiary,
                               rating: averageRating,
-                              itemBuilder: (context, index) => Icon(Icons.star, color: Colors.amber),
+                              itemBuilder: (context, index) =>
+                                  Icon(Icons.star, color: Colors.amber),
                               itemCount: 5,
                               itemSize: 20.0,
                               direction: Axis.horizontal,
@@ -109,11 +127,11 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 // display the review cards
                 return ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(), 
+                  physics: NeverScrollableScrollPhysics(),
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     var reviewDoc = snapshot.data!.docs[index];
-                    return ReviewCard(review: reviewDoc); 
+                    return ReviewCard(review: reviewDoc);
                   },
                 );
               },
