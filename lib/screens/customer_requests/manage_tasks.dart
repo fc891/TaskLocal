@@ -69,16 +69,19 @@ class _ManageTasksState extends State<ManageTasks> {
 
   Widget _buildTaskTile(BuildContext context, Map<String, dynamic> task, String docId) {
     DateTime taskDate = (task['date'] as Timestamp).toDate();
+    bool isCompleted = task['status'] == 'completed';
     return Card(
       child: ListTile(
-        title: Text('${task['categoryName']} - ${task['description']}'),
+        title: Text(task['categoryName'], style: TextStyle(color: Colors.white)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Address: ${task['address']}'),
-            Text('Date: ${DateFormat('yyyy-MM-dd – kk:mm').format(taskDate)}'),
-            Text('Rate: \$${task['payRate']} per hour'),
-            Text('Status: ${task['status']}'),
+            Text('Description: ${task['description']}', style: TextStyle(color: Colors.white)),
+            Text('Address: ${task['address']}', style: TextStyle(color: Colors.white)),
+            Text('Date: ${DateFormat('yyyy-MM-dd – kk:mm').format(taskDate)}', style: TextStyle(color: Colors.white)),
+            // Text('Rate: \$${task['payRate']} per hour', style: TextStyle(color: Colors.white)),
+            Text('Tasker: ${task['taskerEmail']} - Accepted: ${task['taskAccepted'] ? "Yes" : "No"}', style: TextStyle(color: Colors.white)),
+            Text('Status: ${task['status']}', style: TextStyle(color: Colors.white)),
           ],
         ),
         isThreeLine: true,
@@ -86,8 +89,9 @@ class _ManageTasksState extends State<ManageTasks> {
           spacing: 12, // space between two icons
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.check_circle_outline, color: Colors.green),
-              onPressed: () => _markAsComplete(docId),
+              icon: Icon(isCompleted ? Icons.undo : Icons.check_circle_outline,
+                  color: isCompleted ? Colors.orange : Colors.green),
+              onPressed: () => _toggleTaskCompletion(docId, isCompleted),
             ),
             IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
@@ -99,12 +103,12 @@ class _ManageTasksState extends State<ManageTasks> {
     );
   }
 
-  void _markAsComplete(String docId) {
+  void _toggleTaskCompletion(String docId, bool isCompleted) {
     _firestore.collection('Reservations')
         .doc(user!.email)
         .collection('All Pending Reservations')
         .doc(docId)
-        .update({'status': 'completed'});
+        .update({'status': isCompleted ? 'pending' : 'completed'});
   }
 
   void _showCancelDialog(BuildContext context, String docId) {
@@ -116,11 +120,11 @@ class _ManageTasksState extends State<ManageTasks> {
           content: Text('Are you sure you want to cancel this task? This action cannot be undone.'),
           actions: <Widget>[
             TextButton(
-              child: Text('No'),
+              child: Text('No', style: TextStyle(color: Colors.white)),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text('Yes'),
+              child: Text('Yes', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 _cancelTask(docId);
                 Navigator.of(context).pop();
