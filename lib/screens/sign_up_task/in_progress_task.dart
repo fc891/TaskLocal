@@ -67,26 +67,49 @@ class _InProgressTaskState extends State<InProgressTask> {
                                   DocumentReference reservation = _firestore.collection('Reservations').doc(taskData['customerEmail'])
                                                                                                     .collection('All Pending Reservations').doc(categoryName);
 
-                                  // Randomly create a pay rate between 40 and 80 (evens only)
-                                  int payRate = (Random().nextInt(21) * 2) + 40;
                                   reservation.get().then((docSnapshot) {
                                     Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
                                     // 'payRate' field doesn't exist, so add it
                                     if (!data.containsKey('payRate')) {
+                                      // Randomly create a pay rate between 40 and 80 (evens only)
+                                      int payRate = (Random().nextInt(21) * 2) + 40;
                                       reservation.update({'payRate': payRate});
                                     }
                                   });
 
-                                  // Randomly create a address number
-                                  int addressNum = Random().nextInt(90000) + 10000;
+                                  
                                   reservation.get().then((docSnapshot) {
                                     Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
                                     // 'payRate' field doesn't exist, so add it
                                     if (!data.containsKey('address')) {
+                                      // Randomly create a address number
+                                      int addressNum = Random().nextInt(90000) + 10000;
                                       reservation.update({'address': '$addressNum address name'});
                                     }
                                   });
-                                  
+
+                                  CollectionReference signedUpTasks = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Signed Up Tasks');
+                                  // Get all documents from the collection
+                                  signedUpTasks.get().then((querySnapshot) {
+                                    // Generate a random index within the range of the number of documents
+                                    int randomIndex = Random().nextInt(querySnapshot.docs.length);
+
+                                    // Use the random index to access a document from the collection
+                                    DocumentSnapshot randomDocument = querySnapshot.docs[randomIndex];
+                                    // Access the data of the random document
+                                    Map<String, dynamic> documentData = randomDocument.data() as Map<String, dynamic>;
+
+                                    reservation.get().then((docSnapshot) {
+                                      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+                                      // 'payRate' field doesn't exist, so add it
+                                      if (!data.containsKey('categoryName')) {
+                                        reservation.update({'categoryName': documentData['task category']});
+                                      }
+                                    });
+                                  }).catchError((error) {
+                                    print("Error retrieving documents: $error");
+                                  });
+
                                   // if (taskData['taskRejected']) {
                                     return Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
@@ -101,7 +124,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                           title: Padding(
                                             padding: const EdgeInsets.only(left: 20.0),
                                             child: Text(
-                                              categoryName, 
+                                              taskData['categoryName'], 
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
