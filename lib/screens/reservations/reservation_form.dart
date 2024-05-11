@@ -1,6 +1,7 @@
 // Contributors: Eric C., 
 
-// add a pay rate for customer's budget for a task
+// to-do list
+// add a pay rate, address, and task category for customer's budget for a task
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
