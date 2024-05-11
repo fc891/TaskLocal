@@ -114,7 +114,7 @@ class _SupportPageState extends State<SupportPage> {
             child: ElevatedButton(
               onPressed: submitsupportticket,
               style: ElevatedButton.styleFrom(
-                primary: Color(0xFF004D40), 
+                backgroundColor: Color(0xFF004D40), 
               ),
               child: Text('Submit', style: GoogleFonts.lato(fontSize: 18)),
             ),
