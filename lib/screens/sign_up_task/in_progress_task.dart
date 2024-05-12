@@ -594,7 +594,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                             'description': taskData['description'],
                                                             'location': taskData['address'],
                                                             'pay rate': taskData['payRate'],
-                                                            'start date': reservationDateOnly,
+                                                            'startDate': reservationDateOnly,
                                                             'task accepted': taskData['taskAccepted'],
                                                             'task started': taskData['taskStarted'],
                                                         });
@@ -610,7 +610,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                             'description': taskData['description'],
                                                             'location': taskData['address'],
                                                             'pay rate': taskData['payRate'],
-                                                            'start date': reservationDateOnly,
+                                                            'startDate': reservationDateOnly,
                                                             'task accepted': taskData['taskAccepted'],
                                                             'task started': taskData['taskStarted'],
                                                         });
