@@ -267,9 +267,9 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                                     requestCompletedList[index]
                                         .get("description"),
                                     requestCompletedList[index].get("location"),
-                                    requestCompletedList[index].get("pay rate"),
+                                    requestCompletedList[index].get("pay rate").toString(),
                                     requestCompletedList[index]
-                                        .get("startDate"),
+                                        .get("start date"),
                                     requestCompletedList[index]
                                         .get("task category"),
                                     index + 1);
@@ -288,7 +288,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                                           .colorScheme
                                           .secondary)),
                               subtitle: Text(
-                                  "@${requestCompletedList[index].get("tasker username")} (${requestCompletedList[index].get("startDate")})",
+                                  "@${requestCompletedList[index].get("tasker username")} (${requestCompletedList[index].get("start date")})",
                                   style: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme

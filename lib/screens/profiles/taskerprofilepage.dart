@@ -783,7 +783,7 @@ class _TaskerProfilePageState extends State<TaskerProfilePage> {
                                       taskCompletedList[index]
                                           .get("description"),
                                       taskCompletedList[index].get("location"),
-                                      taskCompletedList[index].get("pay rate"),
+                                      taskCompletedList[index].get("pay rate").toString(),
                                       taskCompletedList[index]
                                           .get("start date"),
                                       taskCompletedList[index]
