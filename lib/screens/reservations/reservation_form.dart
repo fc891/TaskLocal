@@ -1,5 +1,8 @@
 // Contributors: Eric C., 
 
+// to-do list
+// add a pay rate, address, and task category for customer's budget for a task
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -20,82 +23,79 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay(hour: 9, minute: 0);
   String _taskDescription = '';
+  String _payRate = '';
+  String _address = '';
+  String _category = 'Furniture Assembly'; // Default category
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _selectTime(BuildContext context) async {
-    final pickedTime = await showModalBottomSheet<TimeOfDay>(
+    final TimeOfDay? pickedTime = await showModalBottomSheet<TimeOfDay>(
       context: context,
       builder: (BuildContext context) {
         return Container(
-          height: MediaQuery.of(context).copyWith().size.height / 3,
-          child: Row(
-            children: [
-              Expanded(
-                child: CupertinoPicker(
-                  itemExtent: 40.0,
-                  onSelectedItemChanged: (int index) {
-                    setState(() {
-                      _selectedTime = TimeOfDay(
-                        hour: index % 12 == 0 ? 12 : index % 12,
-                        minute: _selectedTime.minute,
-                      );
-                    });
-                  },
-                  children: List.generate(12, (index) {
-                    return Center(child: Text('${index == 0 ? 12 : index}'));
-                  }),
-                ),
-              ),
-              Expanded(
-                child: CupertinoPicker(
-                  itemExtent: 40.0,
-                  onSelectedItemChanged: (int index) {
-                    setState(() {
-                      _selectedTime = TimeOfDay(
-                        hour: _selectedTime.hour,
-                        minute: index * 30,
-                      );
-                    });
-                  },
-                  children: List.generate(2, (index) => Center(child: Text('${index * 30}'))),
-                ),
-              ),
-              Expanded(
-                child: CupertinoPicker(
-                  itemExtent: 40.0,
-                  onSelectedItemChanged: (int index) {
-                    setState(() {
-                      _selectedTime = index == 1 ? TimeOfDay(hour: _selectedTime.hour + 12, minute: _selectedTime.minute) : TimeOfDay(hour: _selectedTime.hour - 12, minute: _selectedTime.minute);
-                    });
-                  },
-                  children: const [Center(child: Text('AM')), Center(child: Text('PM'))],
-                ),
-              ),
-            ],
+          height: MediaQuery.of(context).size.height / 3,
+          child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.time,
+            initialDateTime: DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+              _selectedTime.hour,
+              _selectedTime.minute,
+            ),
+            use24hFormat: false,
+            minuteInterval: 30,
+            onDateTimeChanged: (DateTime dateTime) {
+              setState(() {
+                _selectedTime = TimeOfDay.fromDateTime(dateTime);
+              });
+            },
           ),
         );
       },
     );
-    if (pickedTime != null) {
-      setState(() {
-        _selectedTime = pickedTime;
-      });
-    }
   }
 
-  void _submitReservation() async {
-    final DateTime reservationDateTime = DateTime(
-      _selectedDate.year,
-      _selectedDate.month,
-      _selectedDate.day,
-      _selectedTime.hour,
-      _selectedTime.minute,
-    );
+  bool _validateInputs() {
+    if (_taskDescription.isEmpty || _payRate.isEmpty || _address.isEmpty || _category.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Missing Information'),
+            content: Text('Please fill out all fields before submitting.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _submitReservation() async {
+    if (!_validateInputs()) {
+      return;
+    }
 
     final user = FirebaseAuth.instance.currentUser;
     final customerData = await _firestore.collection('Customers').doc(user?.email).get();
     if (user != null) {
       final customerEmail = user.email;
+      final DateTime reservationDateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        _selectedTime.hour,
+        _selectedTime.minute,
+      );
 
       // used for tasker where they can access the Reservations collection
       final taskerHiredByCustomers = _firestore.collection('Taskers').doc(widget.taskerData['email']).collection('Hired by Customers');
@@ -125,7 +125,14 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
         'taskCompleted': false, // for tasker use
         'date': reservationDateTime,
         'description': _taskDescription,
+        'payRate': int.tryParse(_payRate) ?? 0,
+        'address': _address,
+        'categoryName': _category,
         'status': 'pending',
+        'taskAccepted': false,
+        'taskCompleted': false,
+        'taskRejected': false,
+        'taskStarted': false,
       }).then((value) {
         Navigator.push(
           context,
@@ -143,7 +150,6 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
             SnackBar(content: Text('Failed to make a reservation: $error')));
       });
     } else {
-      // Handle the case when the user is not logged in
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('User not logged in. Please log in.')));
     }
@@ -151,59 +157,144 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> categories = [
+      'Furniture Assembly', 'Mounting Services', 'Yard Work', 'Art Installations',
+      'Cleaning Services', 'Computer Services', 'Delivery Services', 'Event Planning',
+      'Fitness Training', 'Gardening Projects', 'Handyman Services', 'Moving Services',
+      'Music Productions', 'Organization', 'Photography Projects', 'Smart Home Installation',
+      'Tech Innovations', 'Wall Repair'
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Reservation Form'),
+        backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Tasker: ${widget.taskerData['name'] ?? ''}', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
-            Text('Select Date and Time:', style: TextStyle(fontSize: 16)),
+            Text('Tasker Details', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            Text('Tasker: ${widget.taskerData['name']}', style: TextStyle(fontSize: 18)),
+            Divider(height: 30),
+            Text('Date and Time', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            Text('Selected Date: ${DateFormat('EEE, MMM d, yyyy').format(_selectedDate)}', style: TextStyle(fontSize: 18)),
+            Text('Selected Time: ${_selectedTime.format(context)}', style: TextStyle(fontSize: 18)),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    final DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: _selectedDate,
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(DateTime.now().year + 1),
-                    );
-                    if (pickedDate != null && pickedDate != _selectedDate) {
-                      setState(() {
-                        _selectedDate = pickedDate;
-                      });
-                    }
-                  },
-                  child: Text('Select Date', style: TextStyle(color: Colors.black)),
-                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: _selectedDate,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(Duration(days: 365)),
+                      );
+                      if (pickedDate != null) {
+                        setState(() {
+                          _selectedDate = pickedDate;
+                        });
+                      }
+                    },
+                    child: Text('Select Date', style: TextStyle(color: Colors.black)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () => _selectTime(context),
-                  child: Text('Select Time', style: TextStyle(color: Colors.black)),
-                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),
+                SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => _selectTime(context),
+                    child: Text('Select Time', style: TextStyle(color: Colors.black)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            Divider(height: 30),
+            Text('Task Details', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Task Description',
                 border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: true,
+                hintStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
               ),
-              onChanged: (value) => setState(() => _taskDescription = value),
+              style: TextStyle(color: Colors.black),
+              onChanged: (value) => _taskDescription = value,
+              maxLines: 3,
+            ),
+            SizedBox(height: 10),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Pay Rate (\$)',
+                border: OutlineInputBorder(),
+                prefixText: '\$ ',
+                fillColor: Colors.white,
+                filled: true,
+                hintStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
+              ),
+              style: TextStyle(color: Colors.black),
+              keyboardType: TextInputType.number,
+              onChanged: (value) => _payRate = value,
+            ),
+            SizedBox(height: 10),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Address',
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: true,
+                hintStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
+              ),
+              style: TextStyle(color: Colors.black),
+              onChanged: (value) => _address = value,
+            ),
+            SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                labelText: 'Category',
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: true,
+                hintStyle: TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
+              ),
+              value: _category,
+              style: TextStyle(color: Colors.black),
+              items: categories.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _category = value;
+                  });
+                }
+              },
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _submitReservation,
-              child: Text('Submit Reservation', style: TextStyle(color: Colors.black)),  // Changed to black for visibility
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor, // background
+            Center(
+              child: ElevatedButton(
+                onPressed: _submitReservation,
+                child: Text('Submit Reservation', style: TextStyle(color: Colors.black)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ],
