@@ -45,8 +45,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 
   List<QueryDocumentSnapshot<Map<String, dynamic>>> requestCompletedList = [];
 
-  //WIP
-  //Bill's get user's info using testid (user email right now)
+  //Bill's get user's info using email
   void getUserInfo(String testid) async {
     var collection = FirebaseFirestore.instance.collection('Customers');
     var docSnapshot = await collection.doc(testid).get();
@@ -58,8 +57,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     });
   }
 
-  //WIP
-  //Bill's get user's join date using id
+  //Bill's get user's join date using email
   void getJoinDate(String id) async {
     var collection = FirebaseFirestore.instance.collection('Customers');
     var docSnapshot = await collection.doc(id).get();
@@ -77,11 +75,11 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     }
   }
 
-  //Bill's get user's number of requested tasks completed using id
+  //Bill's get user's number of requested tasks completed using email
   void getRequestsCompleted(String id) async {
     globals.checkTasksCustomer = false;
 
-    //Query all documents under "Completed Tasks" for taskers in database, add to list to display later
+    //Query all documents under "Completed Tasks" for customers in database, add to list to display later
     await firebaseFirestore
         .collection("Customers")
         .doc(id)
@@ -98,7 +96,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     );
   }
 
-  //Bill's get user's profile picture using id
+  //Bill's get user's profile picture using email
   void getProfilePicture(String id) async {
     try {
       final ref = dB.ref().child("profilepictures/$id/profilepicture.jpg");
