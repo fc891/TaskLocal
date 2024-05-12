@@ -34,12 +34,6 @@ class _TaskerEditProfileState extends State<TaskerEditProfile> {
 
   Uint8List? _image;
 
-  //WIP: Controllers to edit password
-  // var passwordController = TextEditingController();
-  // var confirmPasswordController = TextEditingController();
-  // bool _obscurePassword = true;
-  // bool _obscureConfirmPassword = true;
-
   //Prompt user to select image from device gallery
   void selectImage() async {
     //Pick image from device and convert to Uint8List type
