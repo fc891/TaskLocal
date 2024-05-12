@@ -267,7 +267,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                                     requestCompletedList[index]
                                         .get("description"),
                                     requestCompletedList[index].get("location"),
-                                    requestCompletedList[index].get("pay rate").toString(),
+                                    requestCompletedList[index].get("pay rate"),
                                     requestCompletedList[index]
                                         .get("startDate"),
                                     requestCompletedList[index]
