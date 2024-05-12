@@ -1,5 +1,6 @@
 // Contributors: Richard N.
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,7 +29,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                 minHeight: constraints.maxHeight,
               ),
               child: FutureBuilder<Map<String, List<DocumentSnapshot>>>(
-                future: _getSignedUpTasks(),
+                future: _getReservations(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -40,8 +41,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                     );
                   } else {
                     // a list contianing a list of the task categories from the user
-                    final Map<String, List<DocumentSnapshot>> signedUpTasks =
-                        snapshot.data!;
+                    final Map<String, List<DocumentSnapshot>> signedUpTasks = snapshot.data!;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: signedUpTasks.entries.map((entry) {
@@ -58,9 +58,60 @@ class _InProgressTaskState extends State<InProgressTask> {
                                   final taskData = taskCategory[index];
                                   // get the current date and time
                                   DateTime currentDateTime = DateTime.now();
-                                  final String date = DateFormat('MM/dd/yy').format(currentDateTime); 
+                                  final String currentDateOnly = DateFormat('MM/dd/yy').format(currentDateTime); 
+
+                                  // task reservation's date and time
+                                  DateTime dateTime = taskData['date'].toDate();
+                                  final reservationDateOnly = DateFormat('MM/dd/yy').format(dateTime);
+
+                                  DocumentReference reservation = _firestore.collection('Reservations').doc(taskData['customerEmail'])
+                                                                                                    .collection('All Pending Reservations').doc(categoryName);
+
+                                  reservation.get().then((docSnapshot) {
+                                    Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+                                    // 'payRate' field doesn't exist, so add it
+                                    if (!data.containsKey('payRate')) {
+                                      // Randomly create a pay rate between 40 and 80 (evens only)
+                                      int payRate = (Random().nextInt(21) * 2) + 40;
+                                      reservation.update({'payRate': payRate});
+                                    }
+                                  });
+
                                   
-                                  return Padding(
+                                  reservation.get().then((docSnapshot) {
+                                    Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+                                    // 'payRate' field doesn't exist, so add it
+                                    if (!data.containsKey('address')) {
+                                      // Randomly create a address number
+                                      int addressNum = Random().nextInt(90000) + 10000;
+                                      reservation.update({'address': '$addressNum address name'});
+                                    }
+                                  });
+
+                                  CollectionReference signedUpTasks = _firestore.collection('Taskers').doc(_auth.currentUser!.email).collection('Signed Up Tasks');
+                                  // Get all documents from the collection
+                                  signedUpTasks.get().then((querySnapshot) {
+                                    // Generate a random index within the range of the number of documents
+                                    int randomIndex = Random().nextInt(querySnapshot.docs.length);
+
+                                    // Use the random index to access a document from the collection
+                                    DocumentSnapshot randomDocument = querySnapshot.docs[randomIndex];
+                                    // Access the data of the random document
+                                    Map<String, dynamic> documentData = randomDocument.data() as Map<String, dynamic>;
+
+                                    reservation.get().then((docSnapshot) {
+                                      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+                                      // 'payRate' field doesn't exist, so add it
+                                      if (!data.containsKey('categoryName')) {
+                                        reservation.update({'categoryName': documentData['task category']});
+                                      }
+                                    });
+                                  }).catchError((error) {
+                                    print("Error retrieving documents: $error");
+                                  });
+
+                                  if (!taskData['taskRejected'] && !taskData['taskCompleted']) {
+                                    return Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     // display the information of the signed up task in a ListTile
                                     child: Column(
@@ -73,7 +124,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                           title: Padding(
                                             padding: const EdgeInsets.only(left: 20.0),
                                             child: Text(
-                                              categoryName, 
+                                              taskData['categoryName'], 
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -81,158 +132,156 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                     .colorScheme
                                                     .secondary,
                                               )),
-                                        ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20.0, right: 15),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Customer Name: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                          ),
+                                          subtitle: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20.0, right: 15),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Customer Name: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '${taskData['customer first name']} ${taskData['customer last name']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                      TextSpan(
+                                                        text:
+                                                            '${taskData['customerFirstName']} ${taskData['customerLastName']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Description: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Description: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '${taskData['description']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                      TextSpan(
+                                                        text:
+                                                            '${taskData['description']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Location: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Location: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '${taskData['location']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                      TextSpan(
+                                                        text:
+                                                            '${taskData['address']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Pay Rate: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Pay Rate: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '\$${taskData['pay rate']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                      TextSpan(
+                                                        text: '\$${taskData['payRate']}',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Start Date: ',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: 'Date: ',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          '${taskData['start date']}',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
+                                                      TextSpan(
+                                                        text: reservationDateOnly,
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .secondary,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
                                       Center(
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            if (!taskData['task accepted'])
+                                            if (!taskData['taskAccepted'])
                                               Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
@@ -286,26 +335,17 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           setState(() {
                                                             _firestore
                                                                 .collection(
-                                                                    'Task Categories')
-                                                                .doc(
-                                                                    categoryName)
+                                                                    'Reservations')
+                                                                .doc(taskData['customerEmail'])
                                                                 .collection(
-                                                                    'Hired Taskers')
-                                                                .doc(_auth
-                                                                    .currentUser!
-                                                                    .email)
-                                                                .collection(
-                                                                    'In Progress Tasks')
-                                                                .doc(taskData[
-                                                                    'customer email'])
+                                                                    'All Pending Reservations')
+                                                                .doc(categoryName)
                                                                 .update({
-                                                              'task accepted':
+                                                              'taskAccepted':
                                                                   true
                                                             });
                                                           });
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
+                                                          ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
                                                               content: Text(
                                                                   'Successfully accepted task request.'),
@@ -313,8 +353,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           );
                                                         } catch (error) {
                                                           // print('There was an error deleting the signed up task: $error');
-                                                          ScaffoldMessenger.of(
-                                                                  context)
+                                                          ScaffoldMessenger.of(context)
                                                               .showSnackBar(
                                                             SnackBar(
                                                               content: Text(
@@ -373,30 +412,37 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       if (confirmed == true) {
                                                         try {
                                                           // removing from the collection
-                                                          final signedUpGeneral = _firestore
-                                                              .collection(
-                                                                  'Task Categories')
-                                                              .doc(categoryName)
-                                                              .collection(
-                                                                  'Hired Taskers')
-                                                              .doc(_auth
-                                                                  .currentUser!
-                                                                  .email)
-                                                              .collection(
-                                                                  'In Progress Tasks')
-                                                              .doc(taskData[
-                                                                  'customer email']);
-                                                          await signedUpGeneral
-                                                              .delete();
+                                                          // final signedUpGeneral = _firestore
+                                                          //     .collection(
+                                                          //         'Task Categories')
+                                                          //     .doc(categoryName)
+                                                          //     .collection(
+                                                          //         'Hired Taskers')
+                                                          //     .doc(_auth
+                                                          //         .currentUser!
+                                                          //         .email)
+                                                          //     .collection(
+                                                          //         'In Progress Tasks')
+                                                          //     .doc(taskData[
+                                                          //         'customer email']);
+                                                          // await signedUpGeneral
+                                                          //     .delete();
                                                           // update the UI
                                                           setState(() {
-                                                            taskCategory
-                                                                .removeAt(
-                                                                    index);
+                                                            taskCategory.removeAt(index);
+                                                            _firestore
+                                                                .collection(
+                                                                    'Reservations')
+                                                                .doc(taskData['customerEmail'])
+                                                                .collection(
+                                                                    'All Pending Reservations')
+                                                                .doc(categoryName)
+                                                                .update({
+                                                              'taskRejected':
+                                                                  true
+                                                            });
                                                           });
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
+                                                          ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
                                                               content: Text(
                                                                   'Successfully decline task request.'),
@@ -404,9 +450,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           );
                                                         } catch (error) {
                                                           // print('There was an error deleting the signed up task: $error');
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
+                                                          ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
                                                               content: Text(
                                                                   'An error occurred while declining the task request.'),
@@ -418,10 +462,10 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   ),
                                                 ],
                                               ) 
-                                              else if (taskData['task accepted'] && !taskData['task started']) 
+                                              else if (taskData['taskAccepted'] && !taskData['taskStarted']) 
                                                 ElevatedButton(
                                                   onPressed: () async {
-                                                    if(taskData['start date'] == date) {
+                                                    if(reservationDateOnly == currentDateOnly) {
                                                       bool confirmed = await showDialog(
                                                         context: context,
                                                         builder: (context) => AlertDialog(
@@ -444,10 +488,9 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                         try {
                                                           // update the UI
                                                           setState(() {
-                                                              _firestore.collection('Task Categories').doc(categoryName)
-                                                              .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                              .collection('In Progress Tasks').doc(taskData['customer email'])
-                                                              .update({'task started': true});
+                                                              _firestore.collection('Reservations').doc(taskData['customerEmail'])
+                                                              .collection('All Pending Reservations').doc(categoryName)
+                                                              .update({'taskStarted': true});
                                                             }
                                                           );
                                                           ScaffoldMessenger.of(context).showSnackBar(
@@ -519,17 +562,18 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                   if (confirmed == true) {
                                                     try {
                                                       // task request's data to be used for both tasker and customer's collections
-                                                      final taskRequestData = await _firestore.collection('Task Categories').doc(categoryName)
-                                                                                .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                                                .collection('In Progress Tasks').doc(taskData['customer email']).get();
-                                                      final data = taskRequestData.data();
-                                                      final customerEmail = data?['customer email'];
-                                                      final description = data?['description'];
-                                                      final location = data?['location'];
-                                                      final payRate = data?['pay rate'];
-                                                      final startDate = data?['start date'];
-                                                      final taskAccepted = data?['task accepted'];
-                                                      final taskStarted = data?['task started'];
+                                                      // final taskRequestData = await _firestore.collection('Reservations').doc(taskData['customerEmail'])
+                                                      //                           .collection('All Pending Reservations').doc(categoryName).get();
+                                                                                
+                                                      // final data = taskRequestData.data();
+                                                      // final customerEmail = data?['customerEmail'];
+                                                      // final description = data?['description'];
+                                                      // final location = data?['address'];
+                                                      // final payRate = data?['payRate'];
+                                                      // final reservationDate = data?['date'];
+                                                      // final taskAccepted = data?['taskAccepted'];
+                                                      // final taskStarted = data?['taskStarted'];
+                                                      // final taskCategory = data?['category name'];
                                                       
                                                       // retrieve tasker data to be used for cutomer's collection
                                                       final taskerData = await _firestore.collection('Taskers').doc(_auth.currentUser!.email).get();
@@ -538,41 +582,60 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                       final taskerUserName = taskerData['username'];
                                                                                 
 
-                                                      if (data != null) {
+                                                      // if (data != null) {
                                                         // storing task request into tasker's collection
                                                         await _firestore.collection('Taskers').doc(_auth.currentUser!.email)
                                                           .collection('Completed Tasks').add({
-                                                            ...data,
-                                                            'task category': categoryName,
+                                                            'customer email': taskData['customerEmail'],
+                                                            'customer first name': taskerFirstName,
+                                                            'customer last name': taskerLastName,
+                                                            'customer username': taskerUserName,
+                                                            'task category': taskData['categoryName'],
+                                                            'description': taskData['description'],
+                                                            'location': taskData['address'],
+                                                            'pay rate': taskData['payRate'],
+                                                            'start date': reservationDateOnly,
+                                                            'task accepted': taskData['taskAccepted'],
+                                                            'task started': taskData['taskStarted'],
                                                         });
 
                                                         // storing task request into customer's collection
-                                                        await _firestore.collection('Customers').doc(customerEmail)
+                                                        await _firestore.collection('Customers').doc(taskData['customerEmail'])
                                                           .collection('Completed Tasks').add({
                                                             'tasker email': _auth.currentUser!.email,
                                                             'tasker first name': taskerFirstName,
                                                             'tasker last name': taskerLastName,
                                                             'tasker username': taskerUserName,
-                                                            'task category': categoryName,
-                                                            'description': description,
-                                                            'location': location,
-                                                            'pay rate': payRate,
-                                                            'startDate': startDate,
-                                                            'task accepted': taskAccepted,
-                                                            'task started': taskStarted,
+                                                            'task category': taskData['categoryName'],
+                                                            'description': taskData['description'],
+                                                            'location': taskData['address'],
+                                                            'pay rate': taskData['payRate'],
+                                                            'start date': reservationDateOnly,
+                                                            'task accepted': taskData['taskAccepted'],
+                                                            'task started': taskData['taskStarted'],
                                                         });
-                                                      }
+                                                      // }
                                                                                       
                                                       // removing from the collection
-                                                      final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
-                                                                                .collection('Hired Taskers').doc(_auth.currentUser!.email)
-                                                                                .collection('In Progress Tasks').doc(taskData['customer email']);
+                                                      // final signedUpGeneral = _firestore.collection('Task Categories').doc(categoryName)
+                                                      //                           .collection('Hired Taskers').doc(_auth.currentUser!.email)
+                                                      //                           .collection('In Progress Tasks').doc(taskData['customer email']);
 
-                                                      await signedUpGeneral.delete();
+                                                      // await signedUpGeneral.delete();
                                                       // update the UI
                                                       setState(() {
-                                                        taskCategory
-                                                            .removeAt(index);
+                                                        taskCategory.removeAt(index);
+                                                        _firestore
+                                                                .collection(
+                                                                    'Reservations')
+                                                                .doc(taskData['customerEmail'])
+                                                                .collection(
+                                                                    'All Pending Reservations')
+                                                                .doc(categoryName)
+                                                                .update({
+                                                              'taskCompleted':
+                                                                  true
+                                                            });
                                                       });
                                                       // ignore: use_build_context_synchronously
                                                       ScaffoldMessenger.of(
@@ -591,7 +654,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           .showSnackBar(
                                                         SnackBar(
                                                           content: Text(
-                                                              'An error occurred while completing task.'),
+                                                              '${error}'),
                                                         ),
                                                       );
                                                     }
@@ -614,7 +677,7 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                           fontSize: 14)),
                                                 ),
                                               ),
-                                              if (taskData['task started']) 
+                                              if (taskData['taskStarted']) 
                                                 IconButton(
                                                   icon: Icon(Icons.location_on),
                                                   onPressed: () {
@@ -625,14 +688,16 @@ class _InProgressTaskState extends State<InProgressTask> {
                                                                 CurrentLocation(
                                                                     userType:
                                                                         "Taskers")));
-                                                  },
-                                                ),
+                                              },
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 );
+                              }
+                                  return null;
                               },
                             ),
                           ],
@@ -649,38 +714,69 @@ class _InProgressTaskState extends State<InProgressTask> {
     );
   }
 
-  // retrieves the task categories that the user signed up for
-  Future<Map<String, List<DocumentSnapshot>>> _getSignedUpTasks() async {
-    // access the collection that stores user's signed up tasks
-    final taskerSignedUpTask = await _firestore
+  // retrieves the tasker's customers who made reservation for tasker 
+  Future<Map<String, List<DocumentSnapshot>>> _getReservations() async {
+    // access the collection that stores tasker's customers
+    final hiredByCustomers = await _firestore
         .collection('Taskers')
         .doc(_auth.currentUser!.email)
-        .collection('Signed Up Tasks')
+        .collection('Hired by Customers')
         .get();
-    final taskCategoryList = <String, List<DocumentSnapshot>>{};
+    final customerReservation = <String, List<DocumentSnapshot>>{};
+    final Set<String> uniqueReservation = {};
 
     // go through the collection of signed up task to view each task document
-    for (final taskCategory in taskerSignedUpTask.docs) {
-      final taskData = taskCategory.data();
-      final categoryName = taskData['task category'];
-      // go to task category doc in Task Categories collection
-      final taskCategory2 =
-          _firestore.collection('Task Categories').doc(categoryName);
-      // go to the Hired Taskers collection (from Task Categories Collection) which stores info of taskers sign up
-      final tasker = taskCategory2
-          .collection('Hired Taskers')
-          .doc(_auth.currentUser!.email);
-      final inProgressTaskDoc = await tasker
-          .collection('In Progress Tasks')
-          .where('customer email', isNotEqualTo: _auth.currentUser!.email)
-          .get();
+    for (final customer in hiredByCustomers.docs) {
+      final customerData = customer.data();
+      final customerEmail = customerData['customerEmail'];
 
-      // if categroy name is not stored in list, then create the key and assign it an empty list.
-      if (!taskCategoryList.containsKey(categoryName)) {
-        taskCategoryList[categoryName] = [];
+      // go to customer doc in Reservations collection
+      final customerEmail2 = _firestore.collection('Reservations').doc(customerEmail);
+      // go to 'All Pending Reservations' collection to retrieve reservation data
+      final pendingReservations = await customerEmail2.collection('All Pending Reservations').where('taskerEmail', isEqualTo: _auth.currentUser!.email).get();
+
+      for (final doc in pendingReservations.docs) {
+        final reservationId = doc.id;
+        // ensure unique reservations
+        if (!uniqueReservation.contains(reservationId)) {
+          uniqueReservation.add(reservationId);
+          // Add reservation to map
+          if (!customerReservation.containsKey(reservationId)) {
+            customerReservation[reservationId] = [];
+          }
+          customerReservation[reservationId]!.add(doc);
+        }
       }
-      taskCategoryList[categoryName]!.addAll(inProgressTaskDoc.docs);
     }
-    return taskCategoryList;
+    return customerReservation;
   }
+
+  // // retrieves the task categories that the user signed up for
+  // Future<Map<String, List<DocumentSnapshot>>> _getSignedUpTasks() async {
+  //   // access the collection that stores user's signed up tasks
+  //   final taskerSignedUpTask = await _firestore
+  //       .collection('Taskers')
+  //       .doc(_auth.currentUser!.email)
+  //       .collection('Signed Up Tasks')
+  //       .get();
+  //   final taskCategoryList = <String, List<DocumentSnapshot>>{};
+
+  //   // go through the collection of signed up task to view each task document
+  //   for (final taskCategory in taskerSignedUpTask.docs) {
+  //     final taskData = taskCategory.data();
+  //     final categoryName = taskData['task category'];
+  //     // go to task category doc in Task Categories collection
+  //     final taskCategory2 = _firestore.collection('Task Categories').doc(categoryName);
+  //     // go to the Hired Taskers collection (from Task Categories Collection) which stores info of taskers sign up
+  //     final tasker = taskCategory2.collection('Hired Taskers').doc(_auth.currentUser!.email);
+  //     final inProgressTaskDoc = await tasker.collection('In Progress Tasks').where('customer email', isNotEqualTo: _auth.currentUser!.email).get();
+
+  //     // if categroy name is not stored in list, then create the key and assign it an empty list.
+  //     if (!taskCategoryList.containsKey(categoryName)) {
+  //       taskCategoryList[categoryName] = [];
+  //     }
+  //     taskCategoryList[categoryName]!.addAll(inProgressTaskDoc.docs);
+  //   }
+  //   return taskCategoryList;
+  // }
 }

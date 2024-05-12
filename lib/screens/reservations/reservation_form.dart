@@ -97,6 +97,18 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
         _selectedTime.minute,
       );
 
+      // used for tasker where they can access the Reservations collection
+      final taskerHiredByCustomers = _firestore.collection('Taskers').doc(widget.taskerData['email']).collection('Hired by Customers');
+      final QuerySnapshot querySnapshot = await taskerHiredByCustomers.where('customerEmail', isEqualTo: customerEmail).get();
+
+      if (querySnapshot.docs.isEmpty) {
+          await taskerHiredByCustomers.add({
+            'customerEmail': customerEmail,
+        });
+      } else {
+          print('$customerEmail exists in document');
+      }
+
       _firestore
           .collection('Reservations')
           .doc(customerEmail)
@@ -104,6 +116,13 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
           .add({
         'taskerEmail': widget.taskerData['email'],
         'customerEmail': customerEmail,
+        'customerFirstName': customerData['first name'],
+        'customerLastName': customerData['last name'],
+        'customerUserName': customerData['username'],
+        'taskAccepted': false,
+        'taskRejected': false, // for tasker use
+        'taskStarted': false, // for tasker use
+        'taskCompleted': false, // for tasker use
         'date': reservationDateTime,
         'description': _taskDescription,
         'payRate': int.tryParse(_payRate) ?? 0,

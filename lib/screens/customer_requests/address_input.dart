@@ -363,7 +363,7 @@ class _AddressInputPageState extends State<AddressInputPage> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: ElevatedButton(
                 onPressed: () {
-                  _navigateToTaskerSelectionPage(widget.jobCategory);
+                  _navigateToTaskerSelectionPage(widget.jobCategory.trim());
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
