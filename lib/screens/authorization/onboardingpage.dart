@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +12,7 @@ import 'package:tasklocal/components/tasker_selection_button.dart';
 import 'package:tasklocal/screens/authorization/tasker_auth.dart';
 import 'package:tasklocal/screens/authorization/customer_auth.dart';
 import 'package:tasklocal/Screens/app_theme/theme_provider.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class OnboardingPage extends StatefulWidget {
   OnboardingPage({Key? key}) : super(key: key);
@@ -22,20 +26,41 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      notificationVerification();
+      _notificationVerification();
     });
   }
 
   // create function to see if user has given permission to notifications
-  void notificationVerification() async {
+  void _notificationVerification() async {
+  if (Platform.isAndroid) {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    
+    if (androidInfo.version.sdkInt >= 31) { // Android 12 and above
+      final intent = AndroidIntent(
+        action: 'android.settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM',
+      );
+      try {
+        await intent.launch();
+      } catch (e) {
+        print("Failed to launch intent: $e");
+      }
+    } else {
+      var notificationStatus = await Permission.notification.status;
+      if (!notificationStatus.isGranted) {
+        _notificationVerificationDialog();
+      }
+    }
+  } else {
     var notificationStatus = await Permission.notification.status;
     if (!notificationStatus.isGranted) {
-      notificationVerificationDialog();
+      _notificationVerificationDialog();
     }
   }
+}
 
   // create function for dialog pop up when user doesn't have notifications on
-  void notificationVerificationDialog() {
+  void _notificationVerificationDialog() {
     showDialog(
       context: context,
       barrierDismissible: false, 

@@ -36,15 +36,14 @@ class NotificationService {
   }
 
   Future onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) async {
-    // Handle your logic here for iOS notifications
   }
 
   Future selectNotification(String? payload) async {
     if (payload != null) {
-      // Handle your notification tapped logic here
     }
   }
 
+  // create function for scheduling the notifications 
   Future<void> scheduleNotification(int id, String title, String body, DateTime scheduledDate) async {
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       id,

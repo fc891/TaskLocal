@@ -22,7 +22,7 @@ import 'package:tasklocal/screens/profiles/uploadmediapage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:tasklocal/screens/rate_and_review/review_page.dart';
+import 'package:tasklocal/screens/rateandreview/reviews_page.dart';
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;

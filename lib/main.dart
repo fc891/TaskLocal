@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:tasklocal/screens/rate_and_review/review_card.dart';
-import 'package:tasklocal/screens/rate_and_review/review_page.dart';
+import 'package:tasklocal/screens/notifications/notification_services.dart';
+import 'package:tasklocal/screens/rateandreview/review_card.dart';
+import 'package:tasklocal/screens/rateandreview/reviews_page.dart';
 import 'package:tasklocal/screens/supportpage/supportpage.dart';
 import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +44,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  await NotificationService().init();
+  
   runApp(ProviderScope(overrides: [
     sharedPreferencesProvider.overrideWithValue(sharedPreferences),
   ], child: MyApp()));
@@ -71,7 +74,6 @@ class MyApp extends ConsumerWidget {
         '/customerhomepage': (context) => CustomerHomePage(),
         '/taskerhomepage': (context) => TaskerHomePage(),
         '/messageshome': (context) => MessagesHome(),
-        '/reviewspage': (context) => ReviewsPage(taskerEmail: "joe@gmail.com"),
       },
     );
   }

@@ -11,7 +11,7 @@ import 'package:tasklocal/screens/messages/messages_home.dart';
 import 'package:tasklocal/screens/profiles/customerprofilepage.dart';
 // import 'package:tasklocal/screens/profiles/taskerprofilepage.dart';
 import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_calendar.dart';
-import 'package:tasklocal/screens/rate_and_review/rate_and_review_page.dart';
+import 'package:tasklocal/screens/rateandreview/rate_and_review.dart';
 // import 'package:tasklocal/screens/home_pages/temp_navigate_pages/tasker_messages.dart';
 
 // Eric's code for class
@@ -173,7 +173,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RateandReviewPage(taskerEmail: 'joe@gmail.com',)),
+                  MaterialPageRoute(builder: (context) => RateandReviewPage())
                 );
               },
             ),
