@@ -14,4 +14,4 @@ bool checkCategories = true; //Keeps track of whether or not to check for new ta
 bool checkTasks = true; //Keeps track of whether or not to check for new task history (tasker)
 bool checkTasksCustomer = true; //Keeps track of whether or not to check for new task history (customer)
 
-const String mapsAPIKey = "AIzaSyDepdCQYqGY9lwllCpKx99uuxSgGyiHiMg"; //Google maps key (temp)
+const String mapsAPIKey = ""; //Google maps key (temp)
