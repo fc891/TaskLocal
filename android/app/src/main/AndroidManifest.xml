@@ -44,6 +44,6 @@
         <!-- Do not move or adjust the meta-data below.
              This is used by the Google Geolocation dependency for Google Maps -->
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDepdCQYqGY9lwllCpKx99uuxSgGyiHiMg"/>
+            android:value="MapsAPIKeyHere"/>
     </application>
 </manifest>
